@@ -29,11 +29,11 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="min-h-screen flex bg-background">
-      {/* Sidebar — dark teal like WarrantyWise */}
-      <aside className={`${collapsed ? "w-16" : "w-64"} flex-shrink-0 bg-teal flex flex-col transition-all duration-300 hidden md:flex`}>
-        <div className="p-4 flex items-center justify-between border-b border-teal-light/30">
-          {!collapsed && <img src={logo} alt="WarrantyVault" className="h-6 brightness-200" />}
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-white/60 hover:text-white hover:bg-teal-light/30" onClick={() => setCollapsed(!collapsed)}>
+      {/* Sidebar */}
+      <aside className={`${collapsed ? "w-16" : "w-64"} flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex flex-col transition-all duration-300 hidden md:flex`}>
+        <div className="p-4 flex items-center justify-between border-b border-border/50">
+          {!collapsed && <img src={logo} alt="WarrantyVault" className="h-6" />}
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setCollapsed(!collapsed)}>
             {collapsed ? <Menu className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </Button>
         </div>
@@ -43,9 +43,7 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
             return (
               <Link key={item.path} to={item.path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
-                  active
-                    ? "bg-accent text-accent-foreground font-medium shadow-sm"
-                    : "text-white/60 hover:text-white hover:bg-teal-light/30"
+                  active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                 }`}
               >
                 <item.icon className="w-4 h-4 flex-shrink-0" />
@@ -54,14 +52,14 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
             );
           })}
         </nav>
-        <div className="p-3 border-t border-teal-light/30">
+        <div className="p-3 border-t border-border/50">
           {!collapsed && (
             <div className="px-3 py-2 mb-2">
-              <p className="text-sm font-medium text-white truncate">{user?.name}</p>
-              <p className="text-xs text-white/50 truncate">{user?.email}</p>
+              <p className="text-sm font-medium truncate">{user?.name}</p>
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
             </div>
           )}
-          <Button variant="ghost" size="sm" className="w-full justify-start text-white/50 hover:text-white hover:bg-teal-light/30" onClick={handleLogout}>
+          <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" /> {!collapsed && "Sign Out"}
           </Button>
         </div>
@@ -69,19 +67,19 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
 
       {/* Mobile header */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="md:hidden h-14 border-b border-border flex items-center px-4 gap-3 bg-teal">
-          <img src={logo} alt="WarrantyVault" className="h-5 brightness-200" />
+        <header className="md:hidden h-14 border-b border-border/50 flex items-center px-4 gap-3 bg-card/40">
+          <img src={logo} alt="WarrantyVault" className="h-5" />
           <div className="flex-1" />
-          <Button variant="ghost" size="sm" className="text-white/60 hover:text-white" onClick={handleLogout}><LogOut className="w-4 h-4" /></Button>
+          <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="w-4 h-4" /></Button>
         </header>
         {/* Mobile nav */}
-        <div className="md:hidden flex overflow-x-auto border-b border-border bg-teal px-2">
+        <div className="md:hidden flex overflow-x-auto border-b border-border/50 bg-card/20 px-2">
           {navItems.slice(0, 6).map(item => {
             const active = location.pathname === item.path;
             return (
               <Link key={item.path} to={item.path}
                 className={`flex flex-col items-center gap-1 px-3 py-2 text-xs whitespace-nowrap ${
-                  active ? "text-accent" : "text-white/50"
+                  active ? "text-primary" : "text-muted-foreground"
                 }`}>
                 <item.icon className="w-4 h-4" />
                 {item.label}
