@@ -97,4 +97,23 @@
   .gradient-border {
     border-image: linear-gradient(135deg, hsl(172 66% 40%), hsl(190 80% 50%)) 1;
   }
+  .hero-gradient {
+    background: linear-gradient(135deg, hsl(192 100% 12%) 0%, hsl(192 80% 8%) 50%, hsl(180 40% 15%) 100%);
+  }
+  .btn-cta {
+    @apply bg-[hsl(var(--cta))] text-[hsl(var(--cta-foreground))] hover:bg-[hsl(24,100%,45%)];
+  }
+  .wave-divider {
+    position: relative;
+  }
+  .wave-divider::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: hsl(var(--background));
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
 }
