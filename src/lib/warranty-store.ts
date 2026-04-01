@@ -1,7 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Warranty, Claim, CustomerRequest, demoWarranties, demoClaims, demoRequests, demoAuditLog, AuditLog } from "@/data/demo-data";
 
-// Simple global store for warranty platform state
 let warranties = [...demoWarranties];
 let claims = [...demoClaims];
 let requests = [...demoRequests];
@@ -15,17 +14,11 @@ function notify() {
 export function useWarrantyStore() {
   const [, setTick] = useState(0);
 
-  const subscribe = useCallback(() => {
+  useEffect(() => {
     const listener = () => setTick(t => t + 1);
     listeners.push(listener);
     return () => { listeners = listeners.filter(l => l !== listener); };
   }, []);
-
-  // Subscribe on mount
-  useState(() => {
-    const unsub = subscribe();
-    return unsub;
-  });
 
   return {
     warranties,
@@ -51,11 +44,7 @@ export function useWarrantyStore() {
     updateClaimStatus(claimId: string, status: Claim["status"], by: string) {
       claims = claims.map(c => {
         if (c.id === claimId) {
-          return {
-            ...c,
-            status,
-            timeline: [...c.timeline, { date: new Date().toISOString().split("T")[0], action: `Claim ${status.replace("_", " ")}`, by }],
-          };
+          return { ...c, status, timeline: [...c.timeline, { date: new Date().toISOString().split("T")[0], action: `Claim ${status.replace("_", " ")}`, by }] };
         }
         return c;
       });
