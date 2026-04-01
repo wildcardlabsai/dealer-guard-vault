@@ -1,4 +1,4 @@
-import { demoRequests } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,13 @@ const typeColors: Record<string, string> = {
 export default function DealerRequests() {
   const { user } = useAuth();
   const dealerId = user?.dealerId || "d-1";
-  const requests = demoRequests.filter(r => r.dealerId === dealerId);
+  const store = useWarrantyStore();
+  const requests = store.requests.filter(r => r.dealerId === dealerId);
+
+  const handleAction = (requestId: string, status: "approved" | "rejected") => {
+    store.updateRequestStatus(requestId, status);
+    toast.success(`Request ${status}`);
+  };
 
   return (
     <div className="space-y-6">
@@ -37,13 +43,16 @@ export default function DealerRequests() {
             </div>
             {r.status === "pending" && (
               <div className="flex gap-2">
-                <Button size="sm" onClick={() => toast.success("Request approved")}><CheckCircle2 className="w-4 h-4 mr-1" /> Approve</Button>
-                <Button size="sm" variant="destructive" onClick={() => toast.success("Request rejected")}><XCircle className="w-4 h-4 mr-1" /> Reject</Button>
+                <Button size="sm" onClick={() => handleAction(r.id, "approved")}><CheckCircle2 className="w-4 h-4 mr-1" /> Approve</Button>
+                <Button size="sm" variant="destructive" onClick={() => handleAction(r.id, "rejected")}><XCircle className="w-4 h-4 mr-1" /> Reject</Button>
               </div>
             )}
             <p className="text-xs text-muted-foreground mt-2">{new Date(r.createdAt).toLocaleDateString("en-GB")}</p>
           </div>
         ))}
+        {requests.length === 0 && (
+          <div className="glass-card rounded-xl p-8 text-center text-muted-foreground">No requests</div>
+        )}
       </div>
     </div>
   );

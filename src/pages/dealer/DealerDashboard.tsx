@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { demoWarranties, demoClaims, demoCustomers } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Shield, FileText, Users, ClipboardList, TrendingUp, AlertTriangle,
-  Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock, XCircle
+  Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
 
 function StatCard({ icon: Icon, label, value, sub, color }: { icon: any; label: string; value: string | number; sub?: string; color?: string }) {
@@ -30,10 +30,11 @@ function StatCard({ icon: Icon, label, value, sub, color }: { icon: any; label: 
 export default function DealerDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const store = useWarrantyStore();
   const dealerId = user?.dealerId || "d-1";
-  const warranties = demoWarranties.filter(w => w.dealerId === dealerId);
-  const claims = demoClaims.filter(c => c.dealerId === dealerId);
-  const customers = demoCustomers.filter(c => c.dealerId === dealerId);
+  const warranties = store.warranties.filter(w => w.dealerId === dealerId);
+  const claims = store.claims.filter(c => c.dealerId === dealerId);
+  const customers = new Set(warranties.map(w => w.customerId)).size;
 
   const active = warranties.filter(w => w.status === "active").length;
   const expired = warranties.filter(w => w.status === "expired").length;
@@ -41,7 +42,6 @@ export default function DealerDashboard() {
   const openClaims = claims.filter(c => c.status === "pending" || c.status === "under_review").length;
   const resolvedClaims = claims.filter(c => c.status === "approved" || c.status === "rejected").length;
 
-  // Quick reg lookup state
   const [reg, setReg] = useState("");
   const [loading, setLoading] = useState(false);
   const [vehicle, setVehicle] = useState<DVLAVehicle | null>(null);
@@ -52,22 +52,16 @@ export default function DealerDashboard() {
     const result = await lookupVehicle(reg);
     setVehicle(result);
     setLoading(false);
-    if (result) {
-      toast.success(`Vehicle found: ${result.make} ${result.model}`);
-    }
-  };
-
-  const handleStartWarranty = () => {
-    navigate("/dealer/warranties/new");
+    if (result) toast.success(`Vehicle found: ${result.make} ${result.model}`);
   };
 
   const monthlyData = [
-    { month: "Sep", warranties: 3, revenue: 1500 },
-    { month: "Oct", warranties: 5, revenue: 2800 },
-    { month: "Nov", warranties: 4, revenue: 2200 },
-    { month: "Dec", warranties: 7, revenue: 3900 },
-    { month: "Jan", warranties: 6, revenue: 3400 },
-    { month: "Feb", warranties: 8, revenue: 4500 },
+    { month: "Sep", revenue: 1500 },
+    { month: "Oct", revenue: 2800 },
+    { month: "Nov", revenue: 2200 },
+    { month: "Dec", revenue: 3900 },
+    { month: "Jan", revenue: 3400 },
+    { month: "Feb", revenue: 4500 },
   ];
 
   const statusData = [
@@ -80,7 +74,6 @@ export default function DealerDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
           <h1 className="text-2xl font-bold font-display">Dashboard</h1>
@@ -90,7 +83,6 @@ export default function DealerDashboard() {
 
       {/* Quick Actions Hero Section */}
       <div className="grid lg:grid-cols-2 gap-4">
-        {/* Quick Reg Lookup — the main CTA */}
         <div className="glass-card-strong rounded-xl p-6 glow-primary relative overflow-hidden">
           <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="relative">
@@ -99,7 +91,6 @@ export default function DealerDashboard() {
               <h2 className="font-semibold font-display text-lg">Add New Warranty</h2>
             </div>
             <p className="text-sm text-muted-foreground mb-4">Enter a registration to get started instantly</p>
-
             <div className="flex gap-2">
               <Input
                 placeholder="Enter reg e.g. AB12 CDE"
@@ -112,14 +103,13 @@ export default function DealerDashboard() {
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Search className="w-5 h-5 mr-1" /> Look Up</>}
               </Button>
             </div>
-
             {vehicle && (
               <div className="mt-4 bg-primary/5 border border-primary/20 rounded-lg p-4 animate-fade-in">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2 text-primary text-sm font-medium">
                     <CheckCircle2 className="w-4 h-4" /> Vehicle Found
                   </div>
-                  <Button size="sm" onClick={handleStartWarranty} className="glow-primary-sm">
+                  <Button size="sm" onClick={() => navigate("/dealer/warranties/new")} className="glow-primary-sm">
                     Continue <ArrowRight className="w-4 h-4 ml-1" />
                   </Button>
                 </div>
@@ -136,45 +126,29 @@ export default function DealerDashboard() {
           </div>
         </div>
 
-        {/* Quick Action Buttons Grid */}
         <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => navigate("/dealer/warranties/new")}
-            className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group"
-          >
+          <button onClick={() => navigate("/dealer/warranties/new")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
             <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
               <Plus className="w-5 h-5 text-primary" />
             </div>
             <p className="font-semibold font-display">Add Warranty</p>
             <p className="text-xs text-muted-foreground mt-1">Issue a new warranty</p>
           </button>
-
-          <button
-            onClick={() => navigate("/dealer/claims")}
-            className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group"
-          >
+          <button onClick={() => navigate("/dealer/claims")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
             <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
               <ClipboardList className="w-5 h-5 text-primary" />
             </div>
             <p className="font-semibold font-display">Claims</p>
             <p className="text-xs text-muted-foreground mt-1">{openClaims} open claims</p>
           </button>
-
-          <button
-            onClick={() => navigate("/dealer/customers")}
-            className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group"
-          >
+          <button onClick={() => navigate("/dealer/customers")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
             <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
               <Users className="w-5 h-5 text-primary" />
             </div>
             <p className="font-semibold font-display">Customers</p>
-            <p className="text-xs text-muted-foreground mt-1">{customers.length} total</p>
+            <p className="text-xs text-muted-foreground mt-1">{customers} total</p>
           </button>
-
-          <button
-            onClick={() => navigate("/dealer/requests")}
-            className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group"
-          >
+          <button onClick={() => navigate("/dealer/requests")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
             <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
               <Clock className="w-5 h-5 text-primary" />
             </div>
@@ -191,7 +165,7 @@ export default function DealerDashboard() {
         <StatCard icon={TrendingUp} label="Total Value" value={`£${totalValue.toLocaleString()}`} />
         <StatCard icon={ClipboardList} label="Open Claims" value={openClaims} />
         <StatCard icon={AlertTriangle} label="Resolved Claims" value={resolvedClaims} />
-        <StatCard icon={Users} label="Customers" value={customers.length} />
+        <StatCard icon={Users} label="Customers" value={customers} />
       </div>
 
       {/* Charts + Recent Claims */}
@@ -229,7 +203,6 @@ export default function DealerDashboard() {
             ))}
           </div>
 
-          {/* Warranty Status Breakdown */}
           <div className="mt-6 pt-4 border-t border-border/50">
             <h4 className="text-sm font-medium mb-3">Warranty Status</h4>
             <div className="space-y-2">
@@ -238,7 +211,7 @@ export default function DealerDashboard() {
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: d.color }} />
                   <span className="text-muted-foreground">{d.name}</span>
                   <div className="flex-1 h-1.5 rounded-full bg-secondary mx-2">
-                    <div className="h-full rounded-full" style={{ background: d.color, width: `${(d.value / warranties.length) * 100}%` }} />
+                    <div className="h-full rounded-full" style={{ background: d.color, width: `${(d.value / (warranties.length || 1)) * 100}%` }} />
                   </div>
                   <span className="font-medium tabular-nums">{d.value}</span>
                 </div>
