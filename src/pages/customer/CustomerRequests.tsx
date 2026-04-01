@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { demoRequests } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,12 +11,30 @@ import { toast } from "sonner";
 
 export default function CustomerRequests() {
   const { user } = useAuth();
-  const requests = demoRequests.filter(r => r.customerId === user?.id);
+  const store = useWarrantyStore();
+  const requests = store.requests.filter(r => r.customerId === user?.id);
+  const warranties = store.warranties.filter(w => w.customerId === user?.id);
   const [showNew, setShowNew] = useState(false);
   const [type, setType] = useState("extension");
   const [desc, setDesc] = useState("");
 
   const handleSubmit = () => {
+    if (!desc.trim()) { toast.error("Please describe your request"); return; }
+    const warranty = warranties[0];
+    if (!warranty) { toast.error("No warranty found"); return; }
+
+    store.addRequest({
+      id: `req-${Date.now()}`,
+      customerId: user?.id || "",
+      customerName: user?.name || "",
+      warrantyId: warranty.id,
+      dealerId: warranty.dealerId,
+      type: type as any,
+      description: desc,
+      status: "pending",
+      createdAt: new Date().toISOString().split("T")[0],
+    });
+
     toast.success("Request submitted!");
     setShowNew(false);
     setDesc("");
@@ -44,7 +62,7 @@ export default function CustomerRequests() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Details</Label>
+            <Label>Details *</Label>
             <Textarea placeholder="Describe your request..." value={desc} onChange={e => setDesc(e.target.value)} />
           </div>
           <div className="flex gap-2">

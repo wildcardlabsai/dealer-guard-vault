@@ -1,4 +1,4 @@
-import { demoClaims } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,11 +17,13 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
 export default function DealerClaims() {
   const { user } = useAuth();
   const dealerId = user?.dealerId || "d-1";
-  const [claims] = useState(demoClaims.filter(c => c.dealerId === dealerId));
+  const store = useWarrantyStore();
+  const claims = store.claims.filter(c => c.dealerId === dealerId);
   const [selectedClaim, setSelectedClaim] = useState<string | null>(null);
 
-  const handleAction = (claimId: string, action: string) => {
-    toast.success(`Claim ${action} successfully`);
+  const handleAction = (claimId: string, action: "approved" | "rejected" | "info_requested") => {
+    store.updateClaimStatus(claimId, action, user?.name || "Dealer");
+    toast.success(`Claim ${action.replace("_", " ")} successfully`);
   };
 
   return (
@@ -82,7 +84,7 @@ export default function DealerClaims() {
                       <Button size="sm" variant="destructive" onClick={() => handleAction(claim.id, "rejected")}>
                         <XCircle className="w-4 h-4 mr-1" /> Reject
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleAction(claim.id, "info requested")}>
+                      <Button size="sm" variant="outline" onClick={() => handleAction(claim.id, "info_requested")}>
                         <MessageSquare className="w-4 h-4 mr-1" /> Request Info
                       </Button>
                     </div>
@@ -92,6 +94,9 @@ export default function DealerClaims() {
             </div>
           );
         })}
+        {claims.length === 0 && (
+          <div className="glass-card rounded-xl p-8 text-center text-muted-foreground">No claims yet</div>
+        )}
       </div>
     </div>
   );

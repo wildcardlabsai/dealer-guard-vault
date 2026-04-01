@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { demoWarranties } from "@/data/demo-data";
+import { useNavigate } from "react-router-dom";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
+import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
+import { openCertificate } from "@/lib/generate-certificate";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Plus, Search, Eye } from "lucide-react";
+import { Plus, Search, Eye, Trash2, FileText, Download, Printer } from "lucide-react";
+import { toast } from "sonner";
+import { printCertificate, downloadCertificate } from "@/lib/generate-certificate";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
+} from "@/components/ui/dialog";
 
 const statusColors: Record<string, string> = {
   active: "bg-primary/10 text-primary border-primary/20",
@@ -16,10 +24,12 @@ const statusColors: Record<string, string> = {
 export default function DealerWarranties() {
   const { user } = useAuth();
   const dealerId = user?.dealerId || "d-1";
+  const store = useWarrantyStore();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const warranties = demoWarranties
+  const warranties = store.warranties
     .filter(w => w.dealerId === dealerId)
     .filter(w => statusFilter === "all" || w.status === statusFilter)
     .filter(w =>
@@ -27,6 +37,8 @@ export default function DealerWarranties() {
       w.vehicleReg.toLowerCase().includes(search.toLowerCase()) ||
       w.vehicleMake.toLowerCase().includes(search.toLowerCase())
     );
+
+  const selected = warranties.find(w => w.id === selectedId);
 
   return (
     <div className="space-y-6">
@@ -80,7 +92,17 @@ export default function DealerWarranties() {
                     <Badge variant="outline" className={`capitalize ${statusColors[w.status]}`}>{w.status}</Badge>
                   </td>
                   <td className="p-4">
-                    <Button variant="ghost" size="icon" className="h-8 w-8"><Eye className="w-4 h-4" /></Button>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSelectedId(w.id)} title="View">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openCertificate(w)} title="Certificate">
+                        <FileText className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => { store.deleteWarranty(w.id); toast.success("Warranty deleted"); }} title="Delete">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -88,6 +110,38 @@ export default function DealerWarranties() {
           </table>
         </div>
       </div>
+
+      {/* View Warranty Dialog */}
+      <Dialog open={!!selected} onOpenChange={() => setSelectedId(null)}>
+        <DialogContent className="max-w-lg">
+          {selected && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="font-display">Warranty Details</DialogTitle>
+              </DialogHeader>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><span className="text-muted-foreground">Customer:</span> <span className="font-medium">{selected.customerName}</span></div>
+                <div><span className="text-muted-foreground">Vehicle:</span> <span className="font-medium">{selected.vehicleMake} {selected.vehicleModel}</span></div>
+                <div><span className="text-muted-foreground">Reg:</span> <span className="font-mono font-medium">{selected.vehicleReg}</span></div>
+                <div><span className="text-muted-foreground">Year:</span> <span className="font-medium">{selected.vehicleYear}</span></div>
+                <div><span className="text-muted-foreground">Colour:</span> <span className="font-medium">{selected.vehicleColour}</span></div>
+                <div><span className="text-muted-foreground">Mileage:</span> <span className="font-medium">{selected.mileage.toLocaleString()}</span></div>
+                <div><span className="text-muted-foreground">Start:</span> <span className="font-medium">{new Date(selected.startDate).toLocaleDateString("en-GB")}</span></div>
+                <div><span className="text-muted-foreground">End:</span> <span className="font-medium">{new Date(selected.endDate).toLocaleDateString("en-GB")}</span></div>
+                <div><span className="text-muted-foreground">Duration:</span> <span className="font-medium">{selected.duration} months</span></div>
+                <div><span className="text-muted-foreground">Cost:</span> <span className="font-medium">£{selected.cost}</span></div>
+                <div><span className="text-muted-foreground">Status:</span> <Badge variant="outline" className={`capitalize ${statusColors[selected.status]}`}>{selected.status}</Badge></div>
+                {selected.notes && <div className="col-span-2"><span className="text-muted-foreground">Notes:</span> <span className="font-medium">{selected.notes}</span></div>}
+              </div>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" size="sm" onClick={() => downloadCertificate(selected)}><Download className="w-4 h-4 mr-1" /> Download</Button>
+                <Button variant="outline" size="sm" onClick={() => printCertificate(selected)}><Printer className="w-4 h-4 mr-1" /> Print</Button>
+                <Button size="sm" onClick={() => openCertificate(selected)}><FileText className="w-4 h-4 mr-1" /> View Certificate</Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { demoClaims } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Clock, CheckCircle2, XCircle, MessageSquare } from "lucide-react";
+import { Plus, Clock, CheckCircle2, XCircle, MessageSquare, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
@@ -19,11 +19,32 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
 
 export default function CustomerClaims() {
   const { user } = useAuth();
-  const claims = demoClaims.filter(c => c.customerId === user?.id);
+  const store = useWarrantyStore();
+  const claims = store.claims.filter(c => c.customerId === user?.id);
+  const warranties = store.warranties.filter(w => w.customerId === user?.id && w.status === "active");
   const [showNew, setShowNew] = useState(false);
   const [desc, setDesc] = useState("");
+  const [selectedWarrantyId, setSelectedWarrantyId] = useState("");
 
   const handleSubmit = () => {
+    if (!desc.trim()) { toast.error("Please describe the issue"); return; }
+    const warranty = warranties.find(w => w.id === selectedWarrantyId) || warranties[0];
+    if (!warranty) { toast.error("No active warranty to claim against"); return; }
+
+    store.addClaim({
+      id: `cl-${Date.now()}`,
+      warrantyId: warranty.id,
+      customerId: user?.id || "",
+      customerName: user?.name || "",
+      dealerId: warranty.dealerId,
+      vehicleReg: warranty.vehicleReg,
+      description: desc,
+      status: "pending",
+      photos: [],
+      timeline: [{ date: new Date().toISOString().split("T")[0], action: "Claim submitted", by: user?.name || "" }],
+      createdAt: new Date().toISOString().split("T")[0],
+    });
+
     toast.success("Claim submitted successfully!");
     setShowNew(false);
     setDesc("");
@@ -41,13 +62,27 @@ export default function CustomerClaims() {
       {showNew && (
         <div className="glass-card rounded-xl p-6 space-y-4 animate-fade-in">
           <h2 className="font-semibold font-display">Submit New Claim</h2>
+          {warranties.length > 1 && (
+            <div className="space-y-2">
+              <Label>Select Warranty</Label>
+              <select className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm" value={selectedWarrantyId} onChange={e => setSelectedWarrantyId(e.target.value)}>
+                {warranties.map(w => (
+                  <option key={w.id} value={w.id}>{w.vehicleReg} — {w.vehicleMake} {w.vehicleModel}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="space-y-2">
-            <Label>Description of Issue</Label>
-            <Textarea placeholder="Describe the fault or issue..." value={desc} onChange={e => setDesc(e.target.value)} rows={4} />
+            <Label>Description of Issue *</Label>
+            <Textarea placeholder="Describe the fault or issue in detail..." value={desc} onChange={e => setDesc(e.target.value)} rows={4} />
           </div>
           <div className="space-y-2">
             <Label>Upload Photos/Documents</Label>
-            <Input type="file" multiple />
+            <div className="border-2 border-dashed border-border rounded-lg p-4 text-center">
+              <Upload className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">Drag and drop or click to upload</p>
+              <Input type="file" multiple className="mt-2" />
+            </div>
           </div>
           <div className="flex gap-2">
             <Button onClick={handleSubmit}>Submit Claim</Button>

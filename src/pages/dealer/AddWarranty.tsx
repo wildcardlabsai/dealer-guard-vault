@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { lookupVehicle, lookupPostcode, type DVLAVehicle, type Address } from "@/lib/simulated-apis";
+import { useWarrantyStore } from "@/lib/warranty-store";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +13,8 @@ import { toast } from "sonner";
 
 export default function AddWarranty() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const store = useWarrantyStore();
   const [step, setStep] = useState(1);
   const [reg, setReg] = useState("");
   const [postcode, setPostcode] = useState("");
@@ -41,6 +45,35 @@ export default function AddWarranty() {
   };
 
   const handleSave = () => {
+    if (!vehicle || !form.customerName || !form.cost) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    const startDate = new Date().toISOString().split("T")[0];
+    const endDate = new Date(Date.now() + parseInt(form.duration) * 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+    const dealerId = user?.dealerId || "d-1";
+
+    store.addWarranty({
+      id: `w-${Date.now()}`,
+      customerId: `cust-${Date.now()}`,
+      customerName: form.customerName,
+      dealerId,
+      dealerName: dealerId === "d-1" ? "Prestige Motors" : "City Autos",
+      vehicleReg: vehicle.registration,
+      vehicleMake: vehicle.make,
+      vehicleModel: vehicle.model,
+      vehicleYear: vehicle.year,
+      vehicleColour: vehicle.colour,
+      mileage: parseInt(form.mileage) || 0,
+      duration: parseInt(form.duration),
+      startDate,
+      endDate,
+      cost: parseInt(form.cost),
+      status: "active",
+      notes: form.notes,
+      createdAt: startDate,
+    });
+
     toast.success("Warranty created successfully!");
     navigate("/dealer/warranties");
   };
@@ -102,7 +135,7 @@ export default function AddWarranty() {
           <h2 className="font-semibold font-display">Customer Details</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Full Name</Label>
+              <Label>Full Name *</Label>
               <Input placeholder="John Smith" value={form.customerName} onChange={e => setForm({ ...form, customerName: e.target.value })} />
             </div>
             <div className="space-y-2">
@@ -141,7 +174,7 @@ export default function AddWarranty() {
           )}
           <div className="flex justify-between pt-2">
             <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-            <Button onClick={() => setStep(3)}>Continue</Button>
+            <Button onClick={() => { if (!form.customerName) { toast.error("Customer name is required"); return; } setStep(3); }}>Continue</Button>
           </div>
         </div>
       )}
@@ -169,7 +202,7 @@ export default function AddWarranty() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Cost (£)</Label>
+              <Label>Cost (£) *</Label>
               <Input type="number" placeholder="599" value={form.cost} onChange={e => setForm({ ...form, cost: e.target.value })} />
             </div>
           </div>

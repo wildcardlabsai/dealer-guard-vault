@@ -1,12 +1,15 @@
-import { demoWarranties, demoClaims } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Shield, Car, Calendar, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export default function CustomerDashboard() {
   const { user } = useAuth();
-  const warranties = demoWarranties.filter(w => w.customerId === user?.id);
-  const claims = demoClaims.filter(c => c.customerId === user?.id);
+  const store = useWarrantyStore();
+  const warranties = store.warranties.filter(w => w.customerId === user?.id);
+  const claims = store.claims.filter(c => c.customerId === user?.id);
   const activeWarranty = warranties.find(w => w.status === "active");
 
   return (
@@ -40,6 +43,10 @@ export default function CustomerDashboard() {
               <p className="text-xs text-muted-foreground mb-1">Coverage</p>
               <p className="font-medium">{activeWarranty.duration} months</p>
             </div>
+          </div>
+          <div className="flex gap-2 mt-4 pt-4 border-t border-border/50">
+            <Button size="sm" asChild><Link to="/customer/warranty">View Details</Link></Button>
+            <Button size="sm" variant="outline" asChild><Link to="/customer/claims">Submit Claim</Link></Button>
           </div>
         </div>
       ) : (
