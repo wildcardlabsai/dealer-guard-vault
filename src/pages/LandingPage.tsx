@@ -80,12 +80,13 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="hero-gradient pt-32 pb-0 relative overflow-hidden">
+      {/* Hero + Transition statement — one continuous dark block */}
+      <section className="hero-gradient relative overflow-hidden">
         <div className="absolute top-10 right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(24,100%,50%)]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-6 relative pb-14">
+        {/* Hero content */}
+        <div className="max-w-7xl mx-auto px-6 relative pt-32 pb-14">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <motion.div
@@ -171,20 +172,18 @@ export default function LandingPage() {
           </div>
         </div>
 
-      </section>
-
-      {/* Transition statement — dark section with swoosh on top */}
-      <section className="relative overflow-hidden hero-gradient">
-        {/* Swoosh wave overlay at top */}
-        <div className="absolute top-0 left-0 w-full">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="block w-full h-[120px]" preserveAspectRatio="none">
-            <path d="M0,0 L1440,0 L1440,40 C1200,100 720,110 0,60 Z" fill="hsl(var(--hero-bg))" fillOpacity="0.6" />
-            <path d="M0,0 L1440,0 L1440,30 C1100,90 500,100 0,50 Z" fill="hsl(var(--hero-bg))" fillOpacity="0.3" />
+        {/* Swoosh wave divider — layered waves within the dark section */}
+        <div className="relative w-full h-[100px]">
+          <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 block w-full h-full" preserveAspectRatio="none">
+            <path d="M0,80 C200,20 500,0 800,30 C1100,60 1300,40 1440,20 L1440,100 L0,100 Z" fill="hsl(var(--hero-bg))" fillOpacity="0.15" />
+            <path d="M0,85 C300,30 600,10 900,40 C1150,65 1350,50 1440,35 L1440,100 L0,100 Z" fill="hsl(160,30%,20%)" fillOpacity="0.25" />
+            <path d="M0,90 C400,50 700,30 1000,55 C1200,70 1380,60 1440,50 L1440,100 L0,100 Z" fill="hsl(170,25%,18%)" fillOpacity="0.3" />
           </svg>
         </div>
 
+        {/* Statement text */}
         <motion.div
-          className="max-w-4xl mx-auto text-center relative pt-28 pb-14 px-6"
+          className="max-w-4xl mx-auto text-center relative pt-16 pb-10 px-6"
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         >
           <p className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold font-display text-white leading-tight mb-4">
@@ -195,7 +194,7 @@ export default function LandingPage() {
           </p>
         </motion.div>
 
-        {/* Pricing trust bar inside the dark section */}
+        {/* Trust bar */}
         <div className="pb-14 px-6">
           <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-8 sm:gap-12">
             {["£0/month", "Only pay per warranty", "First 5 warranties free", "No contracts or upfront costs"].map(item => (
