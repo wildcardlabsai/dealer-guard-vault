@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import {
   Shield, Car, Users, FileText, Search, Award, ClipboardCheck,
   ArrowRight, CheckCircle2, Star, ChevronRight, X, Zap, TrendingUp,
-  BarChart3, FileCheck, UserCheck, PoundSterling, Clock, Settings, AlertTriangle
+  BarChart3, FileCheck, UserCheck, PoundSterling, Clock, Settings, AlertTriangle,
+  Phone, PhoneCall, Headphones, Music, MessageSquare, PhoneForwarded
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
@@ -30,19 +31,28 @@ const steps = [
 ];
 
 const comparisonRows = [
-  { label: "MARGIN PER DEAL", icon: PoundSterling, left: "Reduced by external fees", right: "Kept in-house for your dealership" },
-  { label: "CLAIM DECISIONS", icon: Clock, left: "Delayed by third-party queues", right: "Same-day decisions in your dashboard" },
-  { label: "OPERATIONAL CONTROL", icon: Settings, left: "Limited rules and visibility", right: "Full control over approvals and payouts" },
-  { label: "DEPENDENCY RISK", icon: AlertTriangle, left: "Provider outages and handoffs", right: "Fully in-house process you control" },
+  { label: "Margins", left: "Reduced by external fees", right: "Kept in-house — higher profit per deal" },
+  { label: "Claim Decisions", left: "Delayed by third-party queues", right: "Same-day decisions in your dashboard" },
+  { label: "Control", left: "Limited rules and visibility", right: "Full control over approvals and payouts" },
+  { label: "Dependency", left: "Provider outages and handoffs", right: "Fully in-house process you control" },
 ];
 
 const testimonials = [
   { name: "Arjun K.", role: "Sales Director, Manchester", text: "Our team issues warranties in minutes now. No chasing providers and no spreadsheet mess." },
   { name: "Ben R.", role: "Independent Dealer, Bristol", text: "The customer portal has cut inbound calls and made us look far more professional." },
-  { name: "Liam P.", role: "Used Car Dealer, Birmingham", text: "Switching to in-house warranties has increased our margins massively. WarrantyVault makes it simple to manage everything ourselves." },
+  { name: "Liam P.", role: "Used Car Dealer, Birmingham", text: "Switching to in-house warranties has increased our margins massively. WarrantyVault makes it simple." },
   { name: "Chris W.", role: "Dealer Group Ops, Newcastle", text: "WarrantyVault gives us speed, consistency, and better margins across the group." },
   { name: "Chloe M.", role: "Dealer Owner, Nottingham", text: "Profit tracking is brilliant. We can see exactly what each warranty is doing for the business." },
   { name: "Tom H.", role: "Franchise Dealer, Liverpool", text: "Setup was straightforward and we had it up quickly. It just fits how we work." },
+];
+
+const problemCards = [
+  "You lose margin on every deal you sell a warranty",
+  "Claims take too long to get approved",
+  "You rely on third parties to look after your customers",
+  "Customers blame you when things go wrong anyway",
+  "No clear view of your profit vs payouts",
+  "You're paying for a service you could run yourself",
 ];
 
 export default function LandingPage() {
@@ -69,7 +79,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="hero-gradient pt-32 pb-40 px-6 relative overflow-hidden">
+      <section className="hero-gradient pt-32 pb-32 px-6 relative overflow-hidden">
         <div className="absolute top-10 right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(24,100%,50%)]/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -165,7 +175,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Social proof */}
+      {/* Social proof bar */}
       <section className="py-6 px-6 border-b border-border/20">
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-muted-foreground">
           {["Trusted by 50+ dealerships", "2,000+ warranties issued", "£0/month — pay per warranty", "Cancel anytime"].map(item => (
@@ -177,105 +187,130 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Problem */}
-      <section className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <motion.span className="text-cta text-xs font-semibold tracking-[0.2em] uppercase mb-4 block" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-                The Problem
-              </motion.span>
-              <h2 className="text-3xl sm:text-4xl font-bold font-display mb-8 leading-tight">Warranty providers are costing you more than you think</h2>
-              <div className="space-y-4">
-                {[
-                  "You lose margin on every deal",
-                  "Claims take too long to approve",
-                  "You rely on third parties",
-                  "Customers blame you when things go wrong",
-                  "No clear view of profit vs payouts",
-                ].map((issue, i) => (
-                  <motion.div key={issue} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                    className="flex items-start gap-3"
-                  >
-                    <div className="mt-1 w-5 h-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0">
-                      <X className="w-3 h-3 text-destructive" />
-                    </div>
-                    <span className="text-muted-foreground">{issue}</span>
-                  </motion.div>
-                ))}
-              </div>
-              <p className="mt-10 text-lg font-semibold font-display text-primary">There's a better way to run warranties.</p>
+      {/* Transition statement */}
+      <section className="py-20 px-6">
+        <motion.div
+          className="max-w-3xl mx-auto text-center"
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+        >
+          <p className="text-2xl sm:text-3xl font-display italic text-foreground/80 leading-snug mb-4">
+            "Most dealers are already moving away from warranty providers..."
+          </p>
+          <p className="text-muted-foreground text-base sm:text-lg">
+            The problem is they don't have the right system to manage it properly.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Pricing trust bar */}
+      <section className="py-5 px-6 border-y border-border/20 bg-secondary/20">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+          {["£0/month", "Only pay per warranty", "First 5 warranties free", "No contracts or upfront costs"].map(item => (
+            <div key={item} className="flex items-center gap-2 text-sm font-medium">
+              <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
+              <span>{item}</span>
             </div>
-            <motion.div
-              className="glass-card-strong rounded-2xl p-10 text-center"
-              initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
-            >
-              <div className="w-16 h-16 rounded-2xl bg-cta/10 flex items-center justify-center mx-auto mb-6">
-                <TrendingUp className="w-8 h-8 text-cta" />
-              </div>
-              <p className="text-4xl font-bold font-display mb-2">£300–£800</p>
-              <p className="text-muted-foreground text-sm max-w-[250px] mx-auto">Extra profit per deal when you manage warranties in-house</p>
-            </motion.div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* Solution */}
-      <section className="py-24 px-6 bg-secondary/30">
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">The Solution</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-5 leading-tight">Run your warranties in-house with total control</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg mb-10 leading-relaxed">
-              WarrantyVault gives you everything you need to manage self-funded warranties properly — without spreadsheets, paperwork, or chasing providers.
-            </p>
-            <Button size="lg" className="btn-cta rounded-full px-10 h-12" asChild>
-              <Link to="/login">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
-            </Button>
-            <p className="text-xs text-muted-foreground mt-3">Start for free. No monthly fees.</p>
+      {/* Problem */}
+      <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <motion.span
+              className="text-cta text-xs font-semibold tracking-[0.2em] uppercase mb-4 block"
+              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+            >
+              The Problem
+            </motion.span>
+            <motion.h2
+              className="text-3xl sm:text-4xl font-bold font-display mb-4 leading-tight"
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            >
+              Warranty providers are costing you more than you think
+            </motion.h2>
+            <motion.p
+              className="text-muted-foreground max-w-xl mx-auto"
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+            >
+              If any of these sound familiar, you're not alone.
+            </motion.p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4 mb-10">
+            {problemCards.map((issue, i) => (
+              <motion.div
+                key={issue} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                className="glass-card rounded-xl p-5 flex items-start gap-3"
+              >
+                <div className="mt-0.5 w-6 h-6 rounded-full bg-cta/10 flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-cta" />
+                </div>
+                <span className="text-sm leading-relaxed">{issue}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            className="text-center"
+            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center gap-3 glass-card-strong rounded-2xl px-8 py-5">
+              <TrendingUp className="w-6 h-6 text-primary" />
+              <div className="text-left">
+                <p className="text-lg font-bold font-display">There's a better way to run warranties.</p>
+                <p className="text-sm text-muted-foreground">Keep an extra £300–£800 per deal by managing warranties in-house.</p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24 px-6">
+      <section id="features" className="py-24 px-6 bg-secondary/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">What You Get</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Everything you need, nothing you don't</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Built specifically for UK car dealerships who want better margins and full control.</p>
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Platform Features</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Everything you need to stay in control</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">Built for UK dealers who want higher margins, faster claim decisions, and fewer admin headaches.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {features.map((f, i) => (
               <motion.div
                 key={f.title}
-                className="glass-card rounded-xl p-6 hover:border-primary/30 hover:glow-primary-sm transition-all duration-300 group"
+                className="glass-card rounded-xl p-6 hover:border-primary/30 transition-all duration-300 group"
                 custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
               >
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
+                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
                   <f.icon className="w-5 h-5 text-primary" />
                 </div>
-                <h3 className="font-semibold font-display mb-2 text-[15px]">{f.title}</h3>
+                <h3 className="font-semibold font-display mb-2">{f.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </motion.div>
             ))}
+          </div>
+          <div className="text-center mt-12">
+            <Button size="lg" className="btn-cta rounded-full px-10 h-12" asChild>
+              <Link to="/login">Start Free Trial <ArrowRight className="ml-2 w-4 h-4" /></Link>
+            </Button>
+            <p className="text-xs text-muted-foreground mt-3">No monthly fees. No contracts.</p>
           </div>
         </div>
       </section>
 
       {/* Comparison */}
-      <section className="py-24 px-6 bg-secondary/30">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-24 px-6">
+        <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Dealer Comparison</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">See the difference in one glance</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">Built to make profit and control obvious, not hidden in paperwork and provider delays.</p>
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Comparison</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">See the difference at a glance</h2>
           </div>
-          <div className="grid md:grid-cols-[1fr_auto_1fr] gap-0 items-start">
-            {/* Left - Providers */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Providers column */}
             <div>
-              <div className="flex items-center justify-between mb-5 px-1">
-                <h3 className="font-semibold font-display text-lg text-muted-foreground">With Warranty Providers</h3>
+              <div className="flex items-center justify-between mb-4 px-1">
+                <h3 className="font-semibold font-display text-muted-foreground">With Warranty Providers</h3>
                 <span className="text-[10px] font-semibold uppercase tracking-wider bg-destructive/10 text-destructive px-3 py-1 rounded-full">Less Control</span>
               </div>
               <div className="space-y-3">
@@ -283,9 +318,7 @@ export default function LandingPage() {
                   <div key={row.label} className="glass-card rounded-xl p-5">
                     <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-muted-foreground/60 mb-2">{row.label}</p>
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0">
-                        <X className="w-2.5 h-2.5 text-destructive" />
-                      </div>
+                      <X className="w-4 h-4 text-destructive flex-shrink-0" />
                       <span className="text-sm text-muted-foreground">{row.left}</span>
                     </div>
                   </div>
@@ -293,26 +326,16 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* VS divider */}
-            <div className="hidden md:flex flex-col items-center justify-center px-6 pt-16">
-              <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-                <span className="text-xs font-bold text-primary">vs</span>
-              </div>
-            </div>
-
-            {/* Right - WarrantyVault */}
+            {/* WarrantyVault column */}
             <div>
-              <div className="flex items-center justify-between mb-5 px-1">
-                <h3 className="font-semibold font-display text-lg">With WarrantyVault</h3>
+              <div className="flex items-center justify-between mb-4 px-1">
+                <h3 className="font-semibold font-display">With WarrantyVault</h3>
                 <span className="text-[10px] font-semibold uppercase tracking-wider bg-primary/10 text-primary px-3 py-1 rounded-full">Higher Margin</span>
               </div>
               <div className="space-y-3">
                 {comparisonRows.map(row => (
                   <div key={row.label} className="glass-card rounded-xl p-5 border-primary/20 bg-primary/[0.03]">
-                    <div className="flex items-center gap-2 mb-2">
-                      <row.icon className="w-3.5 h-3.5 text-primary" />
-                      <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-primary/70">{row.label}</p>
-                    </div>
+                    <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-primary/70 mb-2">{row.label}</p>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
                       <span className="text-sm font-medium">{row.right}</span>
@@ -326,7 +349,7 @@ export default function LandingPage() {
       </section>
 
       {/* How it Works */}
-      <section id="how-it-works" className="py-24 px-6">
+      <section id="how-it-works" className="py-24 px-6 bg-secondary/30">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Simple Process</span>
@@ -343,84 +366,81 @@ export default function LandingPage() {
               </motion.div>
             ))}
           </div>
-          <div className="text-center mt-12">
-            <Button size="lg" className="btn-cta rounded-full px-10 h-12" asChild>
-              <Link to="/login">Start Free Trial <ArrowRight className="ml-2 w-4 h-4" /></Link>
-            </Button>
-          </div>
         </div>
       </section>
 
-      {/* Differentiator + Dashboard */}
-      <section className="py-24 px-6 bg-secondary/30">
+      {/* Optional Add-on: Dedicated Warranty Line */}
+      <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Dealer Dashboard</span>
-              <h2 className="text-3xl font-bold font-display mb-5 leading-tight">Built for how dealers actually work</h2>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
-                Most warranty systems are built for providers — not dealers. WarrantyVault is designed for dealerships who want control, speed and better margins without the hassle.
-              </p>
-              <div className="space-y-3 mb-8">
-                {["Pay only when you use it", "No monthly fees", "No risk to get started", "Customer portal included from day one"].map(item => (
-                  <div key={item} className="flex items-center gap-3">
-                    <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
-                    <span className="text-sm">{item}</span>
+          <div className="text-center mb-14">
+            <span className="text-cta text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Optional Add-On</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Look like a proper warranty department</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">Give your customers a dedicated line for warranty enquiries and claims.</p>
+          </div>
+
+          <div className="grid lg:grid-cols-[1fr_380px] gap-8 items-start">
+            {/* Benefits grid */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { icon: MessageSquare, title: "Custom Greeting", desc: "Answer calls with your dealership name and a professional warranty message." },
+                { icon: Music, title: "Hold Music & Branding", desc: "Custom hold music that reinforces your brand while customers wait." },
+                { icon: Phone, title: "Simple Menu System", desc: "Route callers to the right person — claims, enquiries, or general support." },
+                { icon: PhoneForwarded, title: "Calls Routed to You", desc: "Calls go straight to your team. No third-party call centres." },
+                { icon: Shield, title: "Separate from Sales Line", desc: "Keep warranty calls separate from your main sales number." },
+                { icon: Zap, title: "Set Up in 24 Hours", desc: "We handle the setup. You just start answering warranty calls." },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.title} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                  className="glass-card rounded-xl p-5"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-cta/10 flex items-center justify-center mb-3">
+                    <item.icon className="w-4.5 h-4.5 text-cta" />
                   </div>
-                ))}
-              </div>
-              <Button className="btn-cta rounded-full px-8 h-11" asChild>
-                <Link to="/login">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
-              </Button>
-              <p className="text-xs text-muted-foreground mt-3">Start for free. No monthly fees.</p>
+                  <h4 className="font-semibold text-sm mb-1">{item.title}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                </motion.div>
+              ))}
             </div>
 
+            {/* Pricing card */}
             <motion.div
-              className="glass-card-strong rounded-2xl p-5 shadow-2xl"
+              className="glass-card-strong rounded-2xl p-8 text-center sticky top-24"
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             >
-              <div className="flex items-center gap-2 mb-5">
-                <div className="w-2.5 h-2.5 rounded-full bg-[hsl(0,60%,50%)]/60" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[hsl(40,80%,55%)]/60" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[hsl(140,60%,45%)]/60" />
-                <span className="text-[10px] text-muted-foreground ml-2 font-mono">dealer-dashboard</span>
+              <div className="w-14 h-14 rounded-2xl bg-cta/10 flex items-center justify-center mx-auto mb-5">
+                <Headphones className="w-7 h-7 text-cta" />
               </div>
-              <div className="grid grid-cols-3 gap-2.5 mb-5">
-                <div className="bg-primary/10 border border-primary/20 rounded-xl p-3 text-center">
-                  <p className="text-2xl font-bold font-display text-primary">£0</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Monthly Fee</p>
-                </div>
-                <div className="bg-secondary/60 border border-border/30 rounded-xl p-3 text-center">
-                  <p className="text-2xl font-bold font-display">£19</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Per Warranty</p>
-                </div>
-                <div className="bg-secondary/60 border border-border/30 rounded-xl p-3 text-center">
-                  <p className="text-2xl font-bold font-display">5</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Free First</p>
-                </div>
-              </div>
-              <div className="space-y-2">
-                {[
-                  { reg: "AB12 CDE", car: "BMW 320d M Sport", status: "Active" },
-                  { reg: "CD34 FGH", car: "Audi A4 S Line", status: "Active" },
-                  { reg: "GH78 LMN", car: "VW Golf R", status: "Expired" },
-                ].map(w => (
-                  <div key={w.reg} className="flex items-center justify-between p-3 bg-secondary/30 border border-border/20 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <code className="text-[10px] bg-primary/10 text-primary px-2 py-1 rounded font-mono tracking-wider">{w.reg}</code>
-                      <span className="text-sm">{w.car}</span>
-                    </div>
-                    <span className={`text-[10px] px-2.5 py-1 rounded-full font-medium ${w.status === "Active" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>{w.status}</span>
+              <h3 className="text-xl font-bold font-display mb-1">Dedicated Warranty Line</h3>
+              <p className="text-3xl font-bold font-display mb-1">£25<span className="text-base text-muted-foreground font-normal">/month</span></p>
+              <p className="text-xs text-muted-foreground mb-6">Add to any WarrantyVault plan</p>
+
+              <div className="space-y-3 text-left mb-6">
+                {["Dedicated phone number", "Custom greeting with your name", "Hold music & branding", "Call routing to your team", "No long-term contract"].map(f => (
+                  <div key={f} className="flex items-center gap-2 text-sm">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-cta flex-shrink-0" />
+                    <span>{f}</span>
                   </div>
                 ))}
               </div>
+
+              <Button className="w-full rounded-full h-11 bg-cta hover:bg-cta/90 text-white font-semibold" asChild>
+                <Link to="/login">Add Warranty Line</Link>
+              </Button>
+              <p className="text-[11px] text-muted-foreground mt-3">Cancel anytime. Set up in 24 hours.</p>
             </motion.div>
           </div>
+
+          <motion.p
+            className="text-center text-muted-foreground text-sm mt-10 max-w-lg mx-auto"
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+          >
+            Stop giving out personal mobiles for warranty calls. Give your customers a proper number and keep it professional.
+          </motion.p>
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-24 px-6">
+      <section id="pricing" className="py-24 px-6 bg-secondary/30">
         <div className="max-w-3xl mx-auto text-center">
           <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Pricing</span>
           <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Simple, risk-free pricing</h2>
@@ -435,7 +455,7 @@ export default function LandingPage() {
               <p className="text-xl font-semibold font-display mb-2">Only £19 per warranty</p>
               <p className="text-primary font-semibold text-sm mb-8">First 5 warranties FREE</p>
 
-              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">First 5 warranties completely free — get set up and try it properly.</p>
+              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">First 5 warranties completely free — get set up and try it properly before you pay a penny.</p>
 
               <div className="grid grid-cols-2 gap-x-8 gap-y-3 max-w-xs mx-auto mb-8">
                 {["No monthly fees", "No contracts", "Pay only when you use it", "Scale as you grow"].map(f => (
@@ -446,8 +466,6 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              <p className="text-xs text-muted-foreground mb-3">Optional add-on: Dedicated Warranty Line - £25/month.</p>
-
               <div className="bg-secondary/40 rounded-xl p-4 mb-8 max-w-sm mx-auto border border-border/20">
                 <p className="text-sm">
                   Keep an extra <span className="font-semibold">£300–£800 per deal</span> by managing warranties in-house.
@@ -455,20 +473,21 @@ export default function LandingPage() {
               </div>
 
               <Button size="lg" className="btn-cta rounded-full px-12 h-12" asChild>
-                <Link to="/login">Sign Up</Link>
+                <Link to="/login">Start Free Trial</Link>
               </Button>
-              <p className="text-xs text-muted-foreground mt-3">Start for free. No monthly fees.</p>
+              <p className="text-xs text-muted-foreground mt-3">No card required. No monthly fees.</p>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Trust / Testimonials */}
-      <section className="py-24 px-6 bg-secondary/30">
+      {/* Testimonials */}
+      <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Trust</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display">Built by someone with real dealership experience</h2>
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Testimonials</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-3">Built by someone with real dealership experience</h2>
+            <p className="text-muted-foreground">Don't just take our word for it.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (
