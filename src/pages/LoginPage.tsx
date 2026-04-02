@@ -4,40 +4,38 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { UserRole } from "@/data/demo-data";
 import logo from "@/assets/warrantylogo.png";
 
 export default function LoginPage() {
-  const { login, loginAs } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
     setLoading(true);
     const success = await login(email, password);
     setLoading(false);
     if (success) {
-      const user = (await import("@/data/demo-data")).demoUsers.find(u => u.email === email);
+      const { demoUsers } = await import("@/data/demo-data");
+      const user = demoUsers.find(u => u.email === email);
       if (user?.role === "admin") navigate("/admin");
       else if (user?.role === "dealer") navigate("/dealer");
       else navigate("/customer");
     } else {
-      setError("Invalid credentials. Use a demo login below.");
+      setError("Invalid email or password.");
     }
-  };
-
-  const handleQuickLogin = (role: UserRole) => {
-    loginAs(role);
-    if (role === "admin") navigate("/admin");
-    else if (role === "dealer") navigate("/dealer");
-    else navigate("/customer");
   };
 
   return (
@@ -52,7 +50,7 @@ export default function LoginPage() {
           </Link>
           <img src={logo} alt="WarrantyVault" className="h-8 mb-6" />
           <h1 className="text-2xl font-bold font-display">Sign in to your account</h1>
-          <p className="text-muted-foreground text-sm mt-1">Enter your credentials or use a demo login</p>
+          <p className="text-muted-foreground text-sm mt-1">Enter your credentials to access your dashboard</p>
           <p className="text-xs text-muted-foreground mt-3">Don't have an account? <Link to="/signup" className="text-primary hover:underline">Apply here</Link></p>
         </div>
 
@@ -71,22 +69,29 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div className="glass-card rounded-xl p-6">
-          <p className="text-xs text-muted-foreground mb-4 font-medium uppercase tracking-wider">Demo Logins</p>
-          <div className="space-y-2">
-            <Button variant="outline" className="w-full justify-start" onClick={() => handleQuickLogin("dealer")}>
-              <Shield className="w-4 h-4 mr-2 text-primary" /> Login as Dealer
-              <span className="ml-auto text-xs text-muted-foreground">dealer@prestige-motors.co.uk</span>
-            </Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => handleQuickLogin("customer")}>
-              <Shield className="w-4 h-4 mr-2 text-blue-400" /> Login as Customer
-              <span className="ml-auto text-xs text-muted-foreground">john@example.com</span>
-            </Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => handleQuickLogin("admin")}>
-              <Shield className="w-4 h-4 mr-2 text-amber-400" /> Login as Admin
-              <span className="ml-auto text-xs text-muted-foreground">admin@warrantyvault.com</span>
-            </Button>
-          </div>
+        <div className="glass-card rounded-xl overflow-hidden">
+          <button
+            onClick={() => setShowDemo(!showDemo)}
+            className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-secondary/20 transition-colors"
+          >
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Demo Credentials</span>
+            {showDemo ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+          </button>
+          {showDemo && (
+            <div className="px-6 pb-5 space-y-3 border-t border-border/50 pt-4">
+              {[
+                { label: "Super Admin", email: "admin@warrantyvault.com", pass: "admin123" },
+                { label: "Dealer", email: "dealer@prestige-motors.co.uk", pass: "dealer123" },
+                { label: "Customer", email: "john@example.com", pass: "customer123" },
+              ].map(cred => (
+                <div key={cred.email} className="bg-secondary/30 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-primary mb-1">{cred.label}</p>
+                  <p className="text-xs text-muted-foreground">Email: <code className="text-foreground">{cred.email}</code></p>
+                  <p className="text-xs text-muted-foreground">Password: <code className="text-foreground">{cred.pass}</code></p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

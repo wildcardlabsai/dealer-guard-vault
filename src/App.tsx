@@ -22,6 +22,7 @@ import DealerWarrantyLine from "@/pages/dealer/DealerWarrantyLine";
 import DealerCoverTemplates from "@/pages/dealer/DealerCoverTemplates";
 import DealerClaimAssist from "@/pages/dealer/DealerClaimAssist";
 import DealerClaimSettings from "@/pages/dealer/DealerClaimSettings";
+import DealerSupport from "@/pages/dealer/DealerSupport";
 
 import CustomerLayout from "@/components/layouts/CustomerLayout";
 import CustomerDashboard from "@/pages/customer/CustomerDashboard";
@@ -40,6 +41,7 @@ import AdminRevenue from "@/pages/admin/AdminRevenue";
 import AdminLogs from "@/pages/admin/AdminLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminClaims from "@/pages/admin/AdminClaims";
+import AdminSupport from "@/pages/admin/AdminSupport";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +72,7 @@ function AppRoutes() {
       <Route path="/dealer/cover-templates" element={<ProtectedRoute role="dealer"><DealerLayout><DealerCoverTemplates /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/claim-assist" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimAssist /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/claim-settings" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimSettings /></DealerLayout></ProtectedRoute>} />
+      <Route path="/dealer/support" element={<ProtectedRoute role="dealer"><DealerLayout><DealerSupport /></DealerLayout></ProtectedRoute>} />
 
       {/* Customer Routes */}
       <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerDashboard /></CustomerLayout></ProtectedRoute>} />
@@ -88,6 +91,7 @@ function AppRoutes() {
       <Route path="/admin/revenue" element={<ProtectedRoute role="admin"><AdminLayout><AdminRevenue /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/logs" element={<ProtectedRoute role="admin"><AdminLayout><AdminLogs /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/settings" element={<ProtectedRoute role="admin"><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/support" element={<ProtectedRoute role="admin"><AdminLayout><AdminSupport /></AdminLayout></ProtectedRoute>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

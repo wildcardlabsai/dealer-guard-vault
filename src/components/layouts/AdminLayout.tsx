@@ -1,8 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus, ClipboardList } from "lucide-react";
+import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus, ClipboardList, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSignupStore } from "@/lib/signup-store";
+import { useSupportStore } from "@/lib/support-store";
 import logo from "@/assets/warrantylogo.png";
 
 const navItems = [
@@ -12,6 +13,7 @@ const navItems = [
   { label: "Warranties", icon: FileText, path: "/admin/warranties" },
   { label: "All Claims", icon: ClipboardList, path: "/admin/claims" },
   { label: "Revenue", icon: BarChart3, path: "/admin/revenue" },
+  { label: "Support Tickets", icon: Headphones, path: "/admin/support" },
   { label: "System Logs", icon: ScrollText, path: "/admin/logs" },
   { label: "Settings", icon: Settings, path: "/admin/settings" },
 ];
@@ -21,7 +23,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const location = useLocation();
   const navigate = useNavigate();
   const { signupRequests } = useSignupStore();
+  const supportStore = useSupportStore();
   const pendingCount = signupRequests.filter(r => r.status === "pending").length;
+  const openTickets = supportStore.tickets.filter(t => t.status === "open" || t.status === "in_progress").length;
   const handleLogout = () => { logout(); navigate("/"); };
 
   return (
@@ -35,6 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {navItems.map(item => {
             const active = location.pathname === item.path;
             const showBadge = item.path === "/admin/signup-requests" && pendingCount > 0;
+            const showSupportBadge = item.path === "/admin/support" && openTickets > 0;
             return (
               <Link key={item.path} to={item.path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
@@ -44,6 +49,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <span className="flex-1">{item.label}</span>
                 {showBadge && (
                   <span className="bg-[hsl(var(--cta))] text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">{pendingCount}</span>
+                )}
+                {showSupportBadge && (
+                  <span className="bg-amber-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">{openTickets}</span>
                 )}
               </Link>
             );
