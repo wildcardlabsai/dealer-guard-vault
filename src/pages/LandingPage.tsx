@@ -179,43 +179,38 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Social proof bar */}
-      <section className="py-4 px-6 border-b border-border/20">
-        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-muted-foreground">
-          {["Trusted by 50+ dealerships", "2,000+ warranties issued", "£0/month — pay per warranty", "Cancel anytime"].map(item => (
-            <div key={item} className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
-              <span>{item}</span>
-            </div>
-          ))}
+      {/* Transition statement — dark section with swoosh on top */}
+      <section className="relative overflow-hidden hero-gradient">
+        {/* Swoosh wave overlay at top */}
+        <div className="absolute top-0 left-0 w-full">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="block w-full h-[120px]" preserveAspectRatio="none">
+            <path d="M0,0 L1440,0 L1440,40 C1200,100 720,110 0,60 Z" fill="hsl(var(--hero-bg))" fillOpacity="0.6" />
+            <path d="M0,0 L1440,0 L1440,30 C1100,90 500,100 0,50 Z" fill="hsl(var(--hero-bg))" fillOpacity="0.3" />
+          </svg>
         </div>
-      </section>
 
-      {/* Transition statement */}
-      <section className="py-16 px-6 hero-gradient relative overflow-hidden">
-        <div className="absolute inset-0 bg-[hsl(192,100%,12%)]/40 pointer-events-none" />
         <motion.div
-          className="max-w-4xl mx-auto text-center relative"
+          className="max-w-4xl mx-auto text-center relative pt-28 pb-14 px-6"
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         >
-          <p className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-white leading-tight mb-5">
-            Most dealers are already moving away from warranty providers…
+          <p className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold font-display text-white leading-tight mb-4">
+            Most dealers are already moving away from warranty providers...
           </p>
-          <p className="text-white/50 text-lg sm:text-xl max-w-2xl mx-auto">
+          <p className="text-white/50 text-base sm:text-lg max-w-2xl mx-auto">
             The problem is they don't have the right system to manage it properly.
           </p>
         </motion.div>
-      </section>
 
-      {/* Pricing trust bar */}
-      <section className="py-4 px-6 border-y border-border/20 bg-secondary/20">
-        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10">
-          {["£0/month", "Only pay per warranty", "£19 per warranty issued", "No contracts or upfront costs"].map(item => (
-            <div key={item} className="flex items-center gap-2 text-sm font-medium">
-              <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
-              <span>{item}</span>
-            </div>
-          ))}
+        {/* Pricing trust bar inside the dark section */}
+        <div className="pb-14 px-6">
+          <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+            {["£0/month", "Only pay per warranty", "First 5 warranties free", "No contracts or upfront costs"].map(item => (
+              <div key={item} className="flex items-center gap-2.5 text-sm text-white/70">
+                <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -572,32 +567,25 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA with swoosh */}
-      <section className="relative overflow-hidden bg-secondary/30">
-        <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px bg-secondary/30">
-          <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[100px] w-full" preserveAspectRatio="none">
-            <path d="M0,60 C360,90 720,90 1080,50 C1280,30 1400,40 1440,38 L1440,100 L0,100 Z" fill="hsl(var(--hero-bg))" />
-          </svg>
-        </div>
-        <div className="hero-gradient pt-12 pb-16 px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
-            <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
-                <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
-              </Button>
-              <Button size="lg" variant="outline" className="rounded-full px-10 text-base h-12 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent">
-                Book Demo
-              </Button>
-            </div>
-            <p className="text-xs text-white/30 mt-5">No monthly fees. £19 per warranty.</p>
+      {/* Final CTA */}
+      <section className="hero-gradient pt-20 pb-16 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
+          <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
+              <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
+            </Button>
+            <Button size="lg" variant="outline" className="rounded-full px-10 text-base h-12 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent">
+              Book Demo
+            </Button>
           </div>
+          <p className="text-xs text-white/30 mt-5">No monthly fees. £19 per warranty.</p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-white/10 bg-[hsl(var(--hero-bg))]">
+      <footer className="py-8 px-6 border-t border-white/10 hero-gradient">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
           <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
