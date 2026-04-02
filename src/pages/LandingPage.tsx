@@ -188,15 +188,16 @@ export default function LandingPage() {
       </section>
 
       {/* Transition statement */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 hero-gradient relative overflow-hidden">
+        <div className="absolute inset-0 bg-[hsl(192,100%,12%)]/40 pointer-events-none" />
         <motion.div
-          className="max-w-3xl mx-auto text-center"
+          className="max-w-4xl mx-auto text-center relative"
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         >
-          <p className="text-2xl sm:text-3xl font-display italic text-foreground/80 leading-snug mb-4">
-            "Most dealers are already moving away from warranty providers..."
+          <p className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-white leading-tight mb-5">
+            Most dealers are already moving away from warranty providers...
           </p>
-          <p className="text-muted-foreground text-base sm:text-lg">
+          <p className="text-white/50 text-lg sm:text-xl max-w-2xl mx-auto">
             The problem is they don't have the right system to manage it properly.
           </p>
         </motion.div>
@@ -507,21 +508,30 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-24 px-6 hero-gradient relative overflow-hidden">
-        <div className="absolute inset-0 bg-[hsl(192,100%,12%)]/50 pointer-events-none" />
-        <div className="max-w-3xl mx-auto text-center relative">
-          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
-          <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
-              <Link to="/login">Start Free Trial <ArrowRight className="ml-2 w-4 h-4" /></Link>
-            </Button>
-            <Button size="lg" variant="outline" className="rounded-full px-10 text-base h-12 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent">
-              Book Demo
-            </Button>
+      {/* Final CTA with swoosh */}
+      <section className="relative overflow-hidden">
+        {/* Swoosh SVG divider */}
+        <div className="relative -mb-px">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto block" preserveAspectRatio="none">
+            <path d="M0 120V60C240 20 480 0 720 20C960 40 1200 80 1440 60V120H0Z" fill="hsl(192, 100%, 12%)" />
+            <path d="M0 120V80C200 50 500 20 720 35C940 50 1200 90 1440 70V120H0Z" fill="hsl(192, 80%, 10%)" opacity="0.6" />
+          </svg>
+        </div>
+        <div className="bg-[hsl(192,80%,10%)] pt-16 pb-24 px-6">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
+            <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
+                <Link to="/login">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              </Button>
+              <Button size="lg" variant="outline" className="rounded-full px-10 text-base h-12 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent">
+                Book Demo
+              </Button>
+            </div>
+            <p className="text-xs text-white/30 mt-5">No monthly fees. First 5 warranties free.</p>
+            <p className="text-[11px] text-white/20 mt-2">Start for free. No monthly fees.</p>
           </div>
-          <p className="text-xs text-white/30 mt-5">No monthly fees. First 5 warranties free.</p>
         </div>
       </section>
 
