@@ -93,6 +93,13 @@ export default function DealerClaimAssist() {
       by: user?.name || "",
     });
     toast.success(`Claim ${decisionType.replace(/_/g, " ")}`);
+    // Send claim status email to customer
+    if (claim.customerId) {
+      const statusMap: Record<string, string> = { approved: "approved", rejected: "rejected", partially_approved: "partially_approved", info_requested: "awaiting_info", escalated: "under_assessment" };
+      import("@/lib/email-service").then(m => m.sendClaimStatusEmail(
+        "", claim.customerName, claim.reference, statusMap[decisionType] || decisionType
+      ));
+    }
     setDecisionType("");
     setDecisionNote("");
     setDecisionReason("");
