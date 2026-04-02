@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
+import { useWarrantyLineStore } from "@/lib/warranty-line-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Shield, FileText, Users, ClipboardList, TrendingUp, AlertTriangle,
-  Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock
+  Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock, Phone
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
@@ -31,7 +32,9 @@ export default function DealerDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const store = useWarrantyStore();
+  const warrantyLineStore = useWarrantyLineStore();
   const dealerId = user?.dealerId || "d-1";
+  const warrantyLine = warrantyLineStore.getLine(dealerId);
   const warranties = store.warranties.filter(w => w.dealerId === dealerId);
   const claims = store.claims.filter(c => c.dealerId === dealerId);
   const customers = new Set(warranties.map(w => w.customerId)).size;
