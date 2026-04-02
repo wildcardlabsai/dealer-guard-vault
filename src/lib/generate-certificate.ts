@@ -1,6 +1,17 @@
 import { Warranty } from "@/data/demo-data";
+import { demoCoverTemplates, warrantyTemplateMap } from "@/data/cover-templates";
 
 export function generateCertificateHTML(warranty: Warranty): string {
+  const templateId = warranty.coverTemplateId || warrantyTemplateMap[warranty.id];
+  const template = templateId ? demoCoverTemplates.find(t => t.id === templateId) : null;
+
+  const coveredHtml = template
+    ? template.coveredItems.slice(0, 8).map(i => `<li>${i.name}</li>`).join("")
+    : "";
+  const excludedHtml = template
+    ? template.excludedItems.slice(0, 6).map(i => `<li>${i.name}</li>`).join("")
+    : "";
+
   return `
 <!DOCTYPE html>
 <html>
@@ -23,6 +34,13 @@ export function generateCertificateHTML(warranty: Warranty): string {
   .footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 2px solid #00323D; }
   .footer p { font-size: 11px; color: #888; }
   .ref { font-family: monospace; font-size: 12px; color: #14b8a6; margin-top: 8px; }
+  .cover-list { columns: 2; list-style: none; padding: 0; }
+  .cover-list li { font-size: 12px; padding: 3px 0; padding-left: 16px; position: relative; }
+  .cover-list.covered li::before { content: '✓'; position: absolute; left: 0; color: #14b8a6; font-weight: bold; }
+  .cover-list.excluded li::before { content: '✗'; position: absolute; left: 0; color: #e53e3e; font-weight: bold; }
+  .claim-box { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 16px; }
+  .claim-box h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #00323D; }
+  .claim-box p { font-size: 11px; color: #666; line-height: 1.6; }
   @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .cert { border: 3px solid #00323D; } }
 </style>
 </head>
@@ -31,7 +49,7 @@ export function generateCertificateHTML(warranty: Warranty): string {
   <div class="header">
     <h1>WARRANTY CERTIFICATE</h1>
     <p>WarrantyVault — Self-Funded Warranty Management</p>
-    <div class="badge">VERIFIED</div>
+    ${template ? `<div class="badge">${template.levelName.toUpperCase()} COVER</div>` : '<div class="badge">VERIFIED</div>'}
   </div>
 
   <div class="section">
@@ -63,10 +81,30 @@ export function generateCertificateHTML(warranty: Warranty): string {
     </div>
   </div>
 
+  ${template ? `
+  <div class="section">
+    <div class="section-title">Key Covered Items</div>
+    <ul class="cover-list covered">${coveredHtml}</ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Key Exclusions</div>
+    <ul class="cover-list excluded">${excludedHtml}</ul>
+  </div>
+  ` : ''}
+
+  <div class="claim-box">
+    <h3>How to Make a Claim</h3>
+    <p>1. Log into your customer portal at warrantyvault.com<br/>
+    2. Start a new claim and upload supporting evidence<br/>
+    3. Wait for your dealership to review before authorising repairs<br/>
+    <strong>Please do not authorise repairs before contacting your dealership.</strong></p>
+  </div>
+
   <div class="footer">
-    <p>This certificate confirms that the above vehicle is covered under a self-funded warranty policy managed via WarrantyVault.</p>
-    <p>For claims, visit your customer portal or contact your dealership directly.</p>
+    <p>This certificate is a summary of your warranty. Full terms and conditions are available in your customer portal or from your dealership.</p>
     <div class="ref">REF: ${warranty.id.toUpperCase()}-${Date.now().toString(36).toUpperCase()}</div>
+    <p style="margin-top: 12px; font-size: 10px; color: #aaa;">Issued ${new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</p>
   </div>
 </div>
 </body>
