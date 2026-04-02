@@ -137,11 +137,11 @@ export default function DealerDashboard() {
             <p className="font-semibold font-display">Add Warranty</p>
             <p className="text-xs text-muted-foreground mt-1">Issue a new warranty</p>
           </button>
-          <button onClick={() => navigate("/dealer/claims")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
+          <button onClick={() => navigate("/dealer/claim-assist")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
             <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
               <ClipboardList className="w-5 h-5 text-primary" />
             </div>
-            <p className="font-semibold font-display">Claims</p>
+            <p className="font-semibold font-display">Claim Assist</p>
             <p className="text-xs text-muted-foreground mt-1">{openClaims} open claims</p>
           </button>
           <button onClick={() => navigate("/dealer/customers")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">

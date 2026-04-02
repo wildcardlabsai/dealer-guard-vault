@@ -44,8 +44,9 @@ export default function CustomerDashboard() {
               <p className="font-medium">{activeWarranty.duration} months</p>
             </div>
           </div>
-          <div className="flex gap-2 mt-4 pt-4 border-t border-border/50">
+          <div className="flex gap-2 mt-4 pt-4 border-t border-border/50 flex-wrap">
             <Button size="sm" asChild><Link to="/customer/warranty">View Details</Link></Button>
+            <Button size="sm" variant="outline" asChild><Link to="/customer/cover">Your Cover</Link></Button>
             <Button size="sm" variant="outline" asChild><Link to="/customer/claims">Submit Claim</Link></Button>
           </div>
         </div>
