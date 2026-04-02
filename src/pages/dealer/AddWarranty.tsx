@@ -201,7 +201,7 @@ export default function AddWarranty() {
                 <SelectTrigger><SelectValue placeholder="Select cover level..." /></SelectTrigger>
                 <SelectContent>
                   {templates.map(t => (
-                    <SelectItem key={t.id} value={t.id}>{t.name} — {t.coverLevel}</SelectItem>
+                    <SelectItem key={t.id} value={t.id}>{t.name} — {t.levelName}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -253,7 +253,7 @@ export default function AddWarranty() {
                 <p><span className="text-muted-foreground">Customer:</span> {form.customerName}</p>
                 <p><span className="text-muted-foreground">Duration:</span> {form.duration} months</p>
                 <p><span className="text-muted-foreground">Warranty Value:</span> £{form.cost}</p>
-                {selectedTemplate && <p><span className="text-muted-foreground">Cover Level:</span> {selectedTemplate.coverLevel}</p>}
+                {selectedTemplate && <p><span className="text-muted-foreground">Cover Level:</span> {selectedTemplate.levelName}</p>}
               </div>
             )}
           </div>

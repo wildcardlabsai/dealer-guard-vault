@@ -56,6 +56,8 @@ export interface Warranty {
   status: "active" | "expired" | "cancelled";
   notes: string;
   createdAt: string;
+  coverTemplateId?: string;
+  paymentStatus?: "paid" | "pending";
 }
 
 export interface Claim {
