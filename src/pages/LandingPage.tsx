@@ -81,11 +81,11 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="hero-gradient pt-32 pb-0 px-6 relative overflow-hidden">
+      <section className="hero-gradient pt-32 pb-0 relative overflow-hidden">
         <div className="absolute top-10 right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(24,100%,50%)]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto relative pb-24">
+        <div className="max-w-7xl mx-auto px-6 relative pb-24">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <motion.div
@@ -172,11 +172,11 @@ export default function LandingPage() {
         </div>
 
         {/* Hero bottom swoosh */}
-        <div className="relative -mb-px">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block" preserveAspectRatio="none" style={{ height: '120px' }}>
-            <path d="M0,40 C240,100 480,110 720,80 C960,50 1200,90 1440,60 L1440,120 L0,120 Z" fill="hsl(192,100%,8%)" opacity="0.4" />
-            <path d="M0,60 C320,110 640,100 960,70 C1150,50 1320,80 1440,70 L1440,120 L0,120 Z" fill="hsl(192,100%,8%)" opacity="0.6" />
-            <path d="M0,80 C400,110 800,90 1100,75 C1280,65 1380,85 1440,80 L1440,120 L0,120 Z" fill="hsl(var(--background))" />
+        <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px">
+          <svg viewBox="0 0 1440 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[140px] w-full" preserveAspectRatio="none">
+            <path d="M0,42 C220,96 480,118 760,92 C1010,68 1240,92 1440,64 L1440,140 L0,140 Z" fill="hsl(var(--hero-bg))" opacity="0.32" />
+            <path d="M0,70 C260,118 560,116 860,90 C1120,68 1290,90 1440,82 L1440,140 L0,140 Z" fill="hsl(var(--hero-bg))" opacity="0.58" />
+            <path d="M0,92 C320,132 760,118 1080,98 C1260,86 1370,92 1440,90 L1440,140 L0,140 Z" fill="hsl(var(--background))" />
           </svg>
         </div>
       </section>
@@ -575,16 +575,15 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA with swoosh */}
-      <section className="relative overflow-hidden">
-        {/* Swoosh - layered wave from light bg into dark CTA */}
-        <div className="relative bg-background -mb-px">
-          <svg viewBox="0 0 1440 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block" preserveAspectRatio="none" style={{ height: '180px' }}>
-            <path d="M0,90 C200,140 500,160 720,120 C940,80 1200,110 1440,80 L1440,180 L0,180 Z" fill="hsl(192,100%,8%)" opacity="0.25" />
-            <path d="M0,110 C280,150 560,140 840,110 C1060,85 1300,120 1440,100 L1440,180 L0,180 Z" fill="hsl(192,100%,8%)" opacity="0.5" />
-            <path d="M0,130 C360,155 720,140 1080,120 C1280,105 1400,125 1440,115 L1440,180 L0,180 Z" fill="hsl(192,100%,8%)" />
+      <section className="relative overflow-hidden bg-secondary/30">
+        <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px bg-secondary/30">
+          <svg viewBox="0 0 1440 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[180px] w-full" preserveAspectRatio="none">
+            <path d="M0,86 C210,136 480,152 730,122 C980,92 1210,114 1440,84 L1440,180 L0,180 Z" fill="hsl(var(--hero-bg))" opacity="0.24" />
+            <path d="M0,108 C280,148 590,144 900,116 C1140,94 1308,112 1440,102 L1440,180 L0,180 Z" fill="hsl(var(--hero-bg))" opacity="0.52" />
+            <path d="M0,132 C360,164 760,150 1090,126 C1280,112 1390,118 1440,114 L1440,180 L0,180 Z" fill="hsl(var(--hero-bg))" />
           </svg>
         </div>
-        <div className="bg-[hsl(192,100%,8%)] pt-16 pb-24 px-6">
+        <div className="hero-gradient pt-16 pb-24 px-6">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
             <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
@@ -602,7 +601,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 px-6 border-t border-border/30">
+      <footer className="py-10 px-6 border-t border-white/10 bg-[hsl(var(--hero-bg))]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
           <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
