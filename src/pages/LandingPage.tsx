@@ -80,13 +80,12 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero + Transition statement — one continuous dark block */}
+      {/* Hero */}
       <section className="hero-gradient relative overflow-hidden">
         <div className="absolute top-10 right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
-        <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(24,100%,50%)]/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(var(--cta))]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Hero content */}
-        <div className="max-w-7xl mx-auto px-6 relative pt-32 pb-14">
+        <div className="max-w-7xl mx-auto px-6 relative pt-32 pb-20">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <motion.div
@@ -132,7 +131,6 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            {/* Dashboard preview */}
             <motion.div
               className="hidden lg:block"
               initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}
@@ -172,33 +170,31 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Swoosh wave divider — layered waves within the dark section */}
-        <div className="relative w-full h-[100px]">
-          <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 block w-full h-full" preserveAspectRatio="none">
-            <path d="M0,80 C200,20 500,0 800,30 C1100,60 1300,40 1440,20 L1440,100 L0,100 Z" fill="hsl(var(--hero-bg))" fillOpacity="0.15" />
-            <path d="M0,85 C300,30 600,10 900,40 C1150,65 1350,50 1440,35 L1440,100 L0,100 Z" fill="hsl(160,30%,20%)" fillOpacity="0.25" />
-            <path d="M0,90 C400,50 700,30 1000,55 C1200,70 1380,60 1440,50 L1440,100 L0,100 Z" fill="hsl(170,25%,18%)" fillOpacity="0.3" />
+        <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[120px] w-full" preserveAspectRatio="none">
+            <path d="M0,70 C220,108 470,108 720,82 C980,54 1170,46 1440,78 L1440,120 L0,120 Z" fill="hsl(222 30% 7%)" />
           </svg>
         </div>
+      </section>
 
-        {/* Statement text */}
+      {/* Statement section under hero */}
+      <section className="bg-[hsl(222_30%_7%)] border-b border-white/5">
         <motion.div
-          className="max-w-4xl mx-auto text-center relative pt-16 pb-10 px-6"
+          className="max-w-6xl mx-auto text-center px-6 pt-12 pb-12"
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         >
-          <p className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold font-display text-white leading-tight mb-4">
+          <p className="text-[2.25rem] sm:text-[2.65rem] lg:text-[3rem] font-bold font-display text-white leading-[1.15] tracking-[-0.03em] mb-4">
             Most dealers are already moving away from warranty providers...
           </p>
-          <p className="text-white/50 text-base sm:text-lg max-w-2xl mx-auto">
+          <p className="text-white/45 text-lg sm:text-[1.45rem] max-w-3xl mx-auto leading-relaxed">
             The problem is they don't have the right system to manage it properly.
           </p>
         </motion.div>
 
-        {/* Trust bar */}
-        <div className="pb-14 px-6">
-          <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+        <div className="border-t border-white/5 px-6 py-8">
+          <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-x-10 gap-y-4 lg:gap-x-16">
             {["£0/month", "Only pay per warranty", "First 5 warranties free", "No contracts or upfront costs"].map(item => (
-              <div key={item} className="flex items-center gap-2.5 text-sm text-white/70">
+              <div key={item} className="flex items-center gap-3 text-sm sm:text-base text-white/55">
                 <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
                 <span>{item}</span>
               </div>
