@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { sendDealerApprovalEmail, sendDealerRejectionEmail } from "@/lib/email-service";
 import { useSignupStore, SignupRequest } from "@/lib/signup-store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

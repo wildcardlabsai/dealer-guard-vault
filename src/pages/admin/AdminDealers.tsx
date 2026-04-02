@@ -39,7 +39,9 @@ export default function AdminDealers() {
       monthlyFee: 0,
     };
     setDealers(prev => [newDealer, ...prev]);
-    toast.success(`Dealer "${form.name}" created. Login credentials sent to ${form.email} (simulated)`);
+    toast.success(`Dealer "${form.name}" created. Login credentials sent to ${form.email}`);
+    // Send real email
+    import("@/lib/email-service").then(m => m.sendDealerCreatedEmail(form.email, form.name, form.password));
     setShowCreate(false);
     setForm({ name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "", password: "" });
   };

@@ -85,6 +85,14 @@ export default function AddWarranty() {
 
     setPaying(false);
     toast.success("Payment successful! Warranty created.");
+    // Send warranty confirmation email
+    if (form.customerEmail) {
+      import("@/lib/email-service").then(m => m.sendWarrantyConfirmationEmail(
+        form.customerEmail, form.customerName, vehicle.registration,
+        vehicle.make, vehicle.model, startDate, endDate,
+        dealerId === "d-1" ? "Prestige Motors" : "City Autos"
+      ));
+    }
     navigate("/dealer/warranties");
   };
 
