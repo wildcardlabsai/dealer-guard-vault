@@ -1,9 +1,11 @@
 import { useWarrantyStore } from "@/lib/warranty-store";
+import { useWarrantyLineStore } from "@/lib/warranty-line-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { CheckCircle2, XCircle, MessageSquare, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { CheckCircle2, XCircle, MessageSquare, Clock, Phone, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
@@ -18,8 +20,11 @@ export default function DealerClaims() {
   const { user } = useAuth();
   const dealerId = user?.dealerId || "d-1";
   const store = useWarrantyStore();
+  const warrantyLineStore = useWarrantyLineStore();
+  const warrantyLine = warrantyLineStore.getLine(dealerId);
   const claims = store.claims.filter(c => c.dealerId === dealerId);
   const [selectedClaim, setSelectedClaim] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleAction = (claimId: string, action: "approved" | "rejected" | "info_requested") => {
     store.updateClaimStatus(claimId, action, user?.name || "Dealer");
@@ -32,6 +37,18 @@ export default function DealerClaims() {
         <h1 className="text-2xl font-bold font-display">Claims</h1>
         <p className="text-sm text-muted-foreground">{claims.length} claims</p>
       </div>
+      {/* Warranty Line upsell banner */}
+      {!warrantyLine && (
+        <div className="glass-card rounded-xl p-4 flex items-center gap-4 cursor-pointer hover:border-[hsl(var(--cta))]/40 transition-all"
+          onClick={() => navigate("/dealer/warranty-line")}>
+          <Phone className="w-5 h-5 text-[hsl(var(--cta))] flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium">Handle claims more professionally with a dedicated warranty line</p>
+            <p className="text-xs text-muted-foreground">Give customers a proper number to call — £25/month</p>
+          </div>
+          <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+        </div>
+      )}
 
       <div className="space-y-4">
         {claims.map(claim => {
