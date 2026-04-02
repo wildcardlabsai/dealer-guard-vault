@@ -61,19 +61,19 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-[hsl(192,100%,12%)]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <img src={logo} alt="WarrantyVault" className="h-8" />
-          <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
+      <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
+          <img src={logo} alt="WarrantyVault" className="h-10" />
+          <div className="hidden md:flex items-center gap-10 text-[15px] text-white/70">
             <a href="#features" className="hover:text-white transition-colors">Features</a>
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
             <a href="#how-it-works" className="hover:text-white transition-colors">How it Works</a>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10" asChild>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-[15px]" asChild>
               <Link to="/login">Sign In</Link>
             </Button>
-            <Button size="sm" className="btn-cta rounded-full px-5" asChild>
+            <Button size="sm" className="btn-cta rounded-full px-6 text-[15px] h-10" asChild>
               <Link to="/signup">Sign Up</Link>
             </Button>
           </div>
@@ -81,53 +81,53 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="hero-gradient pt-32 pb-0 relative overflow-hidden">
+      <section className="hero-gradient pt-36 pb-0 relative overflow-hidden">
         <div className="absolute top-10 right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(24,100%,50%)]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-6 relative pb-24">
+        <div className="max-w-7xl mx-auto px-6 relative pb-28">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-                className="inline-flex items-center gap-2 mb-6"
+                className="inline-flex items-center gap-3 mb-8"
               >
-                <div className="w-8 h-[2px] bg-primary" />
-                <span className="text-xs text-white/60 font-semibold tracking-[0.2em] uppercase">Built for UK Dealerships</span>
+                <div className="w-10 h-[2px] bg-[hsl(var(--cta))]" />
+                <span className="text-sm text-white/60 font-semibold tracking-[0.2em] uppercase">Built for UK Dealerships</span>
               </motion.div>
 
               <motion.h1
-                className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold font-display tracking-tight text-white leading-[1.08] mb-6"
+                className="text-5xl sm:text-6xl lg:text-[4.2rem] font-bold font-display tracking-tight text-white leading-[1.06] mb-8"
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}
               >
-                Take Control of Your Warranty Process<span className="text-[hsl(var(--cta))]">.</span>
+                Take Control of Your<br />Warranty Process<span className="text-[hsl(var(--cta))]">.</span>
               </motion.h1>
 
               <motion.p
-                className="text-base sm:text-lg text-white/50 max-w-lg mb-8 leading-relaxed"
+                className="text-lg text-white/50 max-w-lg mb-10 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}
               >
                 Create, manage and handle self-funded warranties in-house. No third-party providers. Better margins, faster decisions, full control.
               </motion.p>
 
               <motion.div
-                className="flex flex-col sm:flex-row gap-3"
+                className="flex flex-col sm:flex-row gap-4"
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}
               >
-                <Button size="lg" className="btn-cta text-base px-8 rounded-full h-12" asChild>
+                <Button size="lg" className="btn-cta text-base px-10 rounded-full h-14" asChild>
                   <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-base px-8 rounded-full h-12 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent" asChild>
+                <Button size="lg" variant="outline" className="text-base px-10 rounded-full h-14 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent" asChild>
                   <a href="#how-it-works">See How It Works</a>
                 </Button>
               </motion.div>
 
               <motion.div
-                className="mt-6 space-y-1"
+                className="mt-8 space-y-1"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
               >
                 <p className="text-sm text-white/40">No monthly fees. Only pay when you use it.</p>
-                <p className="text-xs text-white/25">£19 per warranty. No contracts.</p>
+                <p className="text-xs text-white/30">Start for free. No monthly fees.</p>
               </motion.div>
             </div>
 
