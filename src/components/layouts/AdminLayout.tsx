@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus } from "lucide-react";
+import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSignupStore } from "@/lib/signup-store";
 import logo from "@/assets/warrantylogo.png";
@@ -10,6 +10,7 @@ const navItems = [
   { label: "Dealers", icon: Building2, path: "/admin/dealers" },
   { label: "Signup Requests", icon: UserPlus, path: "/admin/signup-requests" },
   { label: "Warranties", icon: FileText, path: "/admin/warranties" },
+  { label: "All Claims", icon: ClipboardList, path: "/admin/claims" },
   { label: "Revenue", icon: BarChart3, path: "/admin/revenue" },
   { label: "System Logs", icon: ScrollText, path: "/admin/logs" },
   { label: "Settings", icon: Settings, path: "/admin/settings" },

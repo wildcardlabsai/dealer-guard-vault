@@ -19,11 +19,16 @@ import DealerRequests from "@/pages/dealer/DealerRequests";
 import DealerDocuments from "@/pages/dealer/DealerDocuments";
 import DealerSettings from "@/pages/dealer/DealerSettings";
 import DealerWarrantyLine from "@/pages/dealer/DealerWarrantyLine";
+import DealerCoverTemplates from "@/pages/dealer/DealerCoverTemplates";
+import DealerClaimAssist from "@/pages/dealer/DealerClaimAssist";
+import DealerClaimSettings from "@/pages/dealer/DealerClaimSettings";
 
 import CustomerLayout from "@/components/layouts/CustomerLayout";
 import CustomerDashboard from "@/pages/customer/CustomerDashboard";
 import CustomerWarranty from "@/pages/customer/CustomerWarranty";
-import CustomerClaims from "@/pages/customer/CustomerClaims";
+import CustomerCover from "@/pages/customer/CustomerCover";
+import CustomerClaimsEnhanced from "@/pages/customer/CustomerClaimsEnhanced";
+import CustomerClaimSubmit from "@/pages/customer/CustomerClaimSubmit";
 import CustomerRequests from "@/pages/customer/CustomerRequests";
 
 import AdminLayout from "@/components/layouts/AdminLayout";
@@ -34,6 +39,7 @@ import AdminWarranties from "@/pages/admin/AdminWarranties";
 import AdminRevenue from "@/pages/admin/AdminRevenue";
 import AdminLogs from "@/pages/admin/AdminLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import AdminClaims from "@/pages/admin/AdminClaims";
 
 const queryClient = new QueryClient();
 
@@ -61,11 +67,16 @@ function AppRoutes() {
       <Route path="/dealer/warranty-line" element={<ProtectedRoute role="dealer"><DealerLayout><DealerWarrantyLine /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/documents" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDocuments /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/settings" element={<ProtectedRoute role="dealer"><DealerLayout><DealerSettings /></DealerLayout></ProtectedRoute>} />
+      <Route path="/dealer/cover-templates" element={<ProtectedRoute role="dealer"><DealerLayout><DealerCoverTemplates /></DealerLayout></ProtectedRoute>} />
+      <Route path="/dealer/claim-assist" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimAssist /></DealerLayout></ProtectedRoute>} />
+      <Route path="/dealer/claim-settings" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimSettings /></DealerLayout></ProtectedRoute>} />
 
       {/* Customer Routes */}
       <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerDashboard /></CustomerLayout></ProtectedRoute>} />
       <Route path="/customer/warranty" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerWarranty /></CustomerLayout></ProtectedRoute>} />
-      <Route path="/customer/claims" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerClaims /></CustomerLayout></ProtectedRoute>} />
+      <Route path="/customer/cover" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerCover /></CustomerLayout></ProtectedRoute>} />
+      <Route path="/customer/claims" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerClaimsEnhanced /></CustomerLayout></ProtectedRoute>} />
+      <Route path="/customer/claims/new" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerClaimSubmit /></CustomerLayout></ProtectedRoute>} />
       <Route path="/customer/requests" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerRequests /></CustomerLayout></ProtectedRoute>} />
 
       {/* Admin Routes */}
@@ -73,6 +84,7 @@ function AppRoutes() {
       <Route path="/admin/dealers" element={<ProtectedRoute role="admin"><AdminLayout><AdminDealers /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/signup-requests" element={<ProtectedRoute role="admin"><AdminLayout><AdminSignupRequests /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/warranties" element={<ProtectedRoute role="admin"><AdminLayout><AdminWarranties /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/claims" element={<ProtectedRoute role="admin"><AdminLayout><AdminClaims /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/revenue" element={<ProtectedRoute role="admin"><AdminLayout><AdminRevenue /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/logs" element={<ProtectedRoute role="admin"><AdminLayout><AdminLogs /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/settings" element={<ProtectedRoute role="admin"><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />

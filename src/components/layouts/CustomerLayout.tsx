@@ -1,12 +1,13 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, Shield, FileText, MessageSquare, LogOut } from "lucide-react";
+import { LayoutDashboard, Shield, FileText, MessageSquare, LogOut, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/customer" },
   { label: "My Warranty", icon: Shield, path: "/customer/warranty" },
+  { label: "Your Cover", icon: BookOpen, path: "/customer/cover" },
   { label: "Claims", icon: FileText, path: "/customer/claims" },
   { label: "Requests", icon: MessageSquare, path: "/customer/requests" },
 ];
