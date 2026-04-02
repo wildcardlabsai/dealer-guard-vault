@@ -127,7 +127,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
               >
                 <p className="text-sm text-white/40">No monthly fees. Only pay when you use it.</p>
-                <p className="text-xs text-white/30">Start for free. No monthly fees.</p>
+                <p className="text-xs text-white/30">£19 per warranty. No monthly fees.</p>
               </motion.div>
             </div>
 
@@ -193,7 +193,7 @@ export default function LandingPage() {
 
         <div className="border-t border-white/5 px-6 py-8">
           <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-x-10 gap-y-4 lg:gap-x-16">
-            {["£0/month", "Only pay per warranty", "First 5 warranties free", "No contracts or upfront costs"].map(item => (
+            {["£0/month", "Only pay per warranty", "£19 per warranty", "No contracts or upfront costs"].map(item => (
               <div key={item} className="flex items-center gap-3 text-sm sm:text-base text-white/55">
                 <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
                 <span>{item}</span>
