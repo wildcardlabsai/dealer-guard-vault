@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { sendDealerApprovalEmail, sendDealerRejectionEmail } from "@/lib/email-service";
 import { useSignupStore, SignupRequest } from "@/lib/signup-store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,15 +30,23 @@ export default function AdminSignupRequests() {
   const pendingCount = store.signupRequests.filter(r => r.status === "pending").length;
 
   const handleApprove = (id: string) => {
+    const req = store.signupRequests.find(r => r.id === id);
     store.approveRequest(id);
-    toast.success("Dealer approved — login credentials sent via email (simulated)");
+    toast.success("Dealer approved — login credentials sent via email");
+    if (req) {
+      sendDealerApprovalEmail(req.email, req.dealershipName, "Welcome2025!");
+    }
     setSelectedId(null);
   };
 
   const handleReject = () => {
     if (rejectId) {
+      const req = store.signupRequests.find(r => r.id === rejectId);
       store.rejectRequest(rejectId, rejectionReason);
       toast.info("Application rejected");
+      if (req) {
+        sendDealerRejectionEmail(req.email, req.dealershipName, rejectionReason || undefined);
+      }
       setRejectId(null);
       setRejectionReason("");
       setSelectedId(null);

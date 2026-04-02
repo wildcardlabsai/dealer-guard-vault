@@ -70,6 +70,12 @@ export default function CustomerClaimSubmit() {
     });
 
     toast.success(`Claim submitted — Ref: ${claim.reference}`);
+    // Send claim confirmation email
+    if (user?.email) {
+      import("@/lib/email-service").then(m => m.sendClaimSubmittedEmail(
+        user.email!, user.name || "Customer", claim.reference, warranty.vehicleReg, form.issueTitle
+      ));
+    }
     navigate("/customer/claims");
   };
 

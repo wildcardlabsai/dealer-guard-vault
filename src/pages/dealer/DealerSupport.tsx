@@ -53,6 +53,12 @@ export default function DealerSupport() {
       updatedAt: now,
     });
     toast.success("Support ticket submitted");
+    // Send confirmation email
+    if (dealer?.email) {
+      import("@/lib/email-service").then(m => m.sendSupportTicketEmail(
+        dealer.email, dealer.name, form.subject, `st-${Date.now()}`
+      ));
+    }
     setForm({ subject: "", message: "", priority: "medium" });
     setView("list");
   };
