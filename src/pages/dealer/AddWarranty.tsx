@@ -2,19 +2,23 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { lookupVehicle, lookupPostcode, type DVLAVehicle, type Address } from "@/lib/simulated-apis";
 import { useWarrantyStore } from "@/lib/warranty-store";
+import { useCoverStore } from "@/lib/cover-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Car, CheckCircle2, Loader2 } from "lucide-react";
+import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AddWarranty() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const store = useWarrantyStore();
+  const coverStore = useCoverStore();
+  const dealerId = user?.dealerId || "d-1";
+  const templates = coverStore.templates.filter(t => t.dealerId === dealerId || t.dealerId === "system");
   const [step, setStep] = useState(1);
   const [reg, setReg] = useState("");
   const [postcode, setPostcode] = useState("");
@@ -22,7 +26,8 @@ export default function AddWarranty() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "" });
+  const [paying, setPaying] = useState(false);
+  const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
 
   const handleVehicleLookup = async () => {
     if (!reg.trim()) return;
@@ -44,14 +49,16 @@ export default function AddWarranty() {
     setLoading(false);
   };
 
-  const handleSave = () => {
+  const handlePayAndCreate = async () => {
     if (!vehicle || !form.customerName || !form.cost) {
       toast.error("Please fill in all required fields");
       return;
     }
+    setPaying(true);
+    await new Promise(r => setTimeout(r, 2000));
+    
     const startDate = new Date().toISOString().split("T")[0];
     const endDate = new Date(Date.now() + parseInt(form.duration) * 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
-    const dealerId = user?.dealerId || "d-1";
 
     store.addWarranty({
       id: `w-${Date.now()}`,
@@ -72,22 +79,26 @@ export default function AddWarranty() {
       status: "active",
       notes: form.notes,
       createdAt: startDate,
+      coverTemplateId: form.coverTemplateId || undefined,
+      paymentStatus: "paid",
     });
 
-    toast.success("Warranty created successfully!");
+    setPaying(false);
+    toast.success("Payment successful! Warranty created.");
     navigate("/dealer/warranties");
   };
+
+  const selectedTemplate = templates.find(t => t.id === form.coverTemplateId);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold font-display">Add New Warranty</h1>
-        <p className="text-sm text-muted-foreground">Step {step} of 3</p>
+        <p className="text-sm text-muted-foreground">Step {step} of 4</p>
       </div>
 
-      {/* Progress */}
       <div className="flex gap-2">
-        {[1, 2, 3].map(s => (
+        {[1, 2, 3, 4].map(s => (
           <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? "bg-primary" : "bg-secondary"}`} />
         ))}
       </div>
@@ -185,6 +196,17 @@ export default function AddWarranty() {
           <h2 className="font-semibold font-display">Warranty Details</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
+              <Label>Cover Template</Label>
+              <Select value={form.coverTemplateId} onValueChange={v => setForm({ ...form, coverTemplateId: v })}>
+                <SelectTrigger><SelectValue placeholder="Select cover level..." /></SelectTrigger>
+                <SelectContent>
+                  {templates.map(t => (
+                    <SelectItem key={t.id} value={t.id}>{t.name} — {t.coverLevel}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <Label>Mileage</Label>
               <Input type="number" placeholder="32000" value={form.mileage} onChange={e => setForm({ ...form, mileage: e.target.value })} />
             </div>
@@ -211,19 +233,62 @@ export default function AddWarranty() {
             <Textarea placeholder="Additional notes..." value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
           </div>
 
-          {vehicle && (
-            <div className="bg-secondary/30 rounded-lg p-4 text-sm space-y-1">
-              <p className="font-medium mb-2">Summary</p>
-              <p><span className="text-muted-foreground">Vehicle:</span> {vehicle.year} {vehicle.make} {vehicle.model} ({vehicle.registration})</p>
-              <p><span className="text-muted-foreground">Customer:</span> {form.customerName || "—"}</p>
-              <p><span className="text-muted-foreground">Duration:</span> {form.duration} months</p>
-              <p><span className="text-muted-foreground">Cost:</span> £{form.cost || "—"}</p>
-            </div>
-          )}
-
           <div className="flex justify-between pt-2">
             <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
-            <Button onClick={handleSave} className="glow-primary-sm">Create Warranty</Button>
+            <Button onClick={() => { if (!form.cost) { toast.error("Cost is required"); return; } setStep(4); }}>Continue to Payment</Button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4: Payment */}
+      {step === 4 && (
+        <div className="space-y-4">
+          <div className="glass-card rounded-xl p-6 space-y-4">
+            <h2 className="font-semibold font-display">Review & Pay</h2>
+            
+            {vehicle && (
+              <div className="bg-secondary/30 rounded-lg p-4 text-sm space-y-1">
+                <p className="font-medium mb-2">Warranty Summary</p>
+                <p><span className="text-muted-foreground">Vehicle:</span> {vehicle.year} {vehicle.make} {vehicle.model} ({vehicle.registration})</p>
+                <p><span className="text-muted-foreground">Customer:</span> {form.customerName}</p>
+                <p><span className="text-muted-foreground">Duration:</span> {form.duration} months</p>
+                <p><span className="text-muted-foreground">Warranty Value:</span> £{form.cost}</p>
+                {selectedTemplate && <p><span className="text-muted-foreground">Cover Level:</span> {selectedTemplate.coverLevel}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="glass-card-strong rounded-xl p-6 glow-primary space-y-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold font-display">Warranty Admin Fee</h3>
+                <p className="text-xs text-muted-foreground">One-time fee per warranty issued</p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-primary" />
+                <span className="text-sm">WarrantyVault Admin Fee</span>
+              </div>
+              <span className="text-xl font-bold font-display">£19</span>
+            </div>
+
+            <p className="text-xs text-muted-foreground">Payment processed securely via Stripe. This fee covers platform administration, certificate generation, and customer portal access.</p>
+
+            <div className="flex justify-between pt-2">
+              <Button variant="outline" onClick={() => setStep(3)}>Back</Button>
+              <Button onClick={handlePayAndCreate} disabled={paying} className="glow-primary-sm min-w-[180px]">
+                {paying ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
+                ) : (
+                  <><CreditCard className="w-4 h-4 mr-2" /> Pay £19 & Create</>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       )}
