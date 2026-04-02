@@ -171,12 +171,6 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Hero bottom swoosh */}
-        <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[80px] w-full" preserveAspectRatio="none">
-            <path d="M0,30 C360,70 720,70 1080,40 C1280,24 1400,30 1440,28 L1440,80 L0,80 Z" fill="hsl(var(--background))" />
-          </svg>
-        </div>
       </section>
 
       {/* Transition statement — dark section with swoosh on top */}
