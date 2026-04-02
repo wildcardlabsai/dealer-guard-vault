@@ -53,6 +53,7 @@ export default function LoginPage() {
           <img src={logo} alt="WarrantyVault" className="h-8 mb-6" />
           <h1 className="text-2xl font-bold font-display">Sign in to your account</h1>
           <p className="text-muted-foreground text-sm mt-1">Enter your credentials or use a demo login</p>
+          <p className="text-xs text-muted-foreground mt-3">Don't have an account? <Link to="/signup" className="text-primary hover:underline">Apply here</Link></p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card-strong rounded-xl p-6 space-y-4 mb-6">

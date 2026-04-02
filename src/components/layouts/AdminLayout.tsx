@@ -1,12 +1,14 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSignupStore } from "@/lib/signup-store";
 import logo from "@/assets/warrantylogo.png";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
   { label: "Dealers", icon: Building2, path: "/admin/dealers" },
+  { label: "Signup Requests", icon: UserPlus, path: "/admin/signup-requests" },
   { label: "Warranties", icon: FileText, path: "/admin/warranties" },
   { label: "Revenue", icon: BarChart3, path: "/admin/revenue" },
   { label: "System Logs", icon: ScrollText, path: "/admin/logs" },
@@ -17,6 +19,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const { signupRequests } = useSignupStore();
+  const pendingCount = signupRequests.filter(r => r.status === "pending").length;
   const handleLogout = () => { logout(); navigate("/"); };
 
   return (
@@ -29,12 +33,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 p-2 space-y-1">
           {navItems.map(item => {
             const active = location.pathname === item.path;
+            const showBadge = item.path === "/admin/signup-requests" && pendingCount > 0;
             return (
               <Link key={item.path} to={item.path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
                   active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                 }`}>
-                <item.icon className="w-4 h-4" /> <span>{item.label}</span>
+                <item.icon className="w-4 h-4" />
+                <span className="flex-1">{item.label}</span>
+                {showBadge && (
+                  <span className="bg-[hsl(var(--cta))] text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">{pendingCount}</span>
+                )}
               </Link>
             );
           })}

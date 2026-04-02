@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
+import SignupPage from "@/pages/SignupPage";
 import NotFound from "@/pages/NotFound";
 
 import DealerLayout from "@/components/layouts/DealerLayout";
@@ -27,6 +28,7 @@ import CustomerRequests from "@/pages/customer/CustomerRequests";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminDealers from "@/pages/admin/AdminDealers";
+import AdminSignupRequests from "@/pages/admin/AdminSignupRequests";
 import AdminWarranties from "@/pages/admin/AdminWarranties";
 import AdminRevenue from "@/pages/admin/AdminRevenue";
 import AdminLogs from "@/pages/admin/AdminLogs";
@@ -46,6 +48,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
 
       {/* Dealer Routes */}
       <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />
@@ -66,6 +69,7 @@ function AppRoutes() {
       {/* Admin Routes */}
       <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/dealers" element={<ProtectedRoute role="admin"><AdminLayout><AdminDealers /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/signup-requests" element={<ProtectedRoute role="admin"><AdminLayout><AdminSignupRequests /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/warranties" element={<ProtectedRoute role="admin"><AdminLayout><AdminWarranties /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/revenue" element={<ProtectedRoute role="admin"><AdminLayout><AdminRevenue /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/logs" element={<ProtectedRoute role="admin"><AdminLayout><AdminLogs /></AdminLayout></ProtectedRoute>} />
