@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard, FileText, Plus, ClipboardList, Users, MessageSquare,
-  FolderOpen, Settings, LogOut, ChevronLeft, Menu, Phone, Shield, Headphones, Sliders
+  FolderOpen, Settings, LogOut, ChevronLeft, Menu, Phone, Shield, Headphones, Sliders, LifeBuoy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -20,6 +20,7 @@ const navItems = [
   { label: "Warranty Line", icon: Phone, path: "/dealer/warranty-line" },
   { label: "Documents", icon: FolderOpen, path: "/dealer/documents" },
   { label: "Claim Settings", icon: Sliders, path: "/dealer/claim-settings" },
+  { label: "Support", icon: LifeBuoy, path: "/dealer/support" },
   { label: "Settings", icon: Settings, path: "/dealer/settings" },
 ];
 
