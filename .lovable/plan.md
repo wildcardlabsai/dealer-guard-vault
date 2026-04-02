@@ -1,93 +1,133 @@
 
 
-## Plan: Landing Page Enhancement + Platform-Wide QA & Feature Recommendations
+# Implementation Plan: Auth, Stripe, Support Tickets & Feature Audit
 
-### Part 1: Landing Page — New Sections from Screenshots
+This is a large change touching authentication, payments, a new support system, and data cleanup. Here is the full plan broken into clear phases.
 
-The screenshots show several sections to add/refine:
+---
 
-**A. "Most dealers are already moving away..." transition section**
-- Add between hero social-proof bar and the problem section
-- Centered italic headline: "Most dealers are already moving away from warranty providers..."
-- Sub: "The problem is they don't have the right system to manage it properly."
+## Phase 1: Fix All Existing Features (Audit & Repair)
 
-**B. Pricing trust bar**
-- Horizontal row of 4 check items: "£0/month", "Only pay per warranty", "First 5 warranties free", "No contracts or upfront costs"
-- Placed between the transition section and the problem section
-- Subtle top/bottom borders
+Review and fix any broken references or missing functionality across the app:
 
-**C. Problem section refinement**
-- Match screenshot layout: full-width centered headline, subtitle below
-- Pain points in a 2-column grid of bordered cards (not bullet list with X icons)
-- Each card has an orange CheckCircle icon + text
-- Closing line: "There's a better way to run warranties."
+- **AdminSettings pricing**: Currently shows old "Monthly Subscription" and "Per Warranty Admin Fee" fields. Update to reflect the actual £19 per warranty model with £0 monthly fees.
+- **Cover template linking**: Ensure `AddWarranty.tsx` has a cover template dropdown so dealers can assign templates when creating warranties.
+- **Customer portal data flow**: Verify `CustomerCover`, `CustomerClaimsEnhanced`, `CustomerClaimSubmit` all correctly pull data for the logged-in customer (customer-1 = John Smith with active warranties w-1 and w-6).
+- **Dealer claim assist**: Verify the claim workspace tabs (Summary, Evidence, Checklist, Messages, Timeline, Decision, Audit Log) all render and function correctly.
+- **Certificate generation**: Update `generate-certificate.ts` to include cover level and key covered/excluded items from the linked cover template.
 
-**D. Features section refinement**
-- Section label: "PLATFORM FEATURES"
-- Headline: "Everything you need to stay in control"
-- Sub: "Built for UK dealers who want higher margins, faster claim decisions, and fewer admin headaches."
-- 3x2 grid of feature cards matching screenshot style (icon in teal rounded box at top-left, title, description)
+---
 
-**E. "Optional Add-on" — Dedicated Warranty Line section**
-- New section with orange "OPTIONAL ADD-ON" label
-- Headline: "Look like a proper warranty department"
-- Sub: "Give your customers a dedicated line for warranty enquiries and claims."
-- Left side: 2-column grid of benefit cards (custom greeting, hold music, simple menu, calls routed, keeps warranty calls separate)
-- Right side: pricing card "Dedicated Warranty Line — £25/month" with features and orange CTA
-- Bottom text about stopping personal mobiles + "Set up in 24 hours"
+## Phase 2: Proper Authentication (Replace Demo Quick Logins)
 
-**F. Tighten existing sections**
-- Remove the separate "Solution" section (merged into flow above)
-- Remove the "Differentiator + Dashboard" preview section (redundant with hero dashboard preview)
-- Keep: How it Works, Pricing, Testimonials, Final CTA, Footer
+Remove the one-click demo login buttons from `LoginPage.tsx` and set up proper email/password authentication using the existing `AuthContext`.
 
-### Part 2: Dashboard & Platform QA
+### Changes:
+- **LoginPage.tsx**: Remove the entire "Demo Logins" card with the three quick-login buttons. Keep only the email/password form.
+- **AuthContext.tsx**: Update the `login` function to validate against a password field. Remove the `loginAs` helper. Set up 3 hardcoded demo accounts with real passwords:
+  - **Super Admin**: `admin@warrantyvault.com` / `admin123`
+  - **Dealer**: `dealer@prestige-motors.co.uk` / `dealer123`
+  - **Customer**: `john@example.com` / `customer123`
+- **Demo hint**: Add a small collapsible "Demo credentials" section at the bottom of the login page (just showing the email/password combos as text, not buttons).
 
-Files to update for full functionality:
+---
 
-**A. Dealer Dashboard (`DealerDashboard.tsx`)**
-- Already functional with reg lookup, quick actions, stats, charts. No changes needed.
+## Phase 3: Stripe Payment for £19 Warranty Issuance
 
-**B. Add Warranty flow (`AddWarranty.tsx`)**
-- Already uses `lookupVehicle` (DVLA sim) and `lookupPostcode` (address sim). Fully working.
+Integrate a simulated Stripe payment flow into the warranty creation process.
 
-**C. Dealer Warranties (`DealerWarranties.tsx`)**
-- Certificate generation already wired (view/print/download). Working.
+### Changes:
+- **AddWarranty.tsx**: Add a final "Payment" step after the review step. Show a payment summary card: "Warranty Admin Fee: £19". Include a simulated "Pay with Stripe" button that shows a loading state, then confirms payment.
+- **warranty-store.ts**: Add a `paymentStatus` field to warranties (paid/pending).
+- **DealerDashboard**: Show total fees paid as a stat.
+- **Landing page / pricing**: Ensure all references show £19 per warranty, £0 monthly.
 
-**D. Dealer Claims (`DealerClaims.tsx`)**
-- Approve/reject/request-info actions already update store. Working.
+> Note: This will be a simulated payment for now. Real Stripe can be enabled later using the Stripe connector.
 
-**E. Customer portal**
-- Claims submission, requests, warranty viewing, certificate download — all connected to store. Working.
+---
 
-**F. Admin panel**
-- Dashboard, dealers list, warranties, revenue, logs, settings — all reading from demo data. Working.
+## Phase 4: Support Ticket System
 
-### Part 3: Feature Recommendations
+Build a new "Support" feature allowing dealers to submit help requests to the super admin.
 
-After reviewing the full codebase, here are recommendations to present to the user:
+### Data Model (in-memory store):
+```
+SupportTicket {
+  id, dealerId, dealerName, subject, message,
+  status: "open" | "in_progress" | "resolved" | "closed",
+  priority: "low" | "medium" | "high",
+  messages: { from, message, timestamp }[],
+  createdAt, updatedAt
+}
+```
 
-1. **Warranty Renewal/Extension flow** — Allow dealers to extend an existing warranty directly from the warranties table (currently only customers can request extensions).
+### Dealer Side:
+- Add "Support" nav item to `DealerLayout.tsx` sidebar
+- Create `src/pages/dealer/DealerSupport.tsx`:
+  - "My Tickets" list showing all tickets with status badges
+  - "New Ticket" form: subject, message, priority dropdown
+  - Click ticket to view conversation thread and reply
+- Add route `/dealer/support` in `App.tsx`
 
-2. **Email notification simulation** — Show toast + add audit log entries when warranties are created, claims change status, or customer requests are actioned. Add a "Notifications" section in dealer settings for email template previews.
+### Admin Side:
+- Add "Support Tickets" nav item to `AdminLayout.tsx` sidebar
+- Create `src/pages/admin/AdminSupport.tsx`:
+  - All tickets from all dealers, with filters (status, dealer, priority)
+  - Click ticket to view details, reply, change status
+  - KPI cards: Open, In Progress, Resolved this month
+- Add route `/admin/support` in `App.tsx`
 
-3. **Warranty expiry alerts** — Add a "Expiring Soon" badge/section on the dealer dashboard showing warranties expiring in the next 30 days.
+### Store:
+- Create `src/lib/support-store.ts` with the same listener pattern used elsewhere
+- Seed 2-3 demo tickets from the dealer account
 
-4. **Dealer profit/loss report** — Enhance the revenue chart to show warranty income vs claims paid out, giving a true P&L view.
+---
 
-5. **Customer invite flow** — When creating a warranty, auto-generate a simulated "invite email" with login credentials for the customer portal.
+## Phase 5: Fully Populated Demo Accounts
 
-6. **Search across all pages** — Add global search in the dealer layout header that searches across warranties, customers, and claims.
+Ensure all three demo accounts have rich, realistic data:
 
-7. **Mobile bottom navigation** — The dealer layout has mobile nav but could be tightened for thumb-friendly use.
+### Super Admin (`admin@warrantyvault.com`):
+- Sees all dealers, all warranties, all claims, all support tickets, signup requests
 
-### Technical Details
+### Dealer (`dealer@prestige-motors.co.uk` — dealerId `d-1`):
+- 4+ customers, 6+ warranties (mix of active/expired)
+- 3+ cover templates (Basic, Standard, Premium)
+- 4+ claims at various statuses
+- Active warranty line
+- 2+ support tickets
+- Claim settings configured
 
-**Files to modify:**
-- `src/pages/LandingPage.tsx` — Major rewrite to add new sections, reorder, and tighten layout
-- No other files need changes for the landing page work
+### Customer (`john@example.com` — customerId `customer-1`):
+- 2 active warranties (w-1, w-6)
+- 1 claim (engine warning light, under review)
+- Cover template linked and visible
+- Full portal experience working
 
-**New icons needed:** `Phone`, `PhoneCall`, `Headphones`, `Music` from lucide-react for the warranty line add-on section.
+---
 
-**Implementation approach:** Single file edit to `LandingPage.tsx` rewriting the page with all new sections in the correct order matching the screenshots.
+## Files to Create
+- `src/lib/support-store.ts`
+- `src/pages/dealer/DealerSupport.tsx`
+- `src/pages/admin/AdminSupport.tsx`
+
+## Files to Edit
+- `src/contexts/AuthContext.tsx` — proper password auth, remove `loginAs`
+- `src/pages/LoginPage.tsx` — remove quick logins, add credentials hint
+- `src/App.tsx` — add support routes
+- `src/components/layouts/DealerLayout.tsx` — add Support nav
+- `src/components/layouts/AdminLayout.tsx` — add Support nav
+- `src/pages/dealer/AddWarranty.tsx` — add cover template dropdown + payment step
+- `src/pages/admin/AdminSettings.tsx` — fix pricing to £19/warranty model
+- `src/lib/generate-certificate.ts` — enhance with cover template data
+- `src/data/demo-data.ts` — ensure demo data is comprehensive
+- `src/lib/warranty-store.ts` — add payment tracking
+
+---
+
+## Technical Notes
+- All state management uses the existing in-memory store + listener pattern (no backend needed yet)
+- Stripe is simulated — structured so real Stripe can replace it later
+- Auth remains client-side demo auth with password validation (no Supabase yet)
+- Support ticket messaging follows the same pattern as claim messages
 
