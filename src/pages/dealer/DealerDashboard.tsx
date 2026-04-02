@@ -223,6 +223,20 @@ export default function DealerDashboard() {
           </div>
         </div>
       </div>
+      {/* Warranty Line Upsell */}
+      {!warrantyLine && (
+        <div className="glass-card rounded-xl p-5 flex items-center gap-4 cursor-pointer hover:border-[hsl(var(--cta))]/40 hover:bg-[hsl(var(--cta))]/5 transition-all"
+          onClick={() => navigate("/dealer/warranty-line")}>
+          <div className="w-11 h-11 rounded-lg bg-[hsl(var(--cta))]/10 flex items-center justify-center flex-shrink-0">
+            <Phone className="w-5 h-5 text-[hsl(var(--cta))]" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold font-display text-sm">Add a dedicated warranty phone line</p>
+            <p className="text-xs text-muted-foreground">Give customers a professional number for claims — £25/month</p>
+          </div>
+          <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+        </div>
+      )}
     </div>
   );
 }
