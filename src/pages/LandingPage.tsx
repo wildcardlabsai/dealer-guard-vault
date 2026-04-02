@@ -81,11 +81,11 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="hero-gradient pt-36 pb-0 relative overflow-hidden">
+      <section className="hero-gradient pt-32 pb-0 relative overflow-hidden">
         <div className="absolute top-10 right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(24,100%,50%)]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-6 relative pb-28">
+        <div className="max-w-7xl mx-auto px-6 relative pb-14">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <motion.div
@@ -173,16 +173,14 @@ export default function LandingPage() {
 
         {/* Hero bottom swoosh */}
         <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px">
-          <svg viewBox="0 0 1440 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[140px] w-full" preserveAspectRatio="none">
-            <path d="M0,42 C220,96 480,118 760,92 C1010,68 1240,92 1440,64 L1440,140 L0,140 Z" fill="hsl(var(--hero-bg))" opacity="0.32" />
-            <path d="M0,70 C260,118 560,116 860,90 C1120,68 1290,90 1440,82 L1440,140 L0,140 Z" fill="hsl(var(--hero-bg))" opacity="0.58" />
-            <path d="M0,92 C320,132 760,118 1080,98 C1260,86 1370,92 1440,90 L1440,140 L0,140 Z" fill="hsl(var(--background))" />
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[80px] w-full" preserveAspectRatio="none">
+            <path d="M0,30 C360,70 720,70 1080,40 C1280,24 1400,30 1440,28 L1440,80 L0,80 Z" fill="hsl(var(--background))" />
           </svg>
         </div>
       </section>
 
       {/* Social proof bar */}
-      <section className="py-6 px-6 border-b border-border/20">
+      <section className="py-4 px-6 border-b border-border/20">
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-muted-foreground">
           {["Trusted by 50+ dealerships", "2,000+ warranties issued", "£0/month — pay per warranty", "Cancel anytime"].map(item => (
             <div key={item} className="flex items-center gap-2">
@@ -194,7 +192,7 @@ export default function LandingPage() {
       </section>
 
       {/* Transition statement */}
-      <section className="py-24 px-6 hero-gradient relative overflow-hidden">
+      <section className="py-16 px-6 hero-gradient relative overflow-hidden">
         <div className="absolute inset-0 bg-[hsl(192,100%,12%)]/40 pointer-events-none" />
         <motion.div
           className="max-w-4xl mx-auto text-center relative"
@@ -210,7 +208,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing trust bar */}
-      <section className="py-5 px-6 border-y border-border/20 bg-secondary/20">
+      <section className="py-4 px-6 border-y border-border/20 bg-secondary/20">
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10">
           {["£0/month", "Only pay per warranty", "£19 per warranty issued", "No contracts or upfront costs"].map(item => (
             <div key={item} className="flex items-center gap-2 text-sm font-medium">
@@ -222,9 +220,9 @@ export default function LandingPage() {
       </section>
 
       {/* Problem */}
-      <section className="py-24 px-6">
+      <section className="py-16 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10">
             <motion.span
               className="text-[hsl(var(--cta))] text-xs font-semibold tracking-[0.2em] uppercase mb-4 block"
               initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
@@ -275,7 +273,7 @@ export default function LandingPage() {
       </section>
 
       {/* Solution */}
-      <section className="py-24 px-6 bg-secondary/30">
+      <section className="py-16 px-6 bg-secondary/30">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -335,9 +333,9 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24 px-6">
+      <section id="features" className="py-16 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Platform Features</span>
             <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Everything you need to stay in control</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">Built for UK dealers who want higher margins, faster claim decisions, and fewer admin headaches.</p>
@@ -367,9 +365,9 @@ export default function LandingPage() {
       </section>
 
       {/* Comparison */}
-      <section className="py-24 px-6 bg-secondary/30">
+      <section className="py-16 px-6 bg-secondary/30">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10">
             <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Dealer Comparison</span>
             <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">See the difference in one glance</h2>
             <p className="text-muted-foreground max-w-lg mx-auto">Built to make profit and control obvious, not hidden in paperwork and provider delays.</p>
@@ -414,9 +412,9 @@ export default function LandingPage() {
       </section>
 
       {/* How it Works */}
-      <section id="how-it-works" className="py-24 px-6">
+      <section id="how-it-works" className="py-16 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Simple Process</span>
             <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">How It Works</h2>
             <p className="text-muted-foreground">Get up and running fast with no risk.</p>
@@ -435,9 +433,9 @@ export default function LandingPage() {
       </section>
 
       {/* Optional Add-on: Dedicated Warranty Line */}
-      <section className="py-24 px-6 bg-secondary/30">
+      <section className="py-16 px-6 bg-secondary/30">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10">
             <span className="text-[hsl(var(--cta))] text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Optional Add-On</span>
             <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Look like a proper warranty department</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">Give your customers a dedicated line for warranty enquiries and claims.</p>
@@ -503,11 +501,11 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-24 px-6">
+      <section id="pricing" className="py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Pricing</span>
-          <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Simple, transparent pricing</h2>
-          <p className="text-muted-foreground mb-14">No monthly fees. No contracts. Pay only when you issue a warranty.</p>
+          <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Pricing</span>
+          <h2 className="text-3xl sm:text-4xl font-bold font-display mb-3">Simple, transparent pricing</h2>
+          <p className="text-muted-foreground mb-10">No monthly fees. No contracts. Pay only when you issue a warranty.</p>
           <motion.div
             className="glass-card-strong rounded-2xl p-10 sm:p-14 glow-primary relative overflow-hidden"
             initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
@@ -549,9 +547,9 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 px-6 bg-secondary/30">
+      <section className="py-16 px-6 bg-secondary/30">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10">
             <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Trust</span>
             <h2 className="text-3xl sm:text-4xl font-bold font-display mb-3">Built by someone with real dealership experience</h2>
             <p className="text-muted-foreground">Don't just take our word for it.</p>
@@ -577,13 +575,11 @@ export default function LandingPage() {
       {/* Final CTA with swoosh */}
       <section className="relative overflow-hidden bg-secondary/30">
         <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px bg-secondary/30">
-          <svg viewBox="0 0 1440 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[180px] w-full" preserveAspectRatio="none">
-            <path d="M0,86 C210,136 480,152 730,122 C980,92 1210,114 1440,84 L1440,180 L0,180 Z" fill="hsl(var(--hero-bg))" opacity="0.24" />
-            <path d="M0,108 C280,148 590,144 900,116 C1140,94 1308,112 1440,102 L1440,180 L0,180 Z" fill="hsl(var(--hero-bg))" opacity="0.52" />
-            <path d="M0,132 C360,164 760,150 1090,126 C1280,112 1390,118 1440,114 L1440,180 L0,180 Z" fill="hsl(var(--hero-bg))" />
+          <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[100px] w-full" preserveAspectRatio="none">
+            <path d="M0,60 C360,90 720,90 1080,50 C1280,30 1400,40 1440,38 L1440,100 L0,100 Z" fill="hsl(var(--hero-bg))" />
           </svg>
         </div>
-        <div className="hero-gradient pt-16 pb-24 px-6">
+        <div className="hero-gradient pt-12 pb-16 px-6">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
             <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
@@ -601,7 +597,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 px-6 border-t border-white/10 bg-[hsl(var(--hero-bg))]">
+      <footer className="py-8 px-6 border-t border-white/10 bg-[hsl(var(--hero-bg))]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
           <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
