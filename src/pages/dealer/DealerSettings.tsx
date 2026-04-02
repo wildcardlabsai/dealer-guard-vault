@@ -1,14 +1,21 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWarrantyLineStore } from "@/lib/warranty-line-store";
 import { demoDealers } from "@/data/demo-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Phone, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 export default function DealerSettings() {
   const { user } = useAuth();
-  const dealer = demoDealers.find(d => d.id === user?.dealerId);
+  const navigate = useNavigate();
+  const warrantyLineStore = useWarrantyLineStore();
+  const dealerId = user?.dealerId || "d-1";
+  const warrantyLine = warrantyLineStore.getLine(dealerId);
+  const dealer = demoDealers.find(d => d.id === dealerId);
   const [form, setForm] = useState({
     name: dealer?.name || "",
     email: dealer?.email || "",
@@ -70,6 +77,22 @@ export default function DealerSettings() {
           <Button variant="outline" size="sm" className="mt-3" onClick={() => toast.info("Upload simulated")}>Choose File</Button>
         </div>
       </div>
+      {/* Warranty Line Upgrade */}
+      {!warrantyLine && (
+        <div className="glass-card-strong rounded-xl p-6 glow-primary cursor-pointer hover:border-primary/40 transition-all"
+          onClick={() => navigate("/dealer/warranty-line")}>
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 rounded-lg bg-[hsl(var(--cta))]/10 flex items-center justify-center flex-shrink-0">
+              <Phone className="w-5 h-5 text-[hsl(var(--cta))]" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold font-display">Upgrade your customer experience</p>
+              <p className="text-sm text-muted-foreground">Add a dedicated warranty phone line — £25/month</p>
+            </div>
+            <ArrowRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
