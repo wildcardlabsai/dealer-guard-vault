@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useWarrantyStore } from "@/lib/warranty-store";
+import { useWarrantyLineStore } from "@/lib/warranty-line-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Clock, CheckCircle2, XCircle, MessageSquare, Upload } from "lucide-react";
+import { Plus, Clock, CheckCircle2, XCircle, MessageSquare, Upload, Phone } from "lucide-react";
 import { toast } from "sonner";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
@@ -20,8 +21,11 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
 export default function CustomerClaims() {
   const { user } = useAuth();
   const store = useWarrantyStore();
+  const warrantyLineStore = useWarrantyLineStore();
   const claims = store.claims.filter(c => c.customerId === user?.id);
   const warranties = store.warranties.filter(w => w.customerId === user?.id && w.status === "active");
+  const dealerId = warranties[0]?.dealerId;
+  const warrantyLine = dealerId ? warrantyLineStore.getLine(dealerId) : null;
   const [showNew, setShowNew] = useState(false);
   const [desc, setDesc] = useState("");
   const [selectedWarrantyId, setSelectedWarrantyId] = useState("");
@@ -58,6 +62,17 @@ export default function CustomerClaims() {
           <Plus className="w-4 h-4 mr-1" /> New Claim
         </Button>
       </div>
+
+      {/* Warranty line phone prompt */}
+      {warrantyLine?.status === "active" && warrantyLine.phoneNumber && (
+        <div className="glass-card rounded-xl p-4 flex items-center gap-3">
+          <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+          <div>
+            <p className="text-sm font-medium">Or call your warranty line</p>
+            <p className="text-lg font-bold font-display tracking-wide">{warrantyLine.phoneNumber}</p>
+          </div>
+        </div>
+      )}
 
       {showNew && (
         <div className="glass-card rounded-xl p-6 space-y-4 animate-fade-in">
