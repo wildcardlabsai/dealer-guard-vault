@@ -171,10 +171,12 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Hero bottom swoosh - smooth wave transition */}
-        <div className="relative">
-          <svg viewBox="0 0 1440 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block" preserveAspectRatio="none" style={{ display: 'block', marginBottom: '-1px' }}>
-            <path d="M0,64 C360,150 1080,-20 1440,80 L1440,160 L0,160 Z" fill="hsl(var(--background))" />
+        {/* Hero bottom swoosh */}
+        <div className="relative -mb-px">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block" preserveAspectRatio="none" style={{ height: '120px' }}>
+            <path d="M0,40 C240,100 480,110 720,80 C960,50 1200,90 1440,60 L1440,120 L0,120 Z" fill="hsl(192,100%,8%)" opacity="0.4" />
+            <path d="M0,60 C320,110 640,100 960,70 C1150,50 1320,80 1440,70 L1440,120 L0,120 Z" fill="hsl(192,100%,8%)" opacity="0.6" />
+            <path d="M0,80 C400,110 800,90 1100,75 C1280,65 1380,85 1440,80 L1440,120 L0,120 Z" fill="hsl(var(--background))" />
           </svg>
         </div>
       </section>
@@ -574,18 +576,15 @@ export default function LandingPage() {
 
       {/* Final CTA with swoosh */}
       <section className="relative overflow-hidden">
-        {/* Swoosh SVG divider - matching screenshot style */}
-        <div className="relative -mb-px">
-          <svg viewBox="0 0 1440 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto block" preserveAspectRatio="none">
-            {/* Background fill matching previous section */}
-            <rect width="1440" height="200" fill="hsl(var(--background))" />
-            {/* Multi-layer wave for depth */}
-            <path d="M0,120 C200,180 400,160 720,120 C1040,80 1280,140 1440,100 L1440,200 L0,200 Z" fill="hsl(192, 80%, 10%)" opacity="0.3" />
-            <path d="M0,140 C300,100 600,180 900,130 C1200,80 1350,150 1440,120 L1440,200 L0,200 Z" fill="hsl(192, 80%, 10%)" opacity="0.5" />
-            <path d="M0,160 C360,120 720,180 1080,140 C1300,110 1400,150 1440,140 L1440,200 L0,200 Z" fill="hsl(192, 80%, 10%)" />
+        {/* Swoosh - layered wave from light bg into dark CTA */}
+        <div className="relative bg-background -mb-px">
+          <svg viewBox="0 0 1440 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block" preserveAspectRatio="none" style={{ height: '180px' }}>
+            <path d="M0,90 C200,140 500,160 720,120 C940,80 1200,110 1440,80 L1440,180 L0,180 Z" fill="hsl(192,100%,8%)" opacity="0.25" />
+            <path d="M0,110 C280,150 560,140 840,110 C1060,85 1300,120 1440,100 L1440,180 L0,180 Z" fill="hsl(192,100%,8%)" opacity="0.5" />
+            <path d="M0,130 C360,155 720,140 1080,120 C1280,105 1400,125 1440,115 L1440,180 L0,180 Z" fill="hsl(192,100%,8%)" />
           </svg>
         </div>
-        <div className="bg-[hsl(192,80%,10%)] pt-16 pb-24 px-6">
+        <div className="bg-[hsl(192,100%,8%)] pt-16 pb-24 px-6">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
             <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
