@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/warrantylogo.png";
+import SEOHead from "@/components/SEOHead";
 
 export default function LoginPage() {
   const { login } = useAuth();
