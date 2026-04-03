@@ -23,6 +23,7 @@ export default function AddWarranty() {
   const [reg, setReg] = useState("");
   const [postcode, setPostcode] = useState("");
   const [vehicle, setVehicle] = useState<DVLAVehicle | null>(null);
+  const [dvsaData, setDvsaData] = useState<DVSAResult | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(false);
