@@ -79,6 +79,7 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen hero-gradient py-16 px-6">
+      <SEOHead title="Sign Up | WarrantyVault — Start Managing Your Own Warranties" description="Apply for a dealer account on WarrantyVault. Start managing self-funded car warranties in-house with full control and better margins." />
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-10">
           <Link to="/">
