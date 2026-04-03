@@ -100,6 +100,16 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
         <header className="md:hidden h-14 border-b border-border/50 flex items-center px-4 gap-3 bg-card/40">
           <img src={logo} alt="WarrantyVault" className="h-5" />
           <div className="flex-1" />
+          {/* Mobile notification bell */}
+          <div className="relative" ref={notifRef}>
+            <Button variant="ghost" size="icon" className="relative h-9 w-9" onClick={() => setShowNotifs(!showNotifs)}>
+              <Bell className="w-4 h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center font-bold">{unreadCount}</span>
+              )}
+            </Button>
+            {showNotifs && <NotificationDropdown notifications={notifications} notifStore={notifStore} userId={userId} navigate={navigate} onClose={() => setShowNotifs(false)} notifIcon={notifIcon} />}
+          </div>
           <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="w-4 h-4" /></Button>
         </header>
         {/* Mobile nav */}
