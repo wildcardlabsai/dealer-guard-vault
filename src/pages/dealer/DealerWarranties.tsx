@@ -180,10 +180,75 @@ export default function DealerWarranties() {
                 <div><span className="text-muted-foreground">Status:</span> <Badge variant="outline" className={`capitalize ${statusColors[selected.status]}`}>{selected.status}</Badge></div>
                 {selected.notes && <div className="col-span-2"><span className="text-muted-foreground">Notes:</span> <span className="font-medium">{selected.notes}</span></div>}
               </div>
-              <DialogFooter className="gap-2">
+              <DialogFooter className="gap-2 flex-wrap">
                 <Button variant="outline" size="sm" onClick={() => downloadCertificate(selected)}><Download className="w-4 h-4 mr-1" /> Download</Button>
                 <Button variant="outline" size="sm" onClick={() => printCertificate(selected)}><Printer className="w-4 h-4 mr-1" /> Print</Button>
+                <Button variant="outline" size="sm" onClick={() => { setSelectedId(null); setEmailDialogId(selected.id); setEmailMode("default"); setCustomEmail(""); }}>
+                  <Mail className="w-4 h-4 mr-1" /> Send to Customer
+                </Button>
                 <Button size="sm" onClick={() => openCertificate(selected)}><FileText className="w-4 h-4 mr-1" /> View Certificate</Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Send Certificate Email Dialog */}
+      <Dialog open={!!emailTarget} onOpenChange={() => { setEmailDialogId(null); setCustomEmail(""); setEmailMode("default"); }}>
+        <DialogContent className="max-w-md">
+          {emailTarget && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="font-display flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-primary" /> Send Certificate
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="bg-secondary/30 rounded-lg p-3 text-sm">
+                  <p className="font-medium">{emailTarget.customerName}</p>
+                  <p className="text-muted-foreground">{emailTarget.vehicleMake} {emailTarget.vehicleModel} — {emailTarget.vehicleReg}</p>
+                </div>
+
+                <RadioGroup value={emailMode} onValueChange={(v) => setEmailMode(v as "default" | "custom")} className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="default" id="email-default" />
+                    <Label htmlFor="email-default" className="text-sm cursor-pointer">
+                      Send to customer's email on file
+                      {(emailTarget as any).customerEmail && (
+                        <span className="text-muted-foreground ml-1">({(emailTarget as any).customerEmail})</span>
+                      )}
+                      {!(emailTarget as any).customerEmail && (
+                        <span className="text-muted-foreground ml-1">(no email on file)</span>
+                      )}
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="custom" id="email-custom" />
+                    <Label htmlFor="email-custom" className="text-sm cursor-pointer">Send to a different email address</Label>
+                  </div>
+                </RadioGroup>
+
+                {emailMode === "custom" && (
+                  <div className="space-y-2">
+                    <Label>Email Address</Label>
+                    <Input
+                      type="email"
+                      placeholder="customer@example.com"
+                      value={customEmail}
+                      onChange={e => setCustomEmail(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => { setEmailDialogId(null); setCustomEmail(""); }}>Cancel</Button>
+                <Button onClick={handleSendCertificate} disabled={sending}>
+                  {sending ? (
+                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...</>
+                  ) : (
+                    <><Mail className="w-4 h-4 mr-2" /> Send Certificate</>
+                  )}
+                </Button>
               </DialogFooter>
             </>
           )}
