@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useWarrantyLineStore } from "@/lib/warranty-line-store";
+import { useDealerSettingsStore } from "@/lib/dealer-settings-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
 import { Input } from "@/components/ui/input";
@@ -66,9 +67,11 @@ export default function DealerDashboard() {
   });
 
   // Sales target progress
+  const dealerSettingsStore = useDealerSettingsStore();
+  const dealerSettings = dealerSettingsStore.getSettings(dealerId);
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
-  const monthlyTarget = 10;
+  const monthlyTarget = dealerSettings.monthlySalesTarget;
   const thisMonthWarranties = warranties.filter(w => {
     const d = new Date(w.createdAt);
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
