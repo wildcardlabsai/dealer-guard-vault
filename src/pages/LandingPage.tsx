@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
+import { blogArticles } from "@/data/blog-articles";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -571,69 +572,30 @@ export default function LandingPage() {
             <p className="text-muted-foreground max-w-2xl mx-auto">Everything you need to know about running your own in-house warranty programme — from setup to claims handling.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                tag: "Guide",
-                title: "How to Self-Fund Car Warranties in the UK",
-                excerpt: "A step-by-step breakdown of setting up a self-funded warranty programme at your dealership. Learn how to retain profit margins, reduce dependency on third-party providers, and give your customers better service.",
-                keywords: "self-fund car warranties UK, dealer warranty guide",
-                readTime: "8 min read",
-              },
-              {
-                tag: "Strategy",
-                title: "Self-Funded vs Third-Party Warranties: Which Is More Profitable?",
-                excerpt: "Compare the real costs and margins of self-funded warranties against outsourced providers. Most UK dealers lose 40-60% of warranty revenue to third parties — here's how to keep it in-house.",
-                keywords: "self-funded vs third-party warranty, dealer warranty profit",
-                readTime: "6 min read",
-              },
-              {
-                tag: "Operations",
-                title: "Managing Used Car Warranty Claims In-House",
-                excerpt: "How to handle warranty claims efficiently without an external claims team. Covers claim workflows, approval processes, and how to keep customers happy while controlling costs.",
-                keywords: "used car warranty claims, in-house warranty claims UK",
-                readTime: "7 min read",
-              },
-              {
-                tag: "Compliance",
-                title: "Do You Need FCA Authorisation for Self-Funded Warranties?",
-                excerpt: "Understanding the regulatory landscape for dealer-funded warranties in the UK. When you're covered, when you need authorisation, and how to structure your programme correctly.",
-                keywords: "FCA warranty authorisation, dealer warranty compliance UK",
-                readTime: "5 min read",
-              },
-              {
-                tag: "Growth",
-                title: "How Dealers Use Warranties to Increase Customer Retention",
-                excerpt: "Warranties aren't just a cost centre — they're a powerful retention tool. Learn how top UK dealers use in-house warranty programmes to drive repeat business and workshop revenue.",
-                keywords: "dealer customer retention, warranty as retention tool",
-                readTime: "6 min read",
-              },
-              {
-                tag: "Finance",
-                title: "Setting the Right Warranty Price: A Margin Calculator for Dealers",
-                excerpt: "How to price your self-funded warranties for maximum profitability. Includes benchmarks from UK dealerships, average claim rates, and a simple formula to calculate your target margin.",
-                keywords: "warranty pricing UK dealers, self-funded warranty margin",
-                readTime: "5 min read",
-              },
-            ].map((article, i) => (
-              <motion.article
-                key={article.title}
+            {blogArticles.map((article, i) => (
+              <motion.div
+                key={article.slug}
                 custom={i}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={fadeUp}
-                className="glass-card rounded-xl p-6 flex flex-col group hover:border-primary/30 transition-colors cursor-pointer"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">{article.tag}</span>
-                  <span className="text-[11px] text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" />{article.readTime}</span>
-                </div>
-                <h3 className="font-semibold font-display text-base mb-3 group-hover:text-primary transition-colors leading-snug">{article.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed flex-1">{article.excerpt}</p>
-                <div className="mt-5 flex items-center gap-1 text-sm text-primary font-medium">
-                  Read more <ChevronRight className="w-4 h-4" />
-                </div>
-              </motion.article>
+                <Link
+                  to={`/blog/${article.slug}`}
+                  className="glass-card rounded-xl p-6 flex flex-col group hover:border-primary/30 transition-colors cursor-pointer h-full block"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">{article.tag}</span>
+                    <span className="text-[11px] text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" />{article.readTime}</span>
+                  </div>
+                  <h3 className="font-semibold font-display text-base mb-3 group-hover:text-primary transition-colors leading-snug">{article.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed flex-1">{article.excerpt}</p>
+                  <div className="mt-5 flex items-center gap-1 text-sm text-primary font-medium">
+                    Read more <ChevronRight className="w-4 h-4" />
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>

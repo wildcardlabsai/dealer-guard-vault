@@ -9,6 +9,7 @@ import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import NotFound from "@/pages/NotFound";
+import BlogArticlePage from "@/pages/BlogArticlePage";
 
 import DealerLayout from "@/components/layouts/DealerLayout";
 import DealerDashboard from "@/pages/dealer/DealerDashboard";
@@ -59,6 +60,7 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/blog/:slug" element={<BlogArticlePage />} />
 
       {/* Dealer Routes */}
       <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />
