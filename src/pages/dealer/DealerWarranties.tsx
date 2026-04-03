@@ -31,6 +31,10 @@ export default function DealerWarranties() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [emailDialogId, setEmailDialogId] = useState<string | null>(null);
+  const [emailMode, setEmailMode] = useState<"default" | "custom">("default");
+  const [customEmail, setCustomEmail] = useState("");
+  const [sending, setSending] = useState(false);
 
   const warranties = store.warranties
     .filter(w => w.dealerId === dealerId)
