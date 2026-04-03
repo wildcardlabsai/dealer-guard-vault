@@ -9,6 +9,7 @@ import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import NotFound from "@/pages/NotFound";
+import BlogArticlePage from "@/pages/BlogArticlePage";
 
 import DealerLayout from "@/components/layouts/DealerLayout";
 import DealerDashboard from "@/pages/dealer/DealerDashboard";
