@@ -1,11 +1,14 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNotificationStore } from "@/lib/notification-store";
 import {
   LayoutDashboard, FileText, Plus, ClipboardList, Users, MessageSquare,
-  FolderOpen, Settings, LogOut, ChevronLeft, Menu, Phone, Shield, Headphones, Sliders, LifeBuoy
+  FolderOpen, Settings, LogOut, ChevronLeft, Menu, Phone, Shield, Headphones, Sliders, LifeBuoy,
+  Bell, Check
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { useState, useRef, useEffect } from "react";
 import logo from "@/assets/warrantylogo.png";
 
 const navItems = [
