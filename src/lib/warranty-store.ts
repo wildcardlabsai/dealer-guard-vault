@@ -30,6 +30,8 @@ export function useWarrantyStore() {
     addWarranty(w: Warranty) {
       warranties = [w, ...warranties];
       auditLog = [{ id: `al-${Date.now()}`, dealerId: w.dealerId, userId: "", action: "warranty_created", details: `Created warranty for ${w.customerName}`, timestamp: new Date().toISOString() }, ...auditLog];
+      // Check all warranties for upcoming expiries and notify
+      checkExpiringWarranties(w.dealerId);
       notify();
     },
 

@@ -88,6 +88,13 @@ export function useClaimStore() {
         createdAt: new Date().toISOString().split("T")[0],
       };
       claims = [newClaim, ...claims];
+      // Push notification to the dealer
+      pushNotification(data.dealerId, {
+        type: "claim",
+        title: "New Claim Submitted",
+        message: `${data.customerName} submitted a claim for ${data.vehicleReg} – ${data.issueTitle}`,
+        link: "/dealer/claim-assist",
+      });
       notify();
       return newClaim;
     },
