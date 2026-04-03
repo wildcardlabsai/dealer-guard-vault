@@ -33,7 +33,7 @@ export default function AdminDashboard() {
   const totalRevenue = subscriptionRevenue + warrantyRevenue;
 
   // Pending actions
-  const pendingSignups = signupStore.requests.filter(r => r.status === "pending").length;
+  const pendingSignups = signupStore.signupRequests.filter(r => r.status === "pending").length;
   const openTickets = supportStore.tickets.filter(t => t.status === "open" || t.status === "in_progress").length;
   const pendingClaims = demoClaims.filter(c => c.status === "pending").length;
   const totalPending = pendingSignups + openTickets + pendingClaims;
