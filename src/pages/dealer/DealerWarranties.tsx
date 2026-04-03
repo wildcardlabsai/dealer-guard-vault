@@ -3,17 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
-import { openCertificate } from "@/lib/generate-certificate";
+import { openCertificate, generateCertificateHTML } from "@/lib/generate-certificate";
+import { sendCertificateEmail } from "@/lib/email-service";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { Plus, Search, Eye, Trash2, FileText, Download, Printer } from "lucide-react";
+import { Plus, Search, Eye, Trash2, FileText, Download, Printer, Mail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { printCertificate, downloadCertificate } from "@/lib/generate-certificate";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const statusColors: Record<string, string> = {
   active: "bg-primary/10 text-primary border-primary/20",
