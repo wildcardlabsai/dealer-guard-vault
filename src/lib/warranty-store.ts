@@ -33,6 +33,14 @@ function checkExpiringWarranties(dealerId: string) {
     });
 }
 
+// Run expiry check once per dealer on first access
+const checkedDealers = new Set<string>();
+function ensureExpiryCheck(dealerId: string) {
+  if (checkedDealers.has(dealerId)) return;
+  checkedDealers.add(dealerId);
+  checkExpiringWarranties(dealerId);
+}
+
 export function useWarrantyStore() {
   const [, setTick] = useState(0);
 
