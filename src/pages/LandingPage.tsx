@@ -39,6 +39,17 @@ const comparisonRows = [
   { label: "Dependency", left: "Provider outages and handoffs", right: "Fully in-house process you control" },
 ];
 
+const faqItems = [
+  { question: "What is a self-funded warranty?", answer: "A self-funded warranty means you, the dealer, underwrite the warranty yourself rather than paying a third-party provider. You set the terms, control the claims process, and keep the profit margin that would otherwise go to an external insurer." },
+  { question: "Do I need FCA authorisation to offer self-funded warranties?", answer: "If you're offering warranties as part of a vehicle sale and they're included in the price, you typically don't need FCA authorisation. However, if you're selling standalone warranty products separately, you may need to be FCA-regulated. We recommend checking with the FCA or a compliance adviser for your specific setup." },
+  { question: "How much can I save compared to third-party warranty providers?", answer: "Most dealers see significantly higher margins — typically keeping 70–90% of the warranty price instead of 20–40% with third-party providers. Your actual savings depend on claim rates, coverage levels, and pricing, but the shift to self-funding almost always increases profitability." },
+  { question: "How does WarrantyVault help me manage claims?", answer: "WarrantyVault gives you a complete claims dashboard where you can review, approve, or reject claims in real time. Customers submit claims through their portal, you get notified instantly, and you make the decision — no third-party delays or queues." },
+  { question: "What happens if I get a large claim I can't cover?", answer: "Smart dealers set aside a claims reserve fund from warranty revenue. WarrantyVault's profit tracking helps you monitor your reserve ratio so you're always prepared. Some dealers also use a hybrid model — self-funding smaller claims while insuring against catastrophic losses." },
+  { question: "Is WarrantyVault suitable for independent dealers?", answer: "Absolutely. WarrantyVault is built for independent and small-group dealers who want to take control of their warranty process without the overhead of enterprise software. You can start with a single dealership and scale as you grow." },
+  { question: "How do customers view their warranty and submit claims?", answer: "Each customer gets access to a dedicated portal where they can view their warranty details, download their certificate, and submit claims directly. This reduces inbound calls and gives customers a professional, transparent experience." },
+  { question: "What does WarrantyVault cost?", answer: "There are no monthly fees or subscriptions. You pay £19 per warranty issued — that's it. No setup costs, no hidden charges, and no long-term contracts." },
+];
+
 const testimonials = [
   { name: "Arjun K.", role: "Sales Director, Manchester", text: "Our team issues warranties in minutes now. No chasing providers and no spreadsheet mess." },
   { name: "Ben R.", role: "Independent Dealer, Bristol", text: "The customer portal has cut inbound calls and made us look far more professional." },
@@ -596,6 +607,55 @@ export default function LandingPage() {
                   </div>
                 </Link>
               </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section with JSON-LD */}
+      <section className="py-20 px-6">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faqItems.map((faq) => ({
+                "@type": "Question",
+                name: faq.question,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: faq.answer,
+                },
+              })),
+            }),
+          }}
+        />
+        <div className="max-w-3xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0} className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">FAQ</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mt-4 mb-3">Common questions from UK dealers</h2>
+            <p className="text-muted-foreground">Everything you need to know about self-funding your warranties.</p>
+          </motion.div>
+          <div className="space-y-4">
+            {faqItems.map((faq, i) => (
+              <motion.details
+                key={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                custom={i}
+                className="glass-card rounded-xl group"
+              >
+                <summary className="cursor-pointer px-6 py-5 font-semibold text-sm sm:text-base list-none flex items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
+                  {faq.question}
+                  <ChevronRight className="w-4 h-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" />
+                </summary>
+                <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed border-t border-border/50 pt-4">
+                  {faq.answer}
+                </div>
+              </motion.details>
             ))}
           </div>
         </div>
