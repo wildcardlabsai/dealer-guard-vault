@@ -6,9 +6,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   Shield, FileText, Users, ClipboardList, TrendingUp, AlertTriangle,
-  Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock, Phone
+  Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock, Phone,
+  Target, Activity, CalendarClock, PercentCircle
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
@@ -38,12 +41,39 @@ export default function DealerDashboard() {
   const warranties = store.warranties.filter(w => w.dealerId === dealerId);
   const claims = store.claims.filter(c => c.dealerId === dealerId);
   const customers = new Set(warranties.map(w => w.customerId)).size;
+  const dealerAuditLog = store.auditLog.filter(a => a.dealerId === dealerId);
 
   const active = warranties.filter(w => w.status === "active").length;
   const expired = warranties.filter(w => w.status === "expired").length;
   const totalValue = warranties.reduce((s, w) => s + w.cost, 0);
   const openClaims = claims.filter(c => c.status === "pending" || c.status === "under_review").length;
   const resolvedClaims = claims.filter(c => c.status === "approved" || c.status === "rejected").length;
+
+  // Claim approval rate
+  const approvedClaims = claims.filter(c => c.status === "approved").length;
+  const approvalRate = resolvedClaims > 0 ? Math.round((approvedClaims / resolvedClaims) * 100) : 0;
+
+  // Expiring warranties (within 30 days)
+  const now = new Date();
+  const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const expiringWarranties = warranties.filter(w => {
+    if (w.status !== "active") return false;
+    const end = new Date(w.endDate);
+    return end >= now && end <= in30Days;
+  }).map(w => {
+    const daysLeft = Math.ceil((new Date(w.endDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    return { ...w, daysLeft };
+  });
+
+  // Sales target progress
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const monthlyTarget = 10;
+  const thisMonthWarranties = warranties.filter(w => {
+    const d = new Date(w.createdAt);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  }).length;
+  const targetProgress = Math.min((thisMonthWarranties / monthlyTarget) * 100, 100);
 
   const [reg, setReg] = useState("");
   const [loading, setLoading] = useState(false);
@@ -74,6 +104,14 @@ export default function DealerDashboard() {
   ].filter(d => d.value > 0);
 
   const recentClaims = claims.slice(0, 4);
+  const recentActivity = dealerAuditLog.slice(0, 5);
+
+  const activityIcon = (action: string) => {
+    if (action.includes("warranty")) return Shield;
+    if (action.includes("claim")) return ClipboardList;
+    if (action.includes("customer")) return Users;
+    return Activity;
+  };
 
   return (
     <div className="space-y-6">
@@ -83,6 +121,30 @@ export default function DealerDashboard() {
           <p className="text-muted-foreground text-sm">Welcome back, {user?.name}</p>
         </div>
       </div>
+
+      {/* Expiring Warranties Alert */}
+      {expiringWarranties.length > 0 && (
+        <div className="glass-card rounded-xl p-4 border-yellow-500/30 bg-yellow-500/5">
+          <div className="flex items-center gap-2 mb-3">
+            <CalendarClock className="w-4 h-4 text-yellow-500" />
+            <h3 className="font-semibold font-display text-sm">Expiring Soon ({expiringWarranties.length})</h3>
+          </div>
+          <div className="space-y-2">
+            {expiringWarranties.map(w => (
+              <div key={w.id} className="flex items-center justify-between p-2 rounded-lg bg-secondary/30 hover:bg-secondary/50 cursor-pointer transition-colors"
+                onClick={() => navigate("/dealer/warranties")}>
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-sm">{w.vehicleReg}</span>
+                  <span className="text-sm text-muted-foreground">{w.vehicleMake} {w.vehicleModel}</span>
+                </div>
+                <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">
+                  {w.daysLeft} days left
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions Hero Section */}
       <div className="grid lg:grid-cols-2 gap-4">
@@ -162,16 +224,32 @@ export default function DealerDashboard() {
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
         <StatCard icon={FileText} label="Total Warranties" value={warranties.length} />
         <StatCard icon={Shield} label="Active" value={active} sub={`${expired} expired`} />
         <StatCard icon={TrendingUp} label="Total Value" value={`£${totalValue.toLocaleString()}`} />
         <StatCard icon={ClipboardList} label="Open Claims" value={openClaims} />
         <StatCard icon={AlertTriangle} label="Resolved Claims" value={resolvedClaims} />
         <StatCard icon={Users} label="Customers" value={customers} />
+        <StatCard icon={PercentCircle} label="Approval Rate" value={`${approvalRate}%`} sub={`${approvedClaims}/${resolvedClaims} approved`} />
       </div>
 
-      {/* Charts + Recent Claims */}
+      {/* Sales Target Progress */}
+      <div className="glass-card rounded-xl p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Target className="w-4 h-4 text-primary" />
+            <h3 className="font-semibold font-display text-sm">Monthly Sales Target</h3>
+          </div>
+          <span className="text-sm text-muted-foreground">{thisMonthWarranties} / {monthlyTarget} warranties</span>
+        </div>
+        <Progress value={targetProgress} className="h-2.5" />
+        <p className="text-xs text-muted-foreground mt-2">
+          {thisMonthWarranties >= monthlyTarget ? "🎉 Target reached!" : `${monthlyTarget - thisMonthWarranties} more to reach your target this month`}
+        </p>
+      </div>
+
+      {/* Charts + Recent Claims + Activity */}
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 glass-card rounded-xl p-6">
           <h3 className="font-semibold font-display mb-4">Monthly Revenue</h3>
@@ -223,6 +301,36 @@ export default function DealerDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Recent Activity Feed */}
+      <div className="glass-card rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Activity className="w-4 h-4 text-primary" />
+          <h3 className="font-semibold font-display">Recent Activity</h3>
+        </div>
+        <div className="space-y-3">
+          {recentActivity.length === 0 && <p className="text-sm text-muted-foreground">No activity recorded yet</p>}
+          {recentActivity.map(entry => {
+            const EntryIcon = activityIcon(entry.action);
+            return (
+              <div key={entry.id} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/20">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <EntryIcon className="w-3.5 h-3.5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium">{entry.details}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {new Date(entry.timestamp).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                    {" · "}
+                    {new Date(entry.timestamp).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Warranty Line Upsell */}
       {!warrantyLine && (
         <div className="glass-card rounded-xl p-5 flex items-center gap-4 cursor-pointer hover:border-[hsl(var(--cta))]/40 hover:bg-[hsl(var(--cta))]/5 transition-all"
