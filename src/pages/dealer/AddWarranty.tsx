@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield } from "lucide-react";
+import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AddWarranty() {
