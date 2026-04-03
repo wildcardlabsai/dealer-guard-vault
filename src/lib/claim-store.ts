@@ -100,6 +100,7 @@ export function useClaimStore() {
     },
 
     updateStatus(claimId: string, status: ClaimStatus, by: string) {
+      const existing = claims.find(c => c.id === claimId);
       claims = claims.map(c => {
         if (c.id === claimId) {
           return {
@@ -109,6 +110,15 @@ export function useClaimStore() {
         }
         return c;
       });
+      // Notify customer about status change
+      if (existing) {
+        pushNotification(existing.customerId, {
+          type: "claim",
+          title: "Claim Status Updated",
+          message: `Your claim for ${existing.vehicleReg} is now "${status.replace(/_/g, " ")}"`,
+          link: "/customer/claims",
+        });
+      }
       notify();
     },
 
