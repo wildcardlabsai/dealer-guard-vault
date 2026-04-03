@@ -1,14 +1,44 @@
 import { useState, useEffect, useCallback } from "react";
 import { Warranty, Claim, CustomerRequest, demoWarranties, demoClaims, demoRequests, demoAuditLog, AuditLog } from "@/data/demo-data";
+import { pushNotification } from "@/lib/notification-store";
 
 let warranties = [...demoWarranties];
 let claims = [...demoClaims];
 let requests = [...demoRequests];
 let auditLog = [...demoAuditLog];
 let listeners: (() => void)[] = [];
+const notifiedExpiries = new Set<string>();
 
 function notify() {
   listeners.forEach(l => l());
+}
+
+function checkExpiringWarranties(dealerId: string) {
+  const now = new Date();
+  const in14Days = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+  warranties
+    .filter(w => w.dealerId === dealerId && w.status === "active")
+    .forEach(w => {
+      const end = new Date(w.endDate);
+      if (end >= now && end <= in14Days && !notifiedExpiries.has(w.id)) {
+        notifiedExpiries.add(w.id);
+        const daysLeft = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        pushNotification(dealerId, {
+          type: "expiry",
+          title: "Warranty Expiring Soon",
+          message: `Warranty for ${w.vehicleReg} (${w.vehicleMake} ${w.vehicleModel}) expires in ${daysLeft} days`,
+          link: "/dealer/warranties",
+        });
+      }
+    });
+}
+
+// Run expiry check once per dealer on first access
+const checkedDealers = new Set<string>();
+function ensureExpiryCheck(dealerId: string) {
+  if (checkedDealers.has(dealerId)) return;
+  checkedDealers.add(dealerId);
+  checkExpiringWarranties(dealerId);
 }
 
 export function useWarrantyStore() {
@@ -25,10 +55,13 @@ export function useWarrantyStore() {
     claims,
     requests,
     auditLog,
+    ensureExpiryCheck,
 
     addWarranty(w: Warranty) {
       warranties = [w, ...warranties];
       auditLog = [{ id: `al-${Date.now()}`, dealerId: w.dealerId, userId: "", action: "warranty_created", details: `Created warranty for ${w.customerName}`, timestamp: new Date().toISOString() }, ...auditLog];
+      // Check all warranties for upcoming expiries and notify
+      checkExpiringWarranties(w.dealerId);
       notify();
     },
 

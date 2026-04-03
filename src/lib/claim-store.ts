@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { pushNotification } from "@/lib/notification-store";
 import {
   EnhancedClaim, ClaimStatus, ClaimDecision, ClaimChecklistItem, ClaimMessage,
   ClaimFile, ClaimTimelineEntry, demoEnhancedClaims, defaultChecklist,
@@ -87,11 +88,19 @@ export function useClaimStore() {
         createdAt: new Date().toISOString().split("T")[0],
       };
       claims = [newClaim, ...claims];
+      // Push notification to the dealer
+      pushNotification(data.dealerId, {
+        type: "claim",
+        title: "New Claim Submitted",
+        message: `${data.customerName} submitted a claim for ${data.vehicleReg} – ${data.issueTitle}`,
+        link: "/dealer/claim-assist",
+      });
       notify();
       return newClaim;
     },
 
     updateStatus(claimId: string, status: ClaimStatus, by: string) {
+      const existing = claims.find(c => c.id === claimId);
       claims = claims.map(c => {
         if (c.id === claimId) {
           return {
@@ -101,6 +110,15 @@ export function useClaimStore() {
         }
         return c;
       });
+      // Notify customer about status change
+      if (existing) {
+        pushNotification(existing.customerId, {
+          type: "claim",
+          title: "Claim Status Updated",
+          message: `Your claim for ${existing.vehicleReg} is now "${status.replace(/_/g, " ")}"`,
+          link: "/customer/claims",
+        });
+      }
       notify();
     },
 
