@@ -8,6 +8,7 @@ import { CheckCircle2, ArrowRight, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { useSignupStore } from "@/lib/signup-store";
 import logo from "@/assets/warrantylogo.png";
+import SEOHead from "@/components/SEOHead";
 
 export default function SignupPage() {
   const navigate = useNavigate();
