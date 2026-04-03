@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Real DVLA vehicle lookup via edge function
+// ─── DVLA Vehicle Lookup (real API) ───
+
 export interface DVLAVehicle {
   make: string;
   model: string;
@@ -20,7 +21,7 @@ export interface DVLAVehicle {
 
 export async function lookupVehicle(registration: string): Promise<DVLAVehicle | null> {
   const cleanReg = registration.replace(/\s/g, "").toUpperCase();
-  
+
   try {
     const { data, error } = await supabase.functions.invoke("dvla-lookup", {
       body: { registration: cleanReg },
@@ -43,25 +44,64 @@ export async function lookupVehicle(registration: string): Promise<DVLAVehicle |
   }
 }
 
-// Simulated Address Lookup (keeping postcode lookup as simulated for now)
-const postcodeDatabase: Record<string, { line1: string; line2: string; city: string; county: string; postcode: string }[]> = {
-  "SW1A1AA": [
-    { line1: "Buckingham Palace", line2: "", city: "London", county: "Greater London", postcode: "SW1A 1AA" },
-  ],
-  "B11QT": [
-    { line1: "1 Colmore Row", line2: "", city: "Birmingham", county: "West Midlands", postcode: "B1 1QT" },
-    { line1: "2 Colmore Row", line2: "Suite 4", city: "Birmingham", county: "West Midlands", postcode: "B1 1QT" },
-    { line1: "3 Colmore Row", line2: "", city: "Birmingham", county: "West Midlands", postcode: "B1 1QT" },
-  ],
-  "M11AA": [
-    { line1: "1 Piccadilly", line2: "", city: "Manchester", county: "Greater Manchester", postcode: "M1 1AA" },
-    { line1: "15 Portland Street", line2: "", city: "Manchester", county: "Greater Manchester", postcode: "M1 1AA" },
-  ],
-  "LS11UR": [
-    { line1: "1 City Square", line2: "", city: "Leeds", county: "West Yorkshire", postcode: "LS1 1UR" },
-    { line1: "10 Park Row", line2: "", city: "Leeds", county: "West Yorkshire", postcode: "LS1 1UR" },
-  ],
-};
+// ─── DVSA MOT History Lookup (real API) ───
+
+export interface MOTDefect {
+  text: string;
+  type: string;
+  dangerous: boolean;
+}
+
+export interface MOTTest {
+  completedDate: string;
+  testResult: string;
+  expiryDate: string;
+  odometerValue: string;
+  odometerUnit: string;
+  motTestNumber: string;
+  defects: MOTDefect[];
+}
+
+export interface DVSAResult {
+  registration: string;
+  make: string;
+  model: string;
+  colour: string;
+  fuelType: string;
+  firstUsedDate: string;
+  manufactureDate: string;
+  registrationDate: string;
+  motTestExpiryDate: string;
+  makeInFull: string;
+  motTests: MOTTest[];
+}
+
+export async function lookupMOTHistory(registration: string): Promise<DVSAResult | null> {
+  const cleanReg = registration.replace(/\s/g, "").toUpperCase();
+
+  try {
+    const { data, error } = await supabase.functions.invoke("dvsa-lookup", {
+      body: { registration: cleanReg },
+    });
+
+    if (error) {
+      console.error("DVSA lookup error:", error);
+      return null;
+    }
+
+    if (data?.error || !data?.result) {
+      console.warn("No MOT data found:", data?.error);
+      return null;
+    }
+
+    return data.result;
+  } catch (err) {
+    console.error("DVSA lookup failed:", err);
+    return null;
+  }
+}
+
+// ─── Real Postcode Lookup via postcodes.io (free, no API key) ───
 
 export interface Address {
   line1: string;
@@ -72,12 +112,70 @@ export interface Address {
 }
 
 export async function lookupPostcode(postcode: string): Promise<Address[]> {
-  await new Promise(r => setTimeout(r, 600));
   const clean = postcode.replace(/\s/g, "").toUpperCase();
-  const results = postcodeDatabase[clean];
-  if (results) return results;
-  return [
-    { line1: `${Math.floor(Math.random() * 100) + 1} High Street`, line2: "", city: "Anytown", county: "Countyshire", postcode: postcode.toUpperCase() },
-    { line1: `${Math.floor(Math.random() * 100) + 1} Station Road`, line2: "Flat B", city: "Anytown", county: "Countyshire", postcode: postcode.toUpperCase() },
-  ];
+
+  try {
+    const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(clean)}`);
+
+    if (!response.ok) {
+      console.warn("Postcode not found:", clean);
+      return [];
+    }
+
+    const data = await response.json();
+
+    if (data.status !== 200 || !data.result) {
+      return [];
+    }
+
+    const r = data.result;
+
+    // postcodes.io returns location data, not individual addresses
+    // We return the location info formatted as an address entry
+    return [
+      {
+        line1: r.parish || r.admin_ward || "",
+        line2: r.admin_district || "",
+        city: r.admin_district || r.region || "",
+        county: r.admin_county || r.region || "",
+        postcode: r.postcode || clean,
+      },
+    ];
+  } catch (err) {
+    console.error("Postcode lookup failed:", err);
+    return [];
+  }
+}
+
+// ─── Nearest postcodes for address suggestions ───
+
+export async function lookupPostcodeAddresses(postcode: string): Promise<Address[]> {
+  const clean = postcode.replace(/\s/g, "").toUpperCase();
+
+  try {
+    // Use autocomplete to get nearby postcodes, then resolve each
+    const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(clean)}/nearest`);
+
+    if (!response.ok) {
+      // Fall back to basic lookup
+      return lookupPostcode(postcode);
+    }
+
+    const data = await response.json();
+
+    if (data.status !== 200 || !data.result || !Array.isArray(data.result)) {
+      return lookupPostcode(postcode);
+    }
+
+    return data.result.map((r: any) => ({
+      line1: r.parish || r.admin_ward || "",
+      line2: r.admin_district || "",
+      city: r.admin_district || r.region || "",
+      county: r.admin_county || r.region || "",
+      postcode: r.postcode || clean,
+    }));
+  } catch (err) {
+    console.error("Postcode addresses lookup failed:", err);
+    return lookupPostcode(postcode);
+  }
 }
