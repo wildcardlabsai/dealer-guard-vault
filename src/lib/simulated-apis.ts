@@ -1,15 +1,6 @@
-// Simulated DVLA vehicle lookup
-const vehicleDatabase: Record<string, { make: string; model: string; colour: string; year: number; fuelType: string; engineSize: string; taxStatus: string; motExpiry: string }> = {
-  "AB12CDE": { make: "BMW", model: "320d M Sport", colour: "Black", year: 2021, fuelType: "Diesel", engineSize: "1995cc", taxStatus: "Taxed", motExpiry: "2025-08-15" },
-  "CD34FGH": { make: "Audi", model: "A4 S Line", colour: "White", year: 2020, fuelType: "Petrol", engineSize: "1984cc", taxStatus: "Taxed", motExpiry: "2025-03-22" },
-  "EF56IJK": { make: "Mercedes-Benz", model: "C200 AMG Line", colour: "Silver", year: 2022, fuelType: "Petrol", engineSize: "1496cc", taxStatus: "Taxed", motExpiry: "2025-11-01" },
-  "GH78LMN": { make: "Volkswagen", model: "Golf R", colour: "Blue", year: 2021, fuelType: "Petrol", engineSize: "1984cc", taxStatus: "Taxed", motExpiry: "2025-06-30" },
-  "IJ90OPQ": { make: "Ford", model: "Focus ST", colour: "Red", year: 2019, fuelType: "Petrol", engineSize: "2261cc", taxStatus: "Taxed", motExpiry: "2025-01-18" },
-  "KL12RST": { make: "Toyota", model: "Yaris Hybrid", colour: "Grey", year: 2023, fuelType: "Hybrid", engineSize: "1490cc", taxStatus: "Taxed", motExpiry: "2026-02-28" },
-  "MN34UVW": { make: "Range Rover", model: "Sport HSE", colour: "Green", year: 2022, fuelType: "Diesel", engineSize: "2996cc", taxStatus: "Taxed", motExpiry: "2025-09-10" },
-  "OP56XYZ": { make: "Nissan", model: "Qashqai Tekna", colour: "Black", year: 2020, fuelType: "Petrol", engineSize: "1332cc", taxStatus: "Taxed", motExpiry: "2025-04-05" },
-};
+import { supabase } from "@/integrations/supabase/client";
 
+// Real DVLA vehicle lookup via edge function
 export interface DVLAVehicle {
   make: string;
   model: string;
@@ -18,36 +9,41 @@ export interface DVLAVehicle {
   fuelType: string;
   engineSize: string;
   taxStatus: string;
+  motStatus?: string;
   motExpiry: string;
   registration: string;
+  dateOfFirstRegistration?: string;
+  co2Emissions?: number;
+  euroStatus?: string;
+  wheelplan?: string;
 }
 
 export async function lookupVehicle(registration: string): Promise<DVLAVehicle | null> {
-  await new Promise(r => setTimeout(r, 800));
-  const reg = registration.replace(/\s/g, "").toUpperCase();
-  const data = vehicleDatabase[reg];
-  if (!data) {
-    // Generate random vehicle for any reg
-    const makes = ["Ford", "Vauxhall", "Peugeot", "Kia", "Hyundai", "Honda", "Mazda"];
-    const models = ["Focus", "Corsa", "208", "Sportage", "Tucson", "Civic", "CX-5"];
-    const colours = ["Black", "White", "Silver", "Blue", "Red", "Grey"];
-    const i = Math.floor(Math.random() * makes.length);
-    return {
-      make: makes[i],
-      model: models[i],
-      colour: colours[Math.floor(Math.random() * colours.length)],
-      year: 2018 + Math.floor(Math.random() * 6),
-      fuelType: Math.random() > 0.5 ? "Petrol" : "Diesel",
-      engineSize: `${1000 + Math.floor(Math.random() * 2000)}cc`,
-      taxStatus: "Taxed",
-      motExpiry: "2025-12-31",
-      registration: reg,
-    };
+  const cleanReg = registration.replace(/\s/g, "").toUpperCase();
+  
+  try {
+    const { data, error } = await supabase.functions.invoke("dvla-lookup", {
+      body: { registration: cleanReg },
+    });
+
+    if (error) {
+      console.error("DVLA lookup error:", error);
+      return null;
+    }
+
+    if (data?.error || !data?.vehicle) {
+      console.warn("Vehicle not found:", data?.error);
+      return null;
+    }
+
+    return data.vehicle;
+  } catch (err) {
+    console.error("DVLA lookup failed:", err);
+    return null;
   }
-  return { ...data, registration: reg };
 }
 
-// Simulated Address Lookup
+// Simulated Address Lookup (keeping postcode lookup as simulated for now)
 const postcodeDatabase: Record<string, { line1: string; line2: string; city: string; county: string; postcode: string }[]> = {
   "SW1A1AA": [
     { line1: "Buckingham Palace", line2: "", city: "London", county: "Greater London", postcode: "SW1A 1AA" },
@@ -80,7 +76,6 @@ export async function lookupPostcode(postcode: string): Promise<Address[]> {
   const clean = postcode.replace(/\s/g, "").toUpperCase();
   const results = postcodeDatabase[clean];
   if (results) return results;
-  // Generate fake addresses for any postcode
   return [
     { line1: `${Math.floor(Math.random() * 100) + 1} High Street`, line2: "", city: "Anytown", county: "Countyshire", postcode: postcode.toUpperCase() },
     { line1: `${Math.floor(Math.random() * 100) + 1} Station Road`, line2: "Flat B", city: "Anytown", county: "Countyshire", postcode: postcode.toUpperCase() },

@@ -38,6 +38,8 @@ export default function AddWarranty() {
     if (result) {
       toast.success(`Vehicle found: ${result.make} ${result.model}`);
       setStep(2);
+    } else {
+      toast.error("Vehicle not found. Please check the registration and try again.");
     }
   };
 
