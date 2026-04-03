@@ -33,11 +33,20 @@ export default function AddWarranty() {
   const handleVehicleLookup = async () => {
     if (!reg.trim()) return;
     setLoading(true);
-    const result = await lookupVehicle(reg);
-    setVehicle(result);
+    // Fetch DVLA and DVSA data in parallel
+    const [dvlaResult, dvsaResult] = await Promise.all([
+      lookupVehicle(reg),
+      lookupMOTHistory(reg),
+    ]);
+    setVehicle(dvlaResult);
+    setDvsaData(dvsaResult);
     setLoading(false);
-    if (result) {
-      toast.success(`Vehicle found: ${result.make} ${result.model}`);
+    if (dvlaResult) {
+      // Pre-fill mileage from latest MOT if available
+      if (dvsaResult?.motTests?.[0]?.odometerValue) {
+        setForm(f => ({ ...f, mileage: dvsaResult.motTests[0].odometerValue }));
+      }
+      toast.success(`Vehicle found: ${dvlaResult.make} ${dvlaResult.model}`);
       setStep(2);
     } else {
       toast.error("Vehicle not found. Please check the registration and try again.");
