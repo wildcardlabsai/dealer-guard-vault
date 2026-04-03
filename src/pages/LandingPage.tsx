@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
+import { blogArticles } from "@/data/blog-articles";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
