@@ -7,9 +7,30 @@ let claims = [...demoClaims];
 let requests = [...demoRequests];
 let auditLog = [...demoAuditLog];
 let listeners: (() => void)[] = [];
+const notifiedExpiries = new Set<string>();
 
 function notify() {
   listeners.forEach(l => l());
+}
+
+function checkExpiringWarranties(dealerId: string) {
+  const now = new Date();
+  const in14Days = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+  warranties
+    .filter(w => w.dealerId === dealerId && w.status === "active")
+    .forEach(w => {
+      const end = new Date(w.endDate);
+      if (end >= now && end <= in14Days && !notifiedExpiries.has(w.id)) {
+        notifiedExpiries.add(w.id);
+        const daysLeft = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        pushNotification(dealerId, {
+          type: "expiry",
+          title: "Warranty Expiring Soon",
+          message: `Warranty for ${w.vehicleReg} (${w.vehicleMake} ${w.vehicleModel}) expires in ${daysLeft} days`,
+          link: "/dealer/warranties",
+        });
+      }
+    });
 }
 
 export function useWarrantyStore() {
