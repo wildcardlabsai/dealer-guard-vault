@@ -143,6 +143,9 @@ export default function DealerWarranties() {
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openCertificate(w)} title="Certificate">
                         <FileText className="w-4 h-4" />
                       </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEmailDialogId(w.id); setEmailMode("default"); setCustomEmail(""); }} title="Email Certificate">
+                        <Mail className="w-4 h-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => { store.deleteWarranty(w.id); toast.success("Warranty deleted"); }} title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </Button>
