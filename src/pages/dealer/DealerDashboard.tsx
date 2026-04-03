@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useWarrantyLineStore } from "@/lib/warranty-line-store";
+import { useDealerSettingsStore } from "@/lib/dealer-settings-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
 import { Input } from "@/components/ui/input";
