@@ -46,6 +46,43 @@ export default function DealerWarranties() {
     );
 
   const selected = warranties.find(w => w.id === selectedId);
+  const emailTarget = warranties.find(w => w.id === emailDialogId);
+
+  const handleSendCertificate = async () => {
+    if (!emailTarget) return;
+    const targetEmail = emailMode === "custom" ? customEmail.trim() : "";
+    // For "default" mode, we'd use the customer's email from the warranty record
+    // Since demo data doesn't store customer email, we need custom email for now
+    if (emailMode === "custom" && !targetEmail) {
+      toast.error("Please enter an email address");
+      return;
+    }
+    if (emailMode === "default" && !(emailTarget as any).customerEmail) {
+      toast.error("No email on file for this customer. Please enter a custom email address.");
+      setEmailMode("custom");
+      return;
+    }
+    const finalEmail = emailMode === "default" ? (emailTarget as any).customerEmail : targetEmail;
+    setSending(true);
+    try {
+      const certHtml = generateCertificateHTML(emailTarget);
+      const success = await sendCertificateEmail(
+        finalEmail, emailTarget.customerName, certHtml,
+        emailTarget.vehicleReg, emailTarget.vehicleMake, emailTarget.vehicleModel
+      );
+      if (success) {
+        toast.success(`Certificate sent to ${finalEmail}`);
+        setEmailDialogId(null);
+        setCustomEmail("");
+        setEmailMode("default");
+      } else {
+        toast.error("Failed to send certificate. Please try again.");
+      }
+    } catch {
+      toast.error("An error occurred sending the certificate.");
+    }
+    setSending(false);
+  };
 
   return (
     <div className="space-y-6">
