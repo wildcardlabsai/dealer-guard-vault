@@ -32,8 +32,30 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
   const location = useLocation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const notifStore = useNotificationStore();
+  const userId = user?.id || "dealer-1";
+  const unreadCount = notifStore.unreadCount(userId);
+  const notifications = notifStore.getNotifications(userId);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setShowNotifs(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const handleLogout = () => { logout(); navigate("/"); };
+
+  const notifIcon = (type: string) => {
+    if (type === "claim") return ClipboardList;
+    if (type === "warranty") return Shield;
+    if (type === "expiry") return FileText;
+    if (type === "support") return LifeBuoy;
+    return Bell;
+  };
 
   return (
     <div className="min-h-screen flex bg-background">
