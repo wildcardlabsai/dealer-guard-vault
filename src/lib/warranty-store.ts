@@ -55,6 +55,7 @@ export function useWarrantyStore() {
     claims,
     requests,
     auditLog,
+    ensureExpiryCheck,
 
     addWarranty(w: Warranty) {
       warranties = [w, ...warranties];
