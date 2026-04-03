@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { pushNotification } from "@/lib/notification-store";
 import {
   EnhancedClaim, ClaimStatus, ClaimDecision, ClaimChecklistItem, ClaimMessage,
   ClaimFile, ClaimTimelineEntry, demoEnhancedClaims, defaultChecklist,

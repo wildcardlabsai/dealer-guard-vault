@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Warranty, Claim, CustomerRequest, demoWarranties, demoClaims, demoRequests, demoAuditLog, AuditLog } from "@/data/demo-data";
+import { pushNotification } from "@/lib/notification-store";
 
 let warranties = [...demoWarranties];
 let claims = [...demoClaims];
