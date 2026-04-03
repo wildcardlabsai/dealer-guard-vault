@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { lookupVehicle, lookupPostcode, type DVLAVehicle, type Address } from "@/lib/simulated-apis";
+import { lookupVehicle, lookupPostcode, lookupMOTHistory, type DVLAVehicle, type DVSAResult, type Address } from "@/lib/simulated-apis";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useCoverStore } from "@/lib/cover-store";
 import { useAuth } from "@/contexts/AuthContext";
