@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/warrantylogo.png";
+import SEOHead from "@/components/SEOHead";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -39,6 +40,8 @@ export default function LoginPage() {
   };
 
   return (
+    <>
+      <SEOHead title="Sign In | WarrantyVault" description="Sign in to your WarrantyVault account to manage your self-funded car warranties." />
     <div className="min-h-screen flex items-center justify-center px-6 relative">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
       <div className="absolute top-20 right-1/4 w-[400px] h-[400px] bg-primary/8 rounded-full blur-[100px] pointer-events-none" />
@@ -95,5 +98,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

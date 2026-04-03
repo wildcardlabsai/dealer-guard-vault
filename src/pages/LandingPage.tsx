@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
+import SEOHead from "@/components/SEOHead";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -60,6 +61,11 @@ const problemCards = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Self-Funded Car Warranty Software for UK Dealers | WarrantyVault"
+        description="Create, manage and handle self-funded car warranties in-house. No third-party providers. Better margins, faster decisions, full control for UK dealerships."
+        canonical="https://dealer-guard-vault.lovable.app/"
+      />
       {/* Nav */}
       <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
