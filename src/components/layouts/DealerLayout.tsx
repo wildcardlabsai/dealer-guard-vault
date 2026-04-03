@@ -127,10 +127,69 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
             );
           })}
         </div>
+        {/* Desktop notification bell in top bar */}
+        <div className="hidden md:flex items-center justify-end px-6 py-2 border-b border-border/30">
+          <div className="relative" ref={notifRef}>
+            <Button variant="ghost" size="icon" className="relative h-9 w-9" onClick={() => setShowNotifs(!showNotifs)}>
+              <Bell className="w-4 h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center font-bold">{unreadCount}</span>
+              )}
+            </Button>
+            {showNotifs && <NotificationDropdown notifications={notifications} notifStore={notifStore} userId={userId} navigate={navigate} onClose={() => setShowNotifs(false)} notifIcon={notifIcon} />}
+          </div>
+        </div>
         <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>
+    </div>
+  );
+}
+
+function NotificationDropdown({ notifications, notifStore, userId, navigate, onClose, notifIcon }: any) {
+  return (
+    <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-auto rounded-xl border border-border bg-card shadow-xl z-50 animate-fade-in">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
+        <h3 className="font-semibold font-display text-sm">Notifications</h3>
+        <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => notifStore.markAllRead(userId)}>
+          <Check className="w-3 h-3 mr-1" /> Mark all read
+        </Button>
+      </div>
+      {notifications.length === 0 ? (
+        <p className="p-4 text-sm text-muted-foreground text-center">No notifications</p>
+      ) : (
+        <div className="divide-y divide-border/30">
+          {notifications.slice(0, 15).map((n: any) => {
+            const Icon = notifIcon(n.type);
+            return (
+              <button
+                key={n.id}
+                className={`w-full text-left px-4 py-3 hover:bg-secondary/50 transition-colors flex items-start gap-3 ${!n.read ? "bg-primary/5" : ""}`}
+                onClick={() => {
+                  notifStore.markRead(userId, n.id);
+                  if (n.link) navigate(n.link);
+                  onClose();
+                }}
+              >
+                <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${!n.read ? "bg-primary/15" : "bg-secondary"}`}>
+                  <Icon className={`w-3.5 h-3.5 ${!n.read ? "text-primary" : "text-muted-foreground"}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm ${!n.read ? "font-medium" : "text-muted-foreground"}`}>{n.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.message}</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">
+                    {new Date(n.timestamp).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                    {" · "}
+                    {new Date(n.timestamp).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
+                {!n.read && <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

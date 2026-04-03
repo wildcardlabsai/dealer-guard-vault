@@ -72,6 +72,30 @@ export default function DealerSettings() {
         <Button onClick={() => toast.success("Settings saved")} className="glow-primary-sm">Save Changes</Button>
       </div>
 
+      {/* Sales Target */}
+      <div className="glass-card rounded-xl p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <Target className="w-4 h-4 text-primary" />
+          <h2 className="font-semibold font-display">Monthly Sales Target</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">Set the number of warranties you aim to sell each month. This is shown on your dashboard.</p>
+        <div className="flex items-end gap-3">
+          <div className="space-y-2 flex-1 max-w-[200px]">
+            <Label>Target (warranties/month)</Label>
+            <Input
+              type="number"
+              min={1}
+              max={999}
+              value={salesTarget}
+              onChange={e => setSalesTarget(Math.max(1, parseInt(e.target.value) || 1))}
+            />
+          </div>
+          <Button onClick={() => { dealerSettingsStore.updateSettings(dealerId, { monthlySalesTarget: salesTarget }); toast.success(`Sales target updated to ${salesTarget}`); }} className="glow-primary-sm">
+            Save Target
+          </Button>
+        </div>
+      </div>
+
       <div className="glass-card rounded-xl p-6 space-y-4">
         <h2 className="font-semibold font-display">Logo</h2>
         <p className="text-sm text-muted-foreground">Upload your dealership logo for branded documents</p>

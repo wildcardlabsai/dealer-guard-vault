@@ -67,9 +67,11 @@ export default function DealerDashboard() {
   });
 
   // Sales target progress
+  const dealerSettingsStore = useDealerSettingsStore();
+  const dealerSettings = dealerSettingsStore.getSettings(dealerId);
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
-  const monthlyTarget = 10;
+  const monthlyTarget = dealerSettings.monthlySalesTarget;
   const thisMonthWarranties = warranties.filter(w => {
     const d = new Date(w.createdAt);
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
