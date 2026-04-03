@@ -158,3 +158,20 @@ export async function sendSupportTicketEmail(dealerEmail: string, dealerName: st
 export async function sendDealerCreatedEmail(email: string, dealerName: string, password: string): Promise<boolean> {
   return sendDealerApprovalEmail(email, dealerName, password);
 }
+
+export async function sendCertificateEmail(
+  email: string, customerName: string, certificateHtml: string, vehicleReg: string, vehicleMake: string, vehicleModel: string
+): Promise<boolean> {
+  return sendEmail(email, `Your Warranty Certificate — ${vehicleReg} — ${brandName}`, layout(`
+    <h2 style="margin:0 0 16px;color:#111827;font-size:20px;">Your Warranty Certificate</h2>
+    <p style="color:#4b5563;font-size:14px;line-height:1.6;">Hi ${customerName},</p>
+    <p style="color:#4b5563;font-size:14px;line-height:1.6;">Please find your warranty certificate for your <strong>${vehicleMake} ${vehicleModel}</strong> (${vehicleReg}) below.</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0fdfa;border:1px solid #99f6e4;border-radius:6px;margin:20px 0;">
+      <tr><td style="padding:16px;">
+        ${certificateHtml}
+      </td></tr>
+    </table>
+    <p style="color:#4b5563;font-size:13px;">You can also view and download your certificate at any time by logging into your customer portal.</p>
+    ${btn("View Your Warranty", "https://warrantyvault.co.uk/login")}
+  `));
+}

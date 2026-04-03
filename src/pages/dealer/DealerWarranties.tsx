@@ -3,17 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
-import { openCertificate } from "@/lib/generate-certificate";
+import { openCertificate, generateCertificateHTML } from "@/lib/generate-certificate";
+import { sendCertificateEmail } from "@/lib/email-service";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { Plus, Search, Eye, Trash2, FileText, Download, Printer } from "lucide-react";
+import { Plus, Search, Eye, Trash2, FileText, Download, Printer, Mail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { printCertificate, downloadCertificate } from "@/lib/generate-certificate";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const statusColors: Record<string, string> = {
   active: "bg-primary/10 text-primary border-primary/20",
@@ -28,6 +31,10 @@ export default function DealerWarranties() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [emailDialogId, setEmailDialogId] = useState<string | null>(null);
+  const [emailMode, setEmailMode] = useState<"default" | "custom">("default");
+  const [customEmail, setCustomEmail] = useState("");
+  const [sending, setSending] = useState(false);
 
   const warranties = store.warranties
     .filter(w => w.dealerId === dealerId)
@@ -39,6 +46,43 @@ export default function DealerWarranties() {
     );
 
   const selected = warranties.find(w => w.id === selectedId);
+  const emailTarget = warranties.find(w => w.id === emailDialogId);
+
+  const handleSendCertificate = async () => {
+    if (!emailTarget) return;
+    const targetEmail = emailMode === "custom" ? customEmail.trim() : "";
+    // For "default" mode, we'd use the customer's email from the warranty record
+    // Since demo data doesn't store customer email, we need custom email for now
+    if (emailMode === "custom" && !targetEmail) {
+      toast.error("Please enter an email address");
+      return;
+    }
+    if (emailMode === "default" && !(emailTarget as any).customerEmail) {
+      toast.error("No email on file for this customer. Please enter a custom email address.");
+      setEmailMode("custom");
+      return;
+    }
+    const finalEmail = emailMode === "default" ? (emailTarget as any).customerEmail : targetEmail;
+    setSending(true);
+    try {
+      const certHtml = generateCertificateHTML(emailTarget);
+      const success = await sendCertificateEmail(
+        finalEmail, emailTarget.customerName, certHtml,
+        emailTarget.vehicleReg, emailTarget.vehicleMake, emailTarget.vehicleModel
+      );
+      if (success) {
+        toast.success(`Certificate sent to ${finalEmail}`);
+        setEmailDialogId(null);
+        setCustomEmail("");
+        setEmailMode("default");
+      } else {
+        toast.error("Failed to send certificate. Please try again.");
+      }
+    } catch {
+      toast.error("An error occurred sending the certificate.");
+    }
+    setSending(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -99,6 +143,9 @@ export default function DealerWarranties() {
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openCertificate(w)} title="Certificate">
                         <FileText className="w-4 h-4" />
                       </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEmailDialogId(w.id); setEmailMode("default"); setCustomEmail(""); }} title="Email Certificate">
+                        <Mail className="w-4 h-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => { store.deleteWarranty(w.id); toast.success("Warranty deleted"); }} title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -133,10 +180,75 @@ export default function DealerWarranties() {
                 <div><span className="text-muted-foreground">Status:</span> <Badge variant="outline" className={`capitalize ${statusColors[selected.status]}`}>{selected.status}</Badge></div>
                 {selected.notes && <div className="col-span-2"><span className="text-muted-foreground">Notes:</span> <span className="font-medium">{selected.notes}</span></div>}
               </div>
-              <DialogFooter className="gap-2">
+              <DialogFooter className="gap-2 flex-wrap">
                 <Button variant="outline" size="sm" onClick={() => downloadCertificate(selected)}><Download className="w-4 h-4 mr-1" /> Download</Button>
                 <Button variant="outline" size="sm" onClick={() => printCertificate(selected)}><Printer className="w-4 h-4 mr-1" /> Print</Button>
+                <Button variant="outline" size="sm" onClick={() => { setSelectedId(null); setEmailDialogId(selected.id); setEmailMode("default"); setCustomEmail(""); }}>
+                  <Mail className="w-4 h-4 mr-1" /> Send to Customer
+                </Button>
                 <Button size="sm" onClick={() => openCertificate(selected)}><FileText className="w-4 h-4 mr-1" /> View Certificate</Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Send Certificate Email Dialog */}
+      <Dialog open={!!emailTarget} onOpenChange={() => { setEmailDialogId(null); setCustomEmail(""); setEmailMode("default"); }}>
+        <DialogContent className="max-w-md">
+          {emailTarget && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="font-display flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-primary" /> Send Certificate
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="bg-secondary/30 rounded-lg p-3 text-sm">
+                  <p className="font-medium">{emailTarget.customerName}</p>
+                  <p className="text-muted-foreground">{emailTarget.vehicleMake} {emailTarget.vehicleModel} — {emailTarget.vehicleReg}</p>
+                </div>
+
+                <RadioGroup value={emailMode} onValueChange={(v) => setEmailMode(v as "default" | "custom")} className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="default" id="email-default" />
+                    <Label htmlFor="email-default" className="text-sm cursor-pointer">
+                      Send to customer's email on file
+                      {(emailTarget as any).customerEmail && (
+                        <span className="text-muted-foreground ml-1">({(emailTarget as any).customerEmail})</span>
+                      )}
+                      {!(emailTarget as any).customerEmail && (
+                        <span className="text-muted-foreground ml-1">(no email on file)</span>
+                      )}
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="custom" id="email-custom" />
+                    <Label htmlFor="email-custom" className="text-sm cursor-pointer">Send to a different email address</Label>
+                  </div>
+                </RadioGroup>
+
+                {emailMode === "custom" && (
+                  <div className="space-y-2">
+                    <Label>Email Address</Label>
+                    <Input
+                      type="email"
+                      placeholder="customer@example.com"
+                      value={customEmail}
+                      onChange={e => setCustomEmail(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => { setEmailDialogId(null); setCustomEmail(""); }}>Cancel</Button>
+                <Button onClick={handleSendCertificate} disabled={sending}>
+                  {sending ? (
+                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...</>
+                  ) : (
+                    <><Mail className="w-4 h-4 mr-2" /> Send Certificate</>
+                  )}
+                </Button>
               </DialogFooter>
             </>
           )}
