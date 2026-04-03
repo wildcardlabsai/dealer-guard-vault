@@ -16,7 +16,10 @@ export default function DealerSettings() {
   const warrantyLineStore = useWarrantyLineStore();
   const dealerId = user?.dealerId || "d-1";
   const warrantyLine = warrantyLineStore.getLine(dealerId);
+  const dealerSettingsStore = useDealerSettingsStore();
+  const dealerSettings = dealerSettingsStore.getSettings(dealerId);
   const dealer = demoDealers.find(d => d.id === dealerId);
+  const [salesTarget, setSalesTarget] = useState(dealerSettings.monthlySalesTarget);
   const [form, setForm] = useState({
     name: dealer?.name || "",
     email: dealer?.email || "",
