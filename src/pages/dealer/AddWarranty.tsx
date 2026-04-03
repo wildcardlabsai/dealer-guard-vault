@@ -139,13 +139,13 @@ export default function AddWarranty() {
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">Try: AB12 CDE, CD34 FGH, EF56 IJK or any reg</p>
+            <p className="text-xs text-muted-foreground">Enter any UK vehicle registration number</p>
           </div>
 
           {vehicle && (
-            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2 animate-fade-in">
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-3 animate-fade-in">
               <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                <CheckCircle2 className="w-4 h-4" /> Vehicle Found
+                <CheckCircle2 className="w-4 h-4" /> Vehicle Found (DVLA)
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div><span className="text-muted-foreground">Make:</span> <span className="font-medium">{vehicle.make}</span></div>
@@ -154,7 +154,52 @@ export default function AddWarranty() {
                 <div><span className="text-muted-foreground">Colour:</span> <span className="font-medium">{vehicle.colour}</span></div>
                 <div><span className="text-muted-foreground">Fuel:</span> <span className="font-medium">{vehicle.fuelType}</span></div>
                 <div><span className="text-muted-foreground">Engine:</span> <span className="font-medium">{vehicle.engineSize}</span></div>
+                {vehicle.taxStatus && <div><span className="text-muted-foreground">Tax:</span> <span className="font-medium">{vehicle.taxStatus}</span></div>}
+                {vehicle.motStatus && <div><span className="text-muted-foreground">MOT:</span> <span className="font-medium">{vehicle.motStatus}</span></div>}
               </div>
+            </div>
+          )}
+
+          {dvsaData && (
+            <div className="bg-secondary/30 border border-border rounded-lg p-4 space-y-3 animate-fade-in">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <FileText className="w-4 h-4 text-primary" /> MOT History (DVSA)
+              </div>
+              {dvsaData.motTestExpiryDate && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">MOT Expires:</span>{" "}
+                  <span className="font-medium">{dvsaData.motTestExpiryDate}</span>
+                </div>
+              )}
+              {dvsaData.motTests.length > 0 ? (
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {dvsaData.motTests.slice(0, 5).map((test, i) => (
+                    <div key={i} className="bg-background/50 rounded-md p-2 text-xs space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">{test.completedDate}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${test.testResult === "PASSED" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"}`}>
+                          {test.testResult}
+                        </span>
+                      </div>
+                      {test.odometerValue && (
+                        <div className="text-muted-foreground">Mileage: {Number(test.odometerValue).toLocaleString()} {test.odometerUnit?.toLowerCase()}</div>
+                      )}
+                      {test.defects.length > 0 && (
+                        <div className="space-y-0.5">
+                          {test.defects.map((d, j) => (
+                            <div key={j} className="flex items-start gap-1 text-muted-foreground">
+                              <AlertTriangle className="w-3 h-3 mt-0.5 shrink-0 text-amber-500" />
+                              <span>{d.text}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">No MOT test history available</p>
+              )}
             </div>
           )}
         </div>
