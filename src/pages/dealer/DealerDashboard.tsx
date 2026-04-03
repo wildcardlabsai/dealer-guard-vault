@@ -39,6 +39,7 @@ export default function DealerDashboard() {
   const warrantyLineStore = useWarrantyLineStore();
   const dealerId = user?.dealerId || "d-1";
   const warrantyLine = warrantyLineStore.getLine(dealerId);
+  store.ensureExpiryCheck(dealerId);
   const warranties = store.warranties.filter(w => w.dealerId === dealerId);
   const claims = store.claims.filter(c => c.dealerId === dealerId);
   const customers = new Set(warranties.map(w => w.customerId)).size;
