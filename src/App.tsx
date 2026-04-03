@@ -10,6 +10,10 @@ import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import NotFound from "@/pages/NotFound";
 import BlogArticlePage from "@/pages/BlogArticlePage";
+import FeaturesPage from "@/pages/FeaturesPage";
+import WarrantyLinePage from "@/pages/WarrantyLinePage";
+import FAQPage from "@/pages/FAQPage";
+import BlogIndexPage from "@/pages/BlogIndexPage";
 
 import DealerLayout from "@/components/layouts/DealerLayout";
 import DealerDashboard from "@/pages/dealer/DealerDashboard";
