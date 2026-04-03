@@ -601,6 +601,55 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ Section with JSON-LD */}
+      <section className="py-20 px-6">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faqItems.map((faq) => ({
+                "@type": "Question",
+                name: faq.question,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: faq.answer,
+                },
+              })),
+            }),
+          }}
+        />
+        <div className="max-w-3xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0} className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">FAQ</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mt-4 mb-3">Common questions from UK dealers</h2>
+            <p className="text-muted-foreground">Everything you need to know about self-funding your warranties.</p>
+          </motion.div>
+          <div className="space-y-4">
+            {faqItems.map((faq, i) => (
+              <motion.details
+                key={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                custom={i}
+                className="glass-card rounded-xl group"
+              >
+                <summary className="cursor-pointer px-6 py-5 font-semibold text-sm sm:text-base list-none flex items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
+                  {faq.question}
+                  <ChevronRight className="w-4 h-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" />
+                </summary>
+                <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed border-t border-border/50 pt-4">
+                  {faq.answer}
+                </div>
+              </motion.details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="hero-gradient pt-20 pb-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
