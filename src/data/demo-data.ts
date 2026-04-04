@@ -41,6 +41,7 @@ export interface Warranty {
   id: string;
   customerId: string;
   customerName: string;
+  customerEmail?: string;
   dealerId: string;
   dealerName: string;
   vehicleReg: string;
