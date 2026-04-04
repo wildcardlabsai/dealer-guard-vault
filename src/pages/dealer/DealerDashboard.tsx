@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Shield, FileText, Users, ClipboardList, TrendingUp, AlertTriangle,
   Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock, Phone,
-  Target, Activity, CalendarClock, PercentCircle
+  Target, Activity, CalendarClock, PercentCircle, PoundSterling
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
@@ -117,6 +117,10 @@ export default function DealerDashboard() {
     return Activity;
   };
 
+  const freeRemaining = dealerSettingsStore.freeWarrantiesRemaining(dealerId);
+  const dealerFreeTotal = dealerSettings.freeWarrantiesTotal;
+  const freeUsed = dealerSettings.freeWarrantiesUsed;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -125,6 +129,43 @@ export default function DealerDashboard() {
           <p className="text-muted-foreground text-sm">Welcome back, {user?.name}</p>
         </div>
       </div>
+
+      {/* Free Warranties Banner */}
+      {freeRemaining > 0 ? (
+        <div className="glass-card-strong rounded-xl p-5 border-primary/30 bg-primary/5 glow-primary relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <div className="relative flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                <PoundSterling className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold font-display text-sm">Free Warranties Remaining</h3>
+                <p className="text-xs text-muted-foreground">Your first {dealerFreeTotal} warranties are on us — no charge</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-2xl font-bold font-display text-primary">{freeRemaining}</p>
+                <p className="text-xs text-muted-foreground">{freeUsed}/{dealerFreeTotal} used</p>
+              </div>
+              <Progress value={(freeUsed / dealerFreeTotal) * 100} className="w-24 h-2" />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="glass-card rounded-xl p-4 border-border/30">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-secondary/50 flex items-center justify-center">
+              <PoundSterling className="w-4 h-4 text-muted-foreground" />
+            </div>
+            <div>
+              <p className="text-sm font-medium">All {dealerFreeTotal} free warranties used</p>
+              <p className="text-xs text-muted-foreground">New warranties are now charged at £19 each via Stripe</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Expiring Warranties Alert */}
       {expiringWarranties.length > 0 && (

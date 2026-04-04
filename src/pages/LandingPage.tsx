@@ -54,6 +54,8 @@ export default function LandingPage() {
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
             <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
             <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
+            <Link to="/dealers" className="hover:text-white transition-colors">Dealers</Link>
+            <Link to="/customers" className="hover:text-white transition-colors">Customers</Link>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-sm sm:text-[15px] px-3" asChild>
@@ -78,6 +80,8 @@ export default function LandingPage() {
             <a href="#pricing" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
             <Link to="/faq" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
             <Link to="/blog" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
+            <Link to="/dealers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Dealer Portal</Link>
+            <Link to="/customers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Customer Portal</Link>
             <Button size="sm" className="btn-cta rounded-full w-full mt-2 text-sm h-10" asChild>
               <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
             </Button>
@@ -231,7 +235,8 @@ export default function LandingPage() {
             <div className="relative">
               <p className="text-5xl sm:text-6xl font-bold font-display mb-1">£0<span className="text-2xl text-muted-foreground font-normal">/month</span></p>
               <p className="text-xl font-semibold font-display mb-2">Only £19 per warranty</p>
-              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">Charged via Stripe when you issue each warranty. No hidden fees, no surprises.</p>
+              <p className="text-sm text-[hsl(var(--cta))] font-semibold mb-1">🎉 First 5 warranties FREE</p>
+              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">Start with 5 free warranties, then £19 each via Stripe. No hidden fees.</p>
 
               <div className="grid grid-cols-2 gap-x-8 gap-y-3 max-w-xs mx-auto mb-8">
                 {["No monthly fees", "No contracts", "Pay only when you use it", "Scale as you grow"].map(f => (
@@ -310,7 +315,9 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
           <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
-          <div className="flex gap-6 text-xs text-muted-foreground">
+          <div className="flex flex-wrap gap-6 text-xs text-muted-foreground">
+            <Link to="/dealers" className="hover:text-foreground transition-colors">Dealer Portal</Link>
+            <Link to="/customers" className="hover:text-foreground transition-colors">Customer Portal</Link>
             <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
             <a href="#" className="hover:text-foreground transition-colors">Terms</a>
             <a href="#" className="hover:text-foreground transition-colors">Contact</a>
