@@ -8,6 +8,8 @@ import { HelmetProvider } from "react-helmet-async";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
+import CustomersLoginPage from "@/pages/CustomersLoginPage";
+import DealersLoginPage from "@/pages/DealersLoginPage";
 import NotFound from "@/pages/NotFound";
 import BlogArticlePage from "@/pages/BlogArticlePage";
 import FeaturesPage from "@/pages/FeaturesPage";
@@ -53,7 +55,11 @@ const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role: string }) {
   const { user, isAuthenticated } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    if (role === "customer") return <Navigate to="/customers" replace />;
+    if (role === "dealer") return <Navigate to="/dealers" replace />;
+    return <Navigate to="/login" replace />;
+  }
   if (user?.role !== role) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
@@ -69,6 +75,8 @@ function AppRoutes() {
       <Route path="/blog/:slug" element={<BlogArticlePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/customers" element={<CustomersLoginPage />} />
+      <Route path="/dealers" element={<DealersLoginPage />} />
 
       {/* Dealer Routes */}
       <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />
