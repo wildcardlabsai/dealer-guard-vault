@@ -4,6 +4,8 @@ interface DealerSettings {
   monthlySalesTarget: number;
   maxLabourRate: number;
   maxPerClaimLimit: number;
+  freeWarrantiesTotal: number;
+  freeWarrantiesUsed: number;
 }
 
 const settingsMap: Record<string, DealerSettings> = {};
@@ -12,7 +14,13 @@ const notify = () => listeners.forEach(l => l());
 
 function getSettings(dealerId: string): DealerSettings {
   if (!settingsMap[dealerId]) {
-    settingsMap[dealerId] = { monthlySalesTarget: 10, maxLabourRate: 75, maxPerClaimLimit: 2500 };
+    settingsMap[dealerId] = {
+      monthlySalesTarget: 10,
+      maxLabourRate: 75,
+      maxPerClaimLimit: 2500,
+      freeWarrantiesTotal: 5,
+      freeWarrantiesUsed: 0,
+    };
   }
   return settingsMap[dealerId];
 }
@@ -30,6 +38,23 @@ export function useDealerSettingsStore() {
     updateSettings(dealerId: string, updates: Partial<DealerSettings>) {
       settingsMap[dealerId] = { ...getSettings(dealerId), ...updates };
       notify();
+    },
+    useFreeWarranty(dealerId: string): boolean {
+      const s = getSettings(dealerId);
+      if (s.freeWarrantiesUsed < s.freeWarrantiesTotal) {
+        settingsMap[dealerId] = { ...s, freeWarrantiesUsed: s.freeWarrantiesUsed + 1 };
+        notify();
+        return true;
+      }
+      return false;
+    },
+    hasFreeWarranties(dealerId: string): boolean {
+      const s = getSettings(dealerId);
+      return s.freeWarrantiesUsed < s.freeWarrantiesTotal;
+    },
+    freeWarrantiesRemaining(dealerId: string): number {
+      const s = getSettings(dealerId);
+      return Math.max(0, s.freeWarrantiesTotal - s.freeWarrantiesUsed);
     },
   };
 }
