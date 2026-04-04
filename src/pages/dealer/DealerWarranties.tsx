@@ -50,19 +50,17 @@ export default function DealerWarranties() {
 
   const handleSendCertificate = async () => {
     if (!emailTarget) return;
-    const targetEmail = emailMode === "custom" ? customEmail.trim() : "";
-    // For "default" mode, we'd use the customer's email from the warranty record
-    // Since demo data doesn't store customer email, we need custom email for now
+    const targetEmail = emailMode === "custom" ? customEmail.trim() : emailTarget.customerEmail;
     if (emailMode === "custom" && !targetEmail) {
       toast.error("Please enter an email address");
       return;
     }
-    if (emailMode === "default" && !(emailTarget as any).customerEmail) {
+    if (emailMode === "default" && !emailTarget.customerEmail) {
       toast.error("No email on file for this customer. Please enter a custom email address.");
       setEmailMode("custom");
       return;
     }
-    const finalEmail = emailMode === "default" ? (emailTarget as any).customerEmail : targetEmail;
+    const finalEmail = targetEmail!;
     setSending(true);
     try {
       const certHtml = generateCertificateHTML(emailTarget);
@@ -214,10 +212,10 @@ export default function DealerWarranties() {
                     <RadioGroupItem value="default" id="email-default" />
                     <Label htmlFor="email-default" className="text-sm cursor-pointer">
                       Send to customer's email on file
-                      {(emailTarget as any).customerEmail && (
-                        <span className="text-muted-foreground ml-1">({(emailTarget as any).customerEmail})</span>
+                      {emailTarget.customerEmail && (
+                        <span className="text-muted-foreground ml-1">({emailTarget.customerEmail})</span>
                       )}
-                      {!(emailTarget as any).customerEmail && (
+                      {!emailTarget.customerEmail && (
                         <span className="text-muted-foreground ml-1">(no email on file)</span>
                       )}
                     </Label>

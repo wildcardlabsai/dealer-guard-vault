@@ -7,7 +7,7 @@ import { demoDealers } from "@/data/demo-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Phone, ArrowRight, Target } from "lucide-react";
+import { Phone, ArrowRight, Target, PoundSterling, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export default function DealerSettings() {
@@ -20,6 +20,8 @@ export default function DealerSettings() {
   const dealerSettings = dealerSettingsStore.getSettings(dealerId);
   const dealer = demoDealers.find(d => d.id === dealerId);
   const [salesTarget, setSalesTarget] = useState(dealerSettings.monthlySalesTarget);
+  const [maxLabourRate, setMaxLabourRate] = useState(dealerSettings.maxLabourRate);
+  const [maxPerClaimLimit, setMaxPerClaimLimit] = useState(dealerSettings.maxPerClaimLimit);
   const [form, setForm] = useState({
     name: dealer?.name || "",
     email: dealer?.email || "",
@@ -92,6 +94,54 @@ export default function DealerSettings() {
           </div>
           <Button onClick={() => { dealerSettingsStore.updateSettings(dealerId, { monthlySalesTarget: salesTarget }); toast.success(`Sales target updated to ${salesTarget}`); }} className="glow-primary-sm">
             Save Target
+          </Button>
+        </div>
+      </div>
+
+      {/* Max Labour Rate */}
+      <div className="glass-card rounded-xl p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <PoundSterling className="w-4 h-4 text-primary" />
+          <h2 className="font-semibold font-display">Maximum Labour Rate</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">Set the maximum hourly labour rate you'll authorise for warranty claims. Any claim exceeding this rate will be flagged for review.</p>
+        <div className="flex items-end gap-3">
+          <div className="space-y-2 flex-1 max-w-[200px]">
+            <Label>Max rate (£/hour)</Label>
+            <Input
+              type="number"
+              min={1}
+              max={500}
+              value={maxLabourRate}
+              onChange={e => setMaxLabourRate(Math.max(1, parseInt(e.target.value) || 1))}
+            />
+          </div>
+          <Button onClick={() => { dealerSettingsStore.updateSettings(dealerId, { maxLabourRate }); toast.success(`Max labour rate set to £${maxLabourRate}/hour`); }} className="glow-primary-sm">
+            Save Rate
+          </Button>
+        </div>
+      </div>
+
+      {/* Max Per Claim Limit */}
+      <div className="glass-card rounded-xl p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-primary" />
+          <h2 className="font-semibold font-display">Maximum Per Claim Limit</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">Set the maximum amount you'll pay out on a single warranty claim. Claims exceeding this limit will require manual approval.</p>
+        <div className="flex items-end gap-3">
+          <div className="space-y-2 flex-1 max-w-[200px]">
+            <Label>Max per claim (£)</Label>
+            <Input
+              type="number"
+              min={100}
+              max={50000}
+              value={maxPerClaimLimit}
+              onChange={e => setMaxPerClaimLimit(Math.max(100, parseInt(e.target.value) || 100))}
+            />
+          </div>
+          <Button onClick={() => { dealerSettingsStore.updateSettings(dealerId, { maxPerClaimLimit }); toast.success(`Max per claim limit set to £${maxPerClaimLimit}`); }} className="glow-primary-sm">
+            Save Limit
           </Button>
         </div>
       </div>

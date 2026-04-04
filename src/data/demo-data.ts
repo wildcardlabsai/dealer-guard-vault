@@ -41,6 +41,7 @@ export interface Warranty {
   id: string;
   customerId: string;
   customerName: string;
+  customerEmail?: string;
   dealerId: string;
   dealerName: string;
   vehicleReg: string;
@@ -139,12 +140,12 @@ export const demoCustomers: Customer[] = [
 
 // --- DEMO WARRANTIES ---
 export const demoWarranties: Warranty[] = [
-  { id: "w-1", customerId: "customer-1", customerName: "John Smith", dealerId: "d-1", dealerName: "Prestige Motors", vehicleReg: "AB12 CDE", vehicleMake: "BMW", vehicleModel: "320d M Sport", vehicleYear: 2021, vehicleColour: "Black", mileage: 32000, duration: 12, startDate: "2024-06-01", endDate: "2025-06-01", cost: 599, status: "active", notes: "Premium cover", createdAt: "2024-06-01" },
-  { id: "w-2", customerId: "customer-2", customerName: "Emma Wilson", dealerId: "d-1", dealerName: "Prestige Motors", vehicleReg: "CD34 FGH", vehicleMake: "Audi", vehicleModel: "A4 S Line", vehicleYear: 2020, vehicleColour: "White", mileage: 45000, duration: 24, startDate: "2024-04-15", endDate: "2026-04-15", cost: 899, status: "active", notes: "", createdAt: "2024-04-15" },
-  { id: "w-3", customerId: "customer-3", customerName: "David Brown", dealerId: "d-2", dealerName: "City Autos", vehicleReg: "EF56 IJK", vehicleMake: "Mercedes-Benz", vehicleModel: "C200 AMG Line", vehicleYear: 2022, vehicleColour: "Silver", mileage: 18000, duration: 12, startDate: "2024-07-01", endDate: "2025-07-01", cost: 749, status: "active", notes: "Extended drivetrain cover", createdAt: "2024-07-01" },
-  { id: "w-4", customerId: "customer-4", customerName: "Sarah Jones", dealerId: "d-1", dealerName: "Prestige Motors", vehicleReg: "GH78 LMN", vehicleMake: "Volkswagen", vehicleModel: "Golf R", vehicleYear: 2021, vehicleColour: "Blue", mileage: 28000, duration: 6, startDate: "2024-01-01", endDate: "2024-07-01", cost: 399, status: "expired", notes: "", createdAt: "2024-01-01" },
-  { id: "w-5", customerId: "customer-5", customerName: "Michael Taylor", dealerId: "d-2", dealerName: "City Autos", vehicleReg: "IJ90 OPQ", vehicleMake: "Ford", vehicleModel: "Focus ST", vehicleYear: 2019, vehicleColour: "Red", mileage: 55000, duration: 12, startDate: "2024-03-15", endDate: "2025-03-15", cost: 499, status: "active", notes: "High mileage add-on", createdAt: "2024-03-15" },
-  { id: "w-6", customerId: "customer-1", customerName: "John Smith", dealerId: "d-1", dealerName: "Prestige Motors", vehicleReg: "KL12 RST", vehicleMake: "Toyota", vehicleModel: "Yaris Hybrid", vehicleYear: 2023, vehicleColour: "Grey", mileage: 8000, duration: 36, startDate: "2024-08-01", endDate: "2027-08-01", cost: 1199, status: "active", notes: "Full comprehensive", createdAt: "2024-08-01" },
+  { id: "w-1", customerId: "customer-1", customerName: "John Smith", customerEmail: "john@example.com", dealerId: "d-1", dealerName: "Prestige Motors", vehicleReg: "AB12 CDE", vehicleMake: "BMW", vehicleModel: "320d M Sport", vehicleYear: 2021, vehicleColour: "Black", mileage: 32000, duration: 12, startDate: "2024-06-01", endDate: "2025-06-01", cost: 599, status: "active", notes: "Premium cover", createdAt: "2024-06-01" },
+  { id: "w-2", customerId: "customer-2", customerName: "Emma Wilson", customerEmail: "emma@example.com", dealerId: "d-1", dealerName: "Prestige Motors", vehicleReg: "CD34 FGH", vehicleMake: "Audi", vehicleModel: "A4 S Line", vehicleYear: 2020, vehicleColour: "White", mileage: 45000, duration: 24, startDate: "2024-04-15", endDate: "2026-04-15", cost: 899, status: "active", notes: "", createdAt: "2024-04-15" },
+  { id: "w-3", customerId: "customer-3", customerName: "David Brown", customerEmail: "david@example.com", dealerId: "d-2", dealerName: "City Autos", vehicleReg: "EF56 IJK", vehicleMake: "Mercedes-Benz", vehicleModel: "C200 AMG Line", vehicleYear: 2022, vehicleColour: "Silver", mileage: 18000, duration: 12, startDate: "2024-07-01", endDate: "2025-07-01", cost: 749, status: "active", notes: "Extended drivetrain cover", createdAt: "2024-07-01" },
+  { id: "w-4", customerId: "customer-4", customerName: "Sarah Jones", customerEmail: "sarah@example.com", dealerId: "d-1", dealerName: "Prestige Motors", vehicleReg: "GH78 LMN", vehicleMake: "Volkswagen", vehicleModel: "Golf R", vehicleYear: 2021, vehicleColour: "Blue", mileage: 28000, duration: 6, startDate: "2024-01-01", endDate: "2024-07-01", cost: 399, status: "expired", notes: "", createdAt: "2024-01-01" },
+  { id: "w-5", customerId: "customer-5", customerName: "Michael Taylor", customerEmail: "michael@example.com", dealerId: "d-2", dealerName: "City Autos", vehicleReg: "IJ90 OPQ", vehicleMake: "Ford", vehicleModel: "Focus ST", vehicleYear: 2019, vehicleColour: "Red", mileage: 55000, duration: 12, startDate: "2024-03-15", endDate: "2025-03-15", cost: 499, status: "active", notes: "High mileage add-on", createdAt: "2024-03-15" },
+  { id: "w-6", customerId: "customer-1", customerName: "John Smith", customerEmail: "john@example.com", dealerId: "d-1", dealerName: "Prestige Motors", vehicleReg: "KL12 RST", vehicleMake: "Toyota", vehicleModel: "Yaris Hybrid", vehicleYear: 2023, vehicleColour: "Grey", mileage: 8000, duration: 36, startDate: "2024-08-01", endDate: "2027-08-01", cost: 1199, status: "active", notes: "Full comprehensive", createdAt: "2024-08-01" },
 ];
 
 // --- DEMO CLAIMS ---
