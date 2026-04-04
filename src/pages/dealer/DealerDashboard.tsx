@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Shield, FileText, Users, ClipboardList, TrendingUp, AlertTriangle,
   Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock, Phone,
-  Target, Activity, CalendarClock, PercentCircle
+  Target, Activity, CalendarClock, PercentCircle, PoundSterling
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
