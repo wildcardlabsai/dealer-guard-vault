@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 interface DealerSettings {
   monthlySalesTarget: number;
+  maxLabourRate: number;
+  maxPerClaimLimit: number;
 }
 
 const settingsMap: Record<string, DealerSettings> = {};
