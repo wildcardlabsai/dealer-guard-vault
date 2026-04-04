@@ -235,7 +235,8 @@ export default function LandingPage() {
             <div className="relative">
               <p className="text-5xl sm:text-6xl font-bold font-display mb-1">£0<span className="text-2xl text-muted-foreground font-normal">/month</span></p>
               <p className="text-xl font-semibold font-display mb-2">Only £19 per warranty</p>
-              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">Charged via Stripe when you issue each warranty. No hidden fees, no surprises.</p>
+              <p className="text-sm text-[hsl(var(--cta))] font-semibold mb-1">🎉 First 5 warranties FREE</p>
+              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">Start with 5 free warranties, then £19 each via Stripe. No hidden fees.</p>
 
               <div className="grid grid-cols-2 gap-x-8 gap-y-3 max-w-xs mx-auto mb-8">
                 {["No monthly fees", "No contracts", "Pay only when you use it", "Scale as you grow"].map(f => (
