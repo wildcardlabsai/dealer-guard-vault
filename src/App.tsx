@@ -75,6 +75,8 @@ function AppRoutes() {
       <Route path="/blog/:slug" element={<BlogArticlePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/customers" element={<CustomersLoginPage />} />
+      <Route path="/dealers" element={<DealersLoginPage />} />
 
       {/* Dealer Routes */}
       <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />
