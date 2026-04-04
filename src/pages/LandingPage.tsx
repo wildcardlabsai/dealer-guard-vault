@@ -314,7 +314,9 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
           <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
-          <div className="flex gap-6 text-xs text-muted-foreground">
+          <div className="flex flex-wrap gap-6 text-xs text-muted-foreground">
+            <Link to="/dealers" className="hover:text-foreground transition-colors">Dealer Portal</Link>
+            <Link to="/customers" className="hover:text-foreground transition-colors">Customer Portal</Link>
             <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
             <a href="#" className="hover:text-foreground transition-colors">Terms</a>
             <a href="#" className="hover:text-foreground transition-colors">Contact</a>
