@@ -55,7 +55,11 @@ const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role: string }) {
   const { user, isAuthenticated } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    if (role === "customer") return <Navigate to="/customers" replace />;
+    if (role === "dealer") return <Navigate to="/dealers" replace />;
+    return <Navigate to="/login" replace />;
+  }
   if (user?.role !== role) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
