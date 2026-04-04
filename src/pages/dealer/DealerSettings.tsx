@@ -20,6 +20,8 @@ export default function DealerSettings() {
   const dealerSettings = dealerSettingsStore.getSettings(dealerId);
   const dealer = demoDealers.find(d => d.id === dealerId);
   const [salesTarget, setSalesTarget] = useState(dealerSettings.monthlySalesTarget);
+  const [maxLabourRate, setMaxLabourRate] = useState(dealerSettings.maxLabourRate);
+  const [maxPerClaimLimit, setMaxPerClaimLimit] = useState(dealerSettings.maxPerClaimLimit);
   const [form, setForm] = useState({
     name: dealer?.name || "",
     email: dealer?.email || "",
