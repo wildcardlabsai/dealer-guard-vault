@@ -8,6 +8,8 @@ import { HelmetProvider } from "react-helmet-async";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
+import CustomersLoginPage from "@/pages/CustomersLoginPage";
+import DealersLoginPage from "@/pages/DealersLoginPage";
 import NotFound from "@/pages/NotFound";
 import BlogArticlePage from "@/pages/BlogArticlePage";
 import FeaturesPage from "@/pages/FeaturesPage";
