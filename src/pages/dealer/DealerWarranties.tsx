@@ -212,10 +212,10 @@ export default function DealerWarranties() {
                     <RadioGroupItem value="default" id="email-default" />
                     <Label htmlFor="email-default" className="text-sm cursor-pointer">
                       Send to customer's email on file
-                      {(emailTarget as any).customerEmail && (
-                        <span className="text-muted-foreground ml-1">({(emailTarget as any).customerEmail})</span>
+                      {emailTarget.customerEmail && (
+                        <span className="text-muted-foreground ml-1">({emailTarget.customerEmail})</span>
                       )}
-                      {!(emailTarget as any).customerEmail && (
+                      {!emailTarget.customerEmail && (
                         <span className="text-muted-foreground ml-1">(no email on file)</span>
                       )}
                     </Label>

@@ -76,6 +76,7 @@ export default function AddWarranty() {
       id: `w-${Date.now()}`,
       customerId: `cust-${Date.now()}`,
       customerName: form.customerName,
+      customerEmail: form.email || undefined,
       dealerId,
       dealerName: dealerId === "d-1" ? "Prestige Motors" : "City Autos",
       vehicleReg: vehicle.registration,
