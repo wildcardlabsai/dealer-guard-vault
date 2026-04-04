@@ -35,6 +35,8 @@ const testimonials = [
 ];
 
 export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
@@ -45,23 +47,42 @@ export default function LandingPage() {
 
       {/* Nav */}
       <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
-          <img src={logo} alt="WarrantyVault" className="h-10" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between">
+          <img src={logo} alt="WarrantyVault" className="h-8 sm:h-10" />
           <div className="hidden md:flex items-center gap-10 text-[15px] text-white/70">
             <Link to="/features" className="hover:text-white transition-colors">Features</Link>
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
             <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
             <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
           </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-[15px]" asChild>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-sm sm:text-[15px] px-3" asChild>
               <Link to="/login">Sign In</Link>
             </Button>
-            <Button size="sm" className="btn-cta rounded-full px-6 text-[15px] h-10" asChild>
+            <Button size="sm" className="btn-cta rounded-full px-4 sm:px-6 text-sm sm:text-[15px] h-9 sm:h-10 hidden sm:inline-flex" asChild>
               <Link to="/signup">Sign Up</Link>
             </Button>
+            <button
+              className="md:hidden text-white/80 hover:text-white p-1"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-[hsl(var(--hero-bg))] border-t border-white/5 px-4 pb-4 space-y-1">
+            <Link to="/features" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Features</Link>
+            <a href="#pricing" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+            <Link to="/faq" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+            <Link to="/blog" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
+            <Button size="sm" className="btn-cta rounded-full w-full mt-2 text-sm h-10" asChild>
+              <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
+            </Button>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}
