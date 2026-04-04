@@ -12,7 +12,7 @@ const notify = () => listeners.forEach(l => l());
 
 function getSettings(dealerId: string): DealerSettings {
   if (!settingsMap[dealerId]) {
-    settingsMap[dealerId] = { monthlySalesTarget: 10 };
+    settingsMap[dealerId] = { monthlySalesTarget: 10, maxLabourRate: 75, maxPerClaimLimit: 2500 };
   }
   return settingsMap[dealerId];
 }

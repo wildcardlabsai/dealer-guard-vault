@@ -113,12 +113,12 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
           <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="w-4 h-4" /></Button>
         </header>
         {/* Mobile nav */}
-        <div className="md:hidden flex overflow-x-auto border-b border-border/50 bg-card/20 px-2">
-          {navItems.slice(0, 6).map(item => {
+        <div className="md:hidden flex overflow-x-auto border-b border-border/50 bg-card/20 px-2 scrollbar-hide">
+          {navItems.map(item => {
             const active = location.pathname === item.path;
             return (
               <Link key={item.path} to={item.path}
-                className={`flex flex-col items-center gap-1 px-3 py-2 text-xs whitespace-nowrap ${
+                className={`flex flex-col items-center gap-1 px-3 py-2 text-xs whitespace-nowrap flex-shrink-0 ${
                   active ? "text-primary" : "text-muted-foreground"
                 }`}>
                 <item.icon className="w-4 h-4" />
