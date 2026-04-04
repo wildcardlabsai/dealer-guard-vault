@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   Shield, Car, Search, ArrowRight, CheckCircle2, Star,
-  BarChart3, FileCheck, UserCheck, ClipboardCheck, PoundSterling
+  BarChart3, FileCheck, UserCheck, ClipboardCheck, PoundSterling, Menu, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
