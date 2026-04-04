@@ -54,6 +54,8 @@ export default function LandingPage() {
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
             <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
             <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
+            <Link to="/dealers" className="hover:text-white transition-colors">Dealers</Link>
+            <Link to="/customers" className="hover:text-white transition-colors">Customers</Link>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-sm sm:text-[15px] px-3" asChild>
