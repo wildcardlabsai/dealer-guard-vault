@@ -98,6 +98,54 @@ export default function DealerSettings() {
         </div>
       </div>
 
+      {/* Max Labour Rate */}
+      <div className="glass-card rounded-xl p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <PoundSterling className="w-4 h-4 text-primary" />
+          <h2 className="font-semibold font-display">Maximum Labour Rate</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">Set the maximum hourly labour rate you'll authorise for warranty claims. Any claim exceeding this rate will be flagged for review.</p>
+        <div className="flex items-end gap-3">
+          <div className="space-y-2 flex-1 max-w-[200px]">
+            <Label>Max rate (£/hour)</Label>
+            <Input
+              type="number"
+              min={1}
+              max={500}
+              value={maxLabourRate}
+              onChange={e => setMaxLabourRate(Math.max(1, parseInt(e.target.value) || 1))}
+            />
+          </div>
+          <Button onClick={() => { dealerSettingsStore.updateSettings(dealerId, { maxLabourRate }); toast.success(`Max labour rate set to £${maxLabourRate}/hour`); }} className="glow-primary-sm">
+            Save Rate
+          </Button>
+        </div>
+      </div>
+
+      {/* Max Per Claim Limit */}
+      <div className="glass-card rounded-xl p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-primary" />
+          <h2 className="font-semibold font-display">Maximum Per Claim Limit</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">Set the maximum amount you'll pay out on a single warranty claim. Claims exceeding this limit will require manual approval.</p>
+        <div className="flex items-end gap-3">
+          <div className="space-y-2 flex-1 max-w-[200px]">
+            <Label>Max per claim (£)</Label>
+            <Input
+              type="number"
+              min={100}
+              max={50000}
+              value={maxPerClaimLimit}
+              onChange={e => setMaxPerClaimLimit(Math.max(100, parseInt(e.target.value) || 100))}
+            />
+          </div>
+          <Button onClick={() => { dealerSettingsStore.updateSettings(dealerId, { maxPerClaimLimit }); toast.success(`Max per claim limit set to £${maxPerClaimLimit}`); }} className="glow-primary-sm">
+            Save Limit
+          </Button>
+        </div>
+      </div>
+
       <div className="glass-card rounded-xl p-6 space-y-4">
         <h2 className="font-semibold font-display">Logo</h2>
         <p className="text-sm text-muted-foreground">Upload your dealership logo for branded documents</p>
