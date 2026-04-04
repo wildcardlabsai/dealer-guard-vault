@@ -80,6 +80,8 @@ export default function LandingPage() {
             <a href="#pricing" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
             <Link to="/faq" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
             <Link to="/blog" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
+            <Link to="/dealers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Dealer Portal</Link>
+            <Link to="/customers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Customer Portal</Link>
             <Button size="sm" className="btn-cta rounded-full w-full mt-2 text-sm h-10" asChild>
               <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
             </Button>
