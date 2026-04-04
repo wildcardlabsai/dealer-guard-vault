@@ -7,7 +7,7 @@ import { demoDealers } from "@/data/demo-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Phone, ArrowRight, Target } from "lucide-react";
+import { Phone, ArrowRight, Target, PoundSterling, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export default function DealerSettings() {
