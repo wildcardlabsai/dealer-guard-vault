@@ -2,9 +2,10 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
 import { blogArticles } from "@/data/blog-articles";
+import PublicNav from "@/components/PublicNav";
+import PublicFooter from "@/components/PublicFooter";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -20,25 +21,7 @@ export default function BlogIndexPage() {
         canonical="https://dealer-guard-vault.lovable.app/blog"
       />
 
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
-          <Link to="/"><img src={logo} alt="WarrantyVault" className="h-10" /></Link>
-          <div className="hidden md:flex items-center gap-10 text-[15px] text-white/70">
-            <Link to="/features" className="hover:text-white transition-colors">Features</Link>
-            <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
-            <Link to="/blog" className="text-white transition-colors">Blog</Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-[15px]" asChild>
-              <Link to="/login">Sign In</Link>
-            </Button>
-            <Button size="sm" className="btn-cta rounded-full px-6 text-[15px] h-10" asChild>
-              <Link to="/signup">Sign Up</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <PublicNav currentPage="/blog" />
 
       {/* Hero */}
       <section className="hero-gradient pt-32 pb-16 px-6">
@@ -87,18 +70,7 @@ export default function BlogIndexPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-white/10 hero-gradient">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Link to="/"><img src={logo} alt="WarrantyVault" className="h-6 opacity-60" /></Link>
-          <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
-          <div className="flex gap-6 text-xs text-muted-foreground">
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-            <a href="#" className="hover:text-foreground transition-colors">Contact</a>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }
