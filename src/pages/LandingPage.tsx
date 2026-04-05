@@ -1,13 +1,14 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   Shield, Car, Search, ArrowRight, CheckCircle2, Star,
-  BarChart3, FileCheck, UserCheck, ClipboardCheck, PoundSterling, Menu, X
+  BarChart3, FileCheck, UserCheck, ClipboardCheck, PoundSterling
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
+import PublicNav from "@/components/PublicNav";
+import PublicFooter from "@/components/PublicFooter";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -35,8 +36,6 @@ const testimonials = [
 ];
 
 export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
@@ -45,49 +44,7 @@ export default function LandingPage() {
         canonical="https://dealer-guard-vault.lovable.app/"
       />
 
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between">
-          <img src={logo} alt="WarrantyVault" className="h-8 sm:h-10" />
-          <div className="hidden md:flex items-center gap-10 text-[15px] text-white/70">
-            <Link to="/features" className="hover:text-white transition-colors">Features</Link>
-            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-            <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
-            <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
-            <Link to="/dealers" className="hover:text-white transition-colors">Dealers</Link>
-            <Link to="/customers" className="hover:text-white transition-colors">Customers</Link>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-sm sm:text-[15px] px-3" asChild>
-              <Link to="/login">Sign In</Link>
-            </Button>
-            <Button size="sm" className="btn-cta rounded-full px-4 sm:px-6 text-sm sm:text-[15px] h-9 sm:h-10 hidden sm:inline-flex" asChild>
-              <Link to="/signup">Sign Up</Link>
-            </Button>
-            <button
-              className="md:hidden text-white/80 hover:text-white p-1"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-[hsl(var(--hero-bg))] border-t border-white/5 px-4 pb-4 space-y-1">
-            <Link to="/features" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Features</Link>
-            <a href="#pricing" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
-            <Link to="/faq" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
-            <Link to="/blog" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
-            <Link to="/dealers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Dealer Portal</Link>
-            <Link to="/customers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Customer Portal</Link>
-            <Button size="sm" className="btn-cta rounded-full w-full mt-2 text-sm h-10" asChild>
-              <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
-            </Button>
-          </div>
-        )}
-      </nav>
+      <PublicNav />
 
       {/* Hero */}
       <section className="hero-gradient relative overflow-hidden">
@@ -310,20 +267,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-white/10 hero-gradient">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
-          <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
-          <div className="flex flex-wrap gap-6 text-xs text-muted-foreground">
-            <Link to="/dealers" className="hover:text-foreground transition-colors">Dealer Portal</Link>
-            <Link to="/customers" className="hover:text-foreground transition-colors">Customer Portal</Link>
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-            <a href="#" className="hover:text-foreground transition-colors">Contact</a>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }
