@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
 import logo from "@/assets/warrantylogo.png";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dealer" },
@@ -89,6 +90,7 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
               <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
             </div>
           )}
+          <ThemeToggle collapsed={collapsed} />
           <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" /> {!collapsed && "Sign Out"}
           </Button>

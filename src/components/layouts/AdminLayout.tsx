@@ -7,6 +7,7 @@ import { useSignupStore } from "@/lib/signup-store";
 import { useSupportStore } from "@/lib/support-store";
 import { useState, useRef, useEffect } from "react";
 import logo from "@/assets/warrantylogo.png";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
@@ -89,6 +90,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <p className="text-sm font-medium truncate">{user?.name}</p>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
+          <ThemeToggle />
           <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" /> Sign Out
           </Button>
