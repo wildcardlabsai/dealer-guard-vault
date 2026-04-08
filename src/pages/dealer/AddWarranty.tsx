@@ -99,13 +99,31 @@ export default function AddWarranty() {
 
     setPaying(false);
     toast.success("Payment successful! Warranty created.");
-    // Send warranty confirmation email
+    
+    // Create customer account and send warranty email with credentials
     if (form.email) {
-      import("@/lib/email-service").then(m => m.sendWarrantyConfirmationEmail(
-        form.email, form.customerName, vehicle.registration,
-        vehicle.make, vehicle.model, startDate, endDate,
-        dealerId === "d-1" ? "Prestige Motors" : "City Autos"
-      ));
+      const dealerName = dealerId === "d-1" ? "Prestige Motors" : "City Autos";
+      supabase.functions.invoke("invite-customer", {
+        body: {
+          email: form.email,
+          customerName: form.customerName,
+          dealerName,
+          vehicleReg: vehicle.registration,
+          vehicleMake: vehicle.make,
+          vehicleModel: vehicle.model,
+          startDate,
+          endDate,
+        },
+      }).then(({ data, error }) => {
+        if (error || !data?.success) {
+          console.error("Customer invite error:", error || data?.error);
+          toast.error("Warranty created but failed to send customer invite email");
+        } else if (data.isNewAccount) {
+          toast.success(`Customer portal account created for ${form.email}`);
+        } else {
+          toast.info(`Warranty notification sent to ${form.email}`);
+        }
+      });
     }
     navigate("/dealer/warranties");
   };
