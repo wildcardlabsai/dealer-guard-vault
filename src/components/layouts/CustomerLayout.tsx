@@ -5,6 +5,7 @@ import { LayoutDashboard, Shield, FileText, MessageSquare, LogOut, BookOpen, Bel
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import logo from "@/assets/warrantylogo.png";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/customer" },

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
 import logo from "@/assets/warrantylogo.png";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dealer" },
