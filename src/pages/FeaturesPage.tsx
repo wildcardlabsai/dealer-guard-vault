@@ -1,14 +1,23 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  Shield, Car, Search, ArrowRight, CheckCircle2, ChevronRight, X,
-  TrendingUp, BarChart3, FileCheck, UserCheck, ClipboardCheck,
-  Phone, FileText, Settings, Gift, FolderOpen, Headphones, ImageIcon
+  Shield, ArrowRight, CheckCircle2, X,
+  BarChart3, UserCheck, ClipboardCheck,
+  Phone, FileText, FolderOpen, Headphones
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead from "@/components/SEOHead";
+
+import screenshotWarrantyMgmt from "@/assets/screenshots/warranty-management.png";
+import screenshotCustomerPortal from "@/assets/screenshots/customer-portal.png";
+import screenshotClaims from "@/assets/screenshots/claims-management.png";
+import screenshotProfit from "@/assets/screenshots/profit-tracking.png";
+import screenshotWarrantyLine from "@/assets/screenshots/warranty-line.png";
+import screenshotCoverTemplates from "@/assets/screenshots/cover-templates.png";
+import screenshotDocuments from "@/assets/screenshots/dealer-documents.png";
+import screenshotSupport from "@/assets/screenshots/dealer-support.png";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -17,15 +26,11 @@ const fadeUp = {
 
 const featureOverview = [
   { icon: Shield, title: "Warranty Management" },
-  { icon: FileCheck, title: "Branded Certificates" },
-  { icon: Search, title: "DVLA Lookup" },
   { icon: UserCheck, title: "Customer Portal" },
   { icon: ClipboardCheck, title: "Claims Management" },
   { icon: BarChart3, title: "Profit Tracking" },
   { icon: Phone, title: "Warranty Line" },
   { icon: FileText, title: "Cover Templates" },
-  { icon: Settings, title: "Claim Limits" },
-  { icon: Gift, title: "First 5 Free" },
   { icon: FolderOpen, title: "Dealer Documents" },
   { icon: Headphones, title: "Dealer Support" },
 ];
@@ -35,6 +40,7 @@ interface FeatureShowcase {
   title: string;
   desc: string;
   bullets: string[];
+  screenshot: string;
 }
 
 const coreFeatures: FeatureShowcase[] = [
@@ -43,24 +49,14 @@ const coreFeatures: FeatureShowcase[] = [
     title: "Warranty Management",
     desc: "Create, edit and track all warranties from a single dashboard. Full visibility across your dealership with real-time status updates.",
     bullets: ["Issue warranties in seconds", "Track active, expired, and claimed", "Full audit trail on every warranty", "Multi-site support for dealer groups"],
-  },
-  {
-    icon: FileCheck,
-    title: "Branded Certificates",
-    desc: "Generate professional, dealer-branded warranty certificates your customers can download and print instantly.",
-    bullets: ["Your logo and dealership details", "PDF download for customers", "Unique certificate reference numbers", "Looks professional and builds trust"],
-  },
-  {
-    icon: Search,
-    title: "DVLA Lookup",
-    desc: "Enter a registration number and instantly pull vehicle data — make, model, year, engine, fuel type — no manual input needed.",
-    bullets: ["Instant vehicle data from DVLA", "Pre-fills warranty forms automatically", "Reduces errors and admin time", "Works with any UK registration"],
+    screenshot: screenshotWarrantyMgmt,
   },
   {
     icon: UserCheck,
     title: "Customer Portal",
     desc: "Give every customer their own login to view warranty details, download certificates, and submit claims directly.",
     bullets: ["Dedicated /customers login page", "View warranty status and documents", "Submit claims with photo evidence", "Reduces inbound phone calls"],
+    screenshot: screenshotCustomerPortal,
   },
 ];
 
@@ -70,18 +66,14 @@ const claimsFeatures: FeatureShowcase[] = [
     title: "Claims Management",
     desc: "Handle claims your way — approve, reject, or request more info in seconds. No third-party delays or queues.",
     bullets: ["Same-day claim decisions", "Request additional evidence", "Track claim costs vs revenue", "Notification alerts for new claims"],
+    screenshot: screenshotClaims,
   },
   {
     icon: BarChart3,
     title: "Profit Tracking",
     desc: "See exactly what you're making from warranties vs what you're paying out. Real-time dashboards show your true margin.",
     bullets: ["Revenue vs payout breakdown", "Per-warranty profit visibility", "Monthly and yearly trends", "Helps build your claims reserve"],
-  },
-  {
-    icon: Settings,
-    title: "Claim Limits & Controls",
-    desc: "Set maximum labour rates, per-claim limits, and coverage rules so you stay in control of every payout.",
-    bullets: ["Max labour rate per hour", "Per-claim payout ceiling", "Configurable coverage rules", "Protects your bottom line"],
+    screenshot: screenshotProfit,
   },
 ];
 
@@ -91,30 +83,28 @@ const addonFeatures: FeatureShowcase[] = [
     title: "Warranty Line",
     desc: "Give your dealership a dedicated warranty phone line with professional greetings, hold music, and IVR routing.",
     bullets: ["Custom greeting with your name", "Professional hold music", "Route calls to the right team", "Only £25/month add-on"],
+    screenshot: screenshotWarrantyLine,
   },
   {
     icon: FileText,
     title: "Cover Templates",
     desc: "Create and manage reusable cover templates so every warranty is consistent and easy to issue.",
     bullets: ["Pre-built coverage options", "Customise terms and conditions", "Assign to warranties in one click", "Maintain consistency across sales"],
-  },
-  {
-    icon: Gift,
-    title: "First 5 Free",
-    desc: "New dealers get their first 5 warranties completely free — no payment needed until warranty number 6.",
-    bullets: ["Zero upfront cost to start", "Dashboard tracks free allowance", "Seamless transition to paid", "No commitment or contracts"],
+    screenshot: screenshotCoverTemplates,
   },
   {
     icon: FolderOpen,
     title: "Dealer Documents",
     desc: "Store, manage and download essential warranty documents — T&Cs, claim forms, compliance templates — all in one place.",
     bullets: ["Pre-built document templates", "Download or view in-browser", "Keep your compliance organised", "Always accessible from dashboard"],
+    screenshot: screenshotDocuments,
   },
   {
     icon: Headphones,
     title: "Dealer Support",
     desc: "Built-in support ticket system so you can raise issues, ask questions, and get help without leaving the platform.",
     bullets: ["Submit tickets from dashboard", "Track open and resolved issues", "Priority support for urgent queries", "No external email chains needed"],
+    screenshot: screenshotSupport,
   },
 ];
 
@@ -124,16 +114,6 @@ const comparisonRows = [
   { label: "Control", left: "Limited rules and visibility", right: "Full control over approvals and payouts" },
   { label: "Dependency", left: "Provider outages and handoffs", right: "Fully in-house process you control" },
 ];
-
-function ScreenshotPlaceholder() {
-  return (
-    <div className="relative rounded-2xl border-2 border-dashed border-white/10 bg-[hsl(222,25%,8%)] overflow-hidden aspect-[16/10] flex flex-col items-center justify-center gap-3">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-      <ImageIcon className="w-10 h-10 text-white/15" />
-      <span className="text-xs text-white/25 font-medium tracking-wide uppercase">Screenshot coming soon</span>
-    </div>
-  );
-}
 
 function FeatureSection({ feature, index }: { feature: FeatureShowcase; index: number }) {
   const isReversed = index % 2 === 1;
@@ -163,7 +143,9 @@ function FeatureSection({ feature, index }: { feature: FeatureShowcase; index: n
         </div>
       </div>
       <div className={isReversed ? "lg:[direction:ltr]" : ""}>
-        <ScreenshotPlaceholder />
+        <div className="relative rounded-2xl border border-white/10 bg-[hsl(222,25%,8%)] overflow-hidden shadow-2xl">
+          <img src={feature.screenshot} alt={`${feature.title} screenshot`} className="w-full h-auto" loading="lazy" />
+        </div>
       </div>
     </motion.div>
   );
@@ -192,7 +174,7 @@ export default function FeaturesPage() {
       {/* Quick overview grid */}
       <section className="py-14 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
             {featureOverview.map((f, i) => (
               <motion.div key={f.title} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="glass-card rounded-xl p-4 text-center group hover:border-primary/30 transition-all">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-primary/15 transition-colors">
