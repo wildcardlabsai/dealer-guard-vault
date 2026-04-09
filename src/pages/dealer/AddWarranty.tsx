@@ -23,7 +23,7 @@ export default function AddWarranty() {
   const templates = coverStore.templates.filter(t => t.dealerId === dealerId || t.dealerId === "system");
   const passedState = location.state as { reg?: string; vehicle?: DVLAVehicle } | null;
   const [step, setStep] = useState(passedState?.vehicle ? 1 : 1);
-  const [reg, setReg] = useState("");
+  const [reg, setReg] = useState(passedState?.reg || "");
   const [postcode, setPostcode] = useState("");
   const [vehicle, setVehicle] = useState<DVLAVehicle | null>(null);
   const [dvsaData, setDvsaData] = useState<DVSAResult | null>(null);
