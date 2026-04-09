@@ -129,19 +129,32 @@ export default function AddWarranty() {
   };
 
   const selectedTemplate = templates.find(t => t.id === form.coverTemplateId);
+  const dealerWarrantyCount = store.warranties.filter(w => w.dealerId === dealerId).length;
+  const isFreeWarranty = dealerWarrantyCount < 5;
+  const freeRemaining = Math.max(0, 5 - dealerWarrantyCount);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold font-display">Add New Warranty</h1>
-        <p className="text-sm text-muted-foreground">Step {step} of 4</p>
+        <p className="text-sm text-muted-foreground">Step {step} of {isFreeWarranty ? 3 : 4}</p>
       </div>
 
       <div className="flex gap-2">
-        {[1, 2, 3, 4].map(s => (
+        {(isFreeWarranty ? [1, 2, 3] : [1, 2, 3, 4]).map(s => (
           <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? "bg-primary" : "bg-secondary"}`} />
         ))}
       </div>
+
+      {isFreeWarranty && (
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 flex items-center gap-3">
+          <Shield className="w-5 h-5 text-primary shrink-0" />
+          <div className="text-sm">
+            <span className="font-medium text-primary">Free warranty!</span>{" "}
+            <span className="text-muted-foreground">You have {freeRemaining} of 5 free warranties remaining. No admin fee applies.</span>
+          </div>
+        </div>
+      )}
 
       {/* Step 1: Vehicle Lookup */}
       {step === 1 && (
