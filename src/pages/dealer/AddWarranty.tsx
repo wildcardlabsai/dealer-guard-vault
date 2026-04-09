@@ -68,7 +68,15 @@ export default function AddWarranty() {
       return;
     }
     setPaying(true);
-    await new Promise(r => setTimeout(r, 2000));
+    
+    // Only simulate payment processing for paid warranties
+    const dealerCount = store.warranties.filter(w => w.dealerId === dealerId).length;
+    const isFree = dealerCount < 5;
+    if (!isFree) {
+      await new Promise(r => setTimeout(r, 2000));
+    } else {
+      await new Promise(r => setTimeout(r, 800));
+    }
     
     const startDate = new Date().toISOString().split("T")[0];
     const endDate = new Date(Date.now() + parseInt(form.duration) * 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
@@ -94,11 +102,11 @@ export default function AddWarranty() {
       notes: form.notes,
       createdAt: startDate,
       coverTemplateId: form.coverTemplateId || undefined,
-      paymentStatus: "paid",
+      paymentStatus: isFree ? "free" : "paid",
     });
 
     setPaying(false);
-    toast.success("Payment successful! Warranty created.");
+    toast.success(isFree ? "Free warranty created successfully!" : "Payment successful! Warranty created.");
     
     // Create customer account and send warranty email with credentials
     if (form.email) {
