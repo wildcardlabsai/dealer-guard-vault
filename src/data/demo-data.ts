@@ -58,7 +58,7 @@ export interface Warranty {
   notes: string;
   createdAt: string;
   coverTemplateId?: string;
-  paymentStatus?: "paid" | "pending";
+  paymentStatus?: "paid" | "pending" | "free";
 }
 
 export interface Claim {
