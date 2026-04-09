@@ -33,6 +33,14 @@ export default function AddWarranty() {
   const [paying, setPaying] = useState(false);
   const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
 
+  // Auto-trigger lookup if navigated with reg from dashboard
+  useEffect(() => {
+    if (passedState?.reg && !vehicle) {
+      handleVehicleLookup();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleVehicleLookup = async () => {
     if (!reg.trim()) return;
     setLoading(true);
