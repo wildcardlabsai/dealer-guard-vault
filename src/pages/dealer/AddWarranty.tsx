@@ -68,7 +68,15 @@ export default function AddWarranty() {
       return;
     }
     setPaying(true);
-    await new Promise(r => setTimeout(r, 2000));
+    
+    // Only simulate payment processing for paid warranties
+    const dealerCount = store.warranties.filter(w => w.dealerId === dealerId).length;
+    const isFree = dealerCount < 5;
+    if (!isFree) {
+      await new Promise(r => setTimeout(r, 2000));
+    } else {
+      await new Promise(r => setTimeout(r, 800));
+    }
     
     const startDate = new Date().toISOString().split("T")[0];
     const endDate = new Date(Date.now() + parseInt(form.duration) * 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
@@ -94,11 +102,11 @@ export default function AddWarranty() {
       notes: form.notes,
       createdAt: startDate,
       coverTemplateId: form.coverTemplateId || undefined,
-      paymentStatus: "paid",
+      paymentStatus: isFree ? "free" : "paid",
     });
 
     setPaying(false);
-    toast.success("Payment successful! Warranty created.");
+    toast.success(isFree ? "Free warranty created successfully!" : "Payment successful! Warranty created.");
     
     // Create customer account and send warranty email with credentials
     if (form.email) {
@@ -129,19 +137,32 @@ export default function AddWarranty() {
   };
 
   const selectedTemplate = templates.find(t => t.id === form.coverTemplateId);
+  const dealerWarrantyCount = store.warranties.filter(w => w.dealerId === dealerId).length;
+  const isFreeWarranty = dealerWarrantyCount < 5;
+  const freeRemaining = Math.max(0, 5 - dealerWarrantyCount);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold font-display">Add New Warranty</h1>
-        <p className="text-sm text-muted-foreground">Step {step} of 4</p>
+        <p className="text-sm text-muted-foreground">Step {step} of {isFreeWarranty ? 3 : 4}</p>
       </div>
 
       <div className="flex gap-2">
-        {[1, 2, 3, 4].map(s => (
+        {(isFreeWarranty ? [1, 2, 3] : [1, 2, 3, 4]).map(s => (
           <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? "bg-primary" : "bg-secondary"}`} />
         ))}
       </div>
+
+      {isFreeWarranty && (
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 flex items-center gap-3">
+          <Shield className="w-5 h-5 text-primary shrink-0" />
+          <div className="text-sm">
+            <span className="font-medium text-primary">Free warranty!</span>{" "}
+            <span className="text-muted-foreground">You have {freeRemaining} of 5 free warranties remaining. No admin fee applies.</span>
+          </div>
+        </div>
+      )}
 
       {/* Step 1: Vehicle Lookup */}
       {step === 1 && (
@@ -320,13 +341,22 @@ export default function AddWarranty() {
 
           <div className="flex justify-between pt-2">
             <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
-            <Button onClick={() => { if (!form.cost) { toast.error("Cost is required"); return; } setStep(4); }}>Continue to Payment</Button>
+            <Button onClick={() => {
+              if (!form.cost) { toast.error("Cost is required"); return; }
+              if (isFreeWarranty) {
+                handlePayAndCreate();
+              } else {
+                setStep(4);
+              }
+            }}>
+              {isFreeWarranty ? "Create Warranty (Free)" : "Continue to Payment"}
+            </Button>
           </div>
         </div>
       )}
 
-      {/* Step 4: Payment */}
-      {step === 4 && (
+      {/* Step 4: Payment (only for paid warranties) */}
+      {step === 4 && !isFreeWarranty && (
         <div className="space-y-4">
           <div className="glass-card rounded-xl p-6 space-y-4">
             <h2 className="font-semibold font-display">Review & Pay</h2>
