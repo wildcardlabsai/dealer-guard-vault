@@ -289,10 +289,13 @@ export default function DealerCoverTemplates() {
                   <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">{template.levelName}</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">{template.description}</p>
-                <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground flex-wrap">
                   <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-primary" />{template.coveredItems.length} covered</span>
                   <span className="flex items-center gap-1"><XCircle className="w-3 h-3 text-destructive" />{template.excludedItems.length} excluded</span>
                   <span className="flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-amber-400" />{template.conditionalItems.length} conditional</span>
+                  {template.suggestedPrice && <span className="flex items-center gap-1"><PoundSterling className="w-3 h-3" />£{template.suggestedPrice}</span>}
+                  {template.labourRate && <span>Labour: £{template.labourRate}/hr</span>}
+                  {template.maxClaimLimit && <span>Max claim: £{template.maxClaimLimit}</span>}
                 </div>
               </div>
               <div className="flex items-center gap-1">
