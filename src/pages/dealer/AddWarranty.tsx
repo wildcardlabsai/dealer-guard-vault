@@ -333,13 +333,22 @@ export default function AddWarranty() {
 
           <div className="flex justify-between pt-2">
             <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
-            <Button onClick={() => { if (!form.cost) { toast.error("Cost is required"); return; } setStep(4); }}>Continue to Payment</Button>
+            <Button onClick={() => {
+              if (!form.cost) { toast.error("Cost is required"); return; }
+              if (isFreeWarranty) {
+                handlePayAndCreate();
+              } else {
+                setStep(4);
+              }
+            }}>
+              {isFreeWarranty ? "Create Warranty (Free)" : "Continue to Payment"}
+            </Button>
           </div>
         </div>
       )}
 
-      {/* Step 4: Payment */}
-      {step === 4 && (
+      {/* Step 4: Payment (only for paid warranties) */}
+      {step === 4 && !isFreeWarranty && (
         <div className="space-y-4">
           <div className="glass-card rounded-xl p-6 space-y-4">
             <h2 className="font-semibold font-display">Review & Pay</h2>
