@@ -332,6 +332,15 @@ export default function AddWarranty() {
                 </SelectContent>
               </Select>
             </div>
+            {selectedTemplate && (selectedTemplate.labourRate || selectedTemplate.maxClaimLimit) && (
+              <div className="sm:col-span-2 bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm flex items-center gap-4 flex-wrap">
+                <Shield className="w-4 h-4 text-primary shrink-0" />
+                <span className="font-medium text-primary">{selectedTemplate.levelName} Package:</span>
+                {selectedTemplate.labourRate && <span className="text-muted-foreground">Labour rate: <span className="font-medium text-foreground">£{selectedTemplate.labourRate}/hr</span></span>}
+                {selectedTemplate.maxClaimLimit && <span className="text-muted-foreground">Max claim: <span className="font-medium text-foreground">£{selectedTemplate.maxClaimLimit}</span></span>}
+                {selectedTemplate.coveredItems && <span className="text-muted-foreground">{selectedTemplate.coveredItems.length} components covered</span>}
+              </div>
+            )}
             <div className="space-y-2">
               <Label>Mileage</Label>
               <Input type="number" placeholder="32000" value={form.mileage} onChange={e => setForm({ ...form, mileage: e.target.value })} />
