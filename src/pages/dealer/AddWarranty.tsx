@@ -15,12 +15,14 @@ import { toast } from "sonner";
 
 export default function AddWarranty() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const store = useWarrantyStore();
   const coverStore = useCoverStore();
   const dealerId = user?.dealerId || "d-1";
   const templates = coverStore.templates.filter(t => t.dealerId === dealerId || t.dealerId === "system");
-  const [step, setStep] = useState(1);
+  const passedState = location.state as { reg?: string; vehicle?: DVLAVehicle } | null;
+  const [step, setStep] = useState(passedState?.vehicle ? 1 : 1);
   const [reg, setReg] = useState("");
   const [postcode, setPostcode] = useState("");
   const [vehicle, setVehicle] = useState<DVLAVehicle | null>(null);
