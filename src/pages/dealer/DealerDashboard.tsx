@@ -219,7 +219,7 @@ export default function DealerDashboard() {
                   <div className="flex items-center gap-2 text-primary text-sm font-medium">
                     <CheckCircle2 className="w-4 h-4" /> Vehicle Found
                   </div>
-                  <Button size="sm" onClick={() => navigate("/dealer/warranties/new")} className="glow-primary-sm">
+                  <Button size="sm" onClick={() => navigate("/dealer/warranties/new", { state: { reg: vehicle.registration, vehicle } })} className="glow-primary-sm">
                     Continue <ArrowRight className="w-4 h-4 ml-1" />
                   </Button>
                 </div>

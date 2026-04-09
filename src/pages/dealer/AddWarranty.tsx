@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { lookupVehicle, lookupPostcode, lookupMOTHistory, type DVLAVehicle, type DVSAResult, type Address } from "@/lib/simulated-apis";
 import { supabase } from "@/integrations/supabase/client";
 import { useWarrantyStore } from "@/lib/warranty-store";
@@ -15,13 +15,15 @@ import { toast } from "sonner";
 
 export default function AddWarranty() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const store = useWarrantyStore();
   const coverStore = useCoverStore();
   const dealerId = user?.dealerId || "d-1";
   const templates = coverStore.templates.filter(t => t.dealerId === dealerId || t.dealerId === "system");
-  const [step, setStep] = useState(1);
-  const [reg, setReg] = useState("");
+  const passedState = location.state as { reg?: string; vehicle?: DVLAVehicle } | null;
+  const [step, setStep] = useState(passedState?.vehicle ? 1 : 1);
+  const [reg, setReg] = useState(passedState?.reg || "");
   const [postcode, setPostcode] = useState("");
   const [vehicle, setVehicle] = useState<DVLAVehicle | null>(null);
   const [dvsaData, setDvsaData] = useState<DVSAResult | null>(null);
@@ -30,6 +32,14 @@ export default function AddWarranty() {
   const [loading, setLoading] = useState(false);
   const [paying, setPaying] = useState(false);
   const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
+
+  // Auto-trigger lookup if navigated with reg from dashboard
+  useEffect(() => {
+    if (passedState?.reg && !vehicle) {
+      handleVehicleLookup();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleVehicleLookup = async () => {
     if (!reg.trim()) return;
