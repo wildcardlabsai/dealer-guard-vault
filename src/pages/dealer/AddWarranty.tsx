@@ -313,11 +313,21 @@ export default function AddWarranty() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Cover Template</Label>
-              <Select value={form.coverTemplateId} onValueChange={v => setForm({ ...form, coverTemplateId: v })}>
+              <Select value={form.coverTemplateId} onValueChange={v => {
+                const tmpl = templates.find(t => t.id === v);
+                setForm(f => ({
+                  ...f,
+                  coverTemplateId: v,
+                  cost: tmpl?.suggestedPrice ? String(tmpl.suggestedPrice) : f.cost,
+                }));
+              }}>
                 <SelectTrigger><SelectValue placeholder="Select cover level..." /></SelectTrigger>
                 <SelectContent>
                   {templates.map(t => (
-                    <SelectItem key={t.id} value={t.id}>{t.name} — {t.levelName}</SelectItem>
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.name} — {t.levelName}
+                      {t.suggestedPrice ? ` (£${t.suggestedPrice})` : ""}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
