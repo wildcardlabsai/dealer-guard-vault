@@ -25,6 +25,9 @@ export interface CoverTemplate {
   conditionalItems: CoverItem[];
   faqs: CoverFAQ[];
   termsDocUrl?: string;
+  labourRate?: number;
+  maxClaimLimit?: number;
+  suggestedPrice?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -68,6 +71,9 @@ export const demoCoverTemplates: CoverTemplate[] = [
       { question: "Can I take my vehicle to any garage?", answer: "You should contact your dealership before taking your vehicle to any garage. Unauthorised repairs may not be covered." },
       { question: "What should I do before authorising repairs?", answer: "Always contact your dealership first. Do not authorise any repairs until you have received confirmation from your warranty provider." },
     ],
+    labourRate: 55,
+    maxClaimLimit: 1500,
+    suggestedPrice: 299,
     createdAt: "2024-01-15",
     updatedAt: "2024-01-15",
   },
@@ -112,6 +118,9 @@ export const demoCoverTemplates: CoverTemplate[] = [
       { question: "Can I take my vehicle to any garage?", answer: "You should contact your dealership before taking your vehicle to any garage. Unauthorised repairs may not be covered." },
       { question: "What should I do before authorising repairs?", answer: "Always contact your dealership first. Do not authorise any repairs until you have received confirmation." },
     ],
+    labourRate: 75,
+    maxClaimLimit: 2500,
+    suggestedPrice: 499,
     createdAt: "2024-01-15",
     updatedAt: "2024-03-10",
   },
@@ -159,6 +168,9 @@ export const demoCoverTemplates: CoverTemplate[] = [
       { question: "What should I do before authorising repairs?", answer: "Always contact your dealership first. Do not authorise any repairs until you have received confirmation." },
       { question: "Is air conditioning covered?", answer: "Yes. The AC compressor, condenser and evaporator are all covered under premium warranty." },
     ],
+    labourRate: 95,
+    maxClaimLimit: 5000,
+    suggestedPrice: 799,
     createdAt: "2024-01-15",
     updatedAt: "2024-06-01",
   },
@@ -190,6 +202,9 @@ export const demoCoverTemplates: CoverTemplate[] = [
       { question: "Is the clutch covered?", answer: "No, the clutch is treated as a wear and tear item." },
       { question: "What should I do before authorising repairs?", answer: "Always contact City Autos before authorising any work." },
     ],
+    labourRate: 65,
+    maxClaimLimit: 2000,
+    suggestedPrice: 399,
     createdAt: "2024-03-01",
     updatedAt: "2024-03-01",
   },
