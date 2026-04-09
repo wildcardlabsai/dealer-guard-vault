@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Plus, Edit2, Copy, Trash2, Eye, ArrowLeft, CheckCircle2, XCircle, AlertTriangle,
-  ChevronDown, ChevronUp, X
+  ChevronDown, ChevronUp, X, PoundSterling
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -170,6 +170,30 @@ export default function DealerCoverTemplates() {
               <div className="space-y-2"><Label>Cover Level Name *</Label><Input value={form.levelName || ""} onChange={e => setForm(p => ({ ...p, levelName: e.target.value }))} placeholder="e.g. Premium" /></div>
             </div>
             <div className="space-y-2"><Label>Short Description</Label><Textarea value={form.description || ""} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={2} /></div>
+
+            <div className="border-t border-border/50 pt-4 mt-4">
+              <h3 className="font-semibold font-display text-sm mb-3 flex items-center gap-2">
+                <PoundSterling className="w-4 h-4 text-primary" /> Financial Parameters
+              </h3>
+              <div className="grid sm:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Labour Rate (£/hr)</Label>
+                  <Input type="number" min={0} value={form.labourRate ?? ""} onChange={e => setForm(p => ({ ...p, labourRate: e.target.value ? parseInt(e.target.value) : undefined }))} placeholder="e.g. 75" />
+                  <p className="text-xs text-muted-foreground">Max hourly rate for claims</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Max Claim Limit (£)</Label>
+                  <Input type="number" min={0} value={form.maxClaimLimit ?? ""} onChange={e => setForm(p => ({ ...p, maxClaimLimit: e.target.value ? parseInt(e.target.value) : undefined }))} placeholder="e.g. 2500" />
+                  <p className="text-xs text-muted-foreground">Maximum payout per claim</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Suggested Price (£)</Label>
+                  <Input type="number" min={0} value={form.suggestedPrice ?? ""} onChange={e => setForm(p => ({ ...p, suggestedPrice: e.target.value ? parseInt(e.target.value) : undefined }))} placeholder="e.g. 499" />
+                  <p className="text-xs text-muted-foreground">Default price when adding warranty</p>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-2"><Label>Brochure Intro Text</Label><Textarea value={form.brochureIntro || ""} onChange={e => setForm(p => ({ ...p, brochureIntro: e.target.value }))} rows={3} /></div>
             <div className="space-y-2"><Label>Certificate Summary Text</Label><Textarea value={form.certificateSummary || ""} onChange={e => setForm(p => ({ ...p, certificateSummary: e.target.value }))} rows={2} /></div>
             <div className="space-y-2"><Label>Claim Instructions</Label><Textarea value={form.claimInstructions || ""} onChange={e => setForm(p => ({ ...p, claimInstructions: e.target.value }))} rows={3} /></div>
