@@ -72,30 +72,6 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div className="glass-card rounded-xl overflow-hidden">
-          <button
-            onClick={() => setShowDemo(!showDemo)}
-            className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-secondary/20 transition-colors"
-          >
-            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Demo Credentials</span>
-            {showDemo ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-          </button>
-          {showDemo && (
-            <div className="px-6 pb-5 space-y-3 border-t border-border/50 pt-4">
-              {[
-                { label: "Super Admin", email: "admin@warrantyvault.com", pass: "admin123" },
-                { label: "Dealer", email: "dealer@prestige-motors.co.uk", pass: "dealer123" },
-                { label: "Customer", email: "john@example.com", pass: "customer123" },
-              ].map(cred => (
-                <div key={cred.email} className="bg-secondary/30 rounded-lg p-3">
-                  <p className="text-xs font-semibold text-primary mb-1">{cred.label}</p>
-                  <p className="text-xs text-muted-foreground">Email: <code className="text-foreground">{cred.email}</code></p>
-                  <p className="text-xs text-muted-foreground">Password: <code className="text-foreground">{cred.pass}</code></p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>
     </>
