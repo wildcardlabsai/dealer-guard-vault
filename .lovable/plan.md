@@ -1,131 +1,45 @@
 
 
-# WarrantyVault Expansion — 5 Focused Features
+# Fix Nav Dropdown Overlap + Improve Section Differentiation
 
-## Summary
-Add five tightly scoped features to WarrantyVault: Warranty Fund dashboard with AI insights, Profit Dashboard, Evidence Pack Generator, Customer Timeline, and Light Benchmarking. All built using existing demo data stores, matching the current glass-card dark-mode aesthetic.
+## Problems Identified
 
----
+1. **Dropdown clash**: The Product dropdown (`z-50` on nav) renders behind or visually clashes with the HeroMock because the mock has its own layered glow, borders, and 3D transform that compete visually. The dropdown's `bg-[hsl(222_28%_10%)]/95` blends into the mock's similar dark tones.
 
-## Technical Approach
-
-All features use the existing in-memory stores (`warranty-store`, `claim-store`, `dealer-settings-store`) and demo data. Calculations are derived from current warranty costs (as contributions) and claim amounts (as payouts). One new edge function for AI-powered fund insights and benchmarking analysis.
+2. **Section differentiation**: Yes — the page is hard to scan. Sections alternate between `hsl(222 30% 6%)` and `hsl(222 30% 7.5%)` which is only a 1.5% lightness difference — barely perceptible. Cards use similarly dark backgrounds. The result is a wall of dark UI where sections blur together.
 
 ---
 
-## Feature 1: Warranty Fund
+## Plan
 
-**New page:** `/dealer/warranty-fund` → `src/pages/dealer/DealerWarrantyFund.tsx`  
-**New sidebar item:** "Warranty Fund" with `Wallet` icon
+### 1. Fix dropdown z-index and visual clash
 
-**Data model (computed from existing stores):**
-- `contributions` = sum of all warranty `cost` values for dealer
-- `claimsPaid` = sum of all approved/partially-approved claim `amount` values
-- `balance` = contributions − claimsPaid
-- `avgClaimCost` = mean of claim amounts
-- `claimRate` = total claims / total warranties
-- `estimatedLiability` = active warranties × avgClaimCost × riskFactor (0.15 default)
-- `buffer` = balance − estimatedLiability
+**File: `src/components/PublicNav.tsx`**
+- Increase dropdown `z-index` to `z-[60]` (above the nav's `z-50`)
+- Make dropdown background fully opaque and slightly lighter: `bg-[hsl(222_28%_12%)]` (no transparency)
+- Add a stronger border: `border-white/[0.1]`
+- Add a stronger shadow to lift it visually above the hero mock
 
-**UI sections:**
-1. **Hero card** — Large fund balance, monthly change, status badge (Healthy/Watch/Risk based on buffer %)
-2. **Key metrics row** — Total contributions, claims paid, active warranties, claim rate, avg claim cost
-3. **AI Fund Insight** — Calls new edge function `warranty-fund-insight` to get plain-English recommendation on contribution levels
-4. **Contribution slider** — £50–£300 range, shows recommended range from AI
-5. **Scenario simulator** — Select 1/3/5 claims, see projected balance and status change
+### 2. Improve section differentiation across the landing page
 
-**Edge function:** `supabase/functions/warranty-fund-insight/index.ts`  
-Uses Lovable AI (gemini-3-flash-preview) with structured tool calling to return: recommended contribution range, risk assessment, plain-English summary. Non-streaming, invoked via supabase SDK.
+**File: `src/pages/LandingPage.tsx`**
+- Widen the background alternation gap: use `hsl(222 30% 6%)` for dark sections and `hsl(222 28% 10%)` for lighter ones (4% lightness jump instead of 1.5%)
+- Give the lighter sections a subtle top/bottom inner border or padding container with a visible rounded panel
+- Increase section padding slightly on key sections (Problem, DisputeIQ, Pricing) to create more breathing room between groups
+- Make section dividers slightly more visible: `via-white/[0.08]` instead of `0.06`
+- Add a subtle top-border accent to the DisputeIQ and Pricing sections (their signature colours — orange and teal respectively)
 
----
+### 3. Card contrast boost
 
-## Feature 2: Profit Dashboard
-
-**New section** integrated into the Warranty Fund page (as a tab or below the fund section).
-
-**Calculations:**
-- Revenue = sum(warranty costs)
-- Claims cost = sum(approved claim amounts)
-- Profit = revenue − claims
-- Profit per warranty = profit / warranty count
-- Monthly trend (derived from warranty `createdAt` and claim dates)
-
-**UI:**
-- Three hero stat cards: Total Revenue, Claims Cost, Net Profit
-- Profit per warranty callout
-- Monthly trend bar chart (revenue vs claims)
-- Simple AI insight line: "You are making £X per warranty on average"
+- Bump card backgrounds from `bg-white/[0.03]` to `bg-white/[0.05]` and borders from `border-white/[0.06]` to `border-white/[0.08]` across all feature/step/testimonial cards
+- This creates a clearer card-on-section hierarchy
 
 ---
 
-## Feature 3: Evidence Pack Generator
+## Technical Details
 
-**Added to:** `src/pages/dealer/DealerClaimAssist.tsx` (new "Generate Evidence Pack" button in claim workspace)
-
-**Implementation:**
-- Button appears in claim detail view header
-- Generates a clean HTML document in a new tab containing:
-  - Claim reference and summary
-  - Customer details
-  - Vehicle details
-  - Full timeline
-  - Messages (non-internal only)
-  - Decision details
-  - Checklist results
-- Styled for print with `@media print` CSS
-- Also offers download as HTML file (same approach as existing DealerDocuments)
-
-No PDF library needed — clean printable HTML that browsers can "Print to PDF."
-
----
-
-## Feature 4: Customer Timeline
-
-**New page:** `/dealer/customers/:id/timeline` OR integrated as a view within `DealerCustomers.tsx`
-
-**Approach:** Add a "View Timeline" button on each customer card in DealerCustomers. Opens a modal/panel showing a chronological list pulling from:
-- Warranty store (warranty created events)
-- Claim store (claims, messages, decisions)
-- DisputeIQ store (dispute cases)
-- Audit log entries
-
-**UI:** Simple vertical timeline with icons, dates, and brief descriptions. No new data model — just aggregates existing stores filtered by customerId.
-
----
-
-## Feature 5: Light Benchmarking
-
-**Integrated into:** Warranty Fund page as a "Market Comparison" section.
-
-**Data:** Uses anonymised averages from all dealers in demo data (d-1, d-2, d-3) to create "market" benchmarks.
-
-**Comparisons:**
-- Contribution per warranty (your avg vs market avg)
-- Claim rate (yours vs market)
-- Avg claim cost (yours vs market)
-
-Each metric shows: your value, market value, and a badge (Above/Below/On Par).
-
-**AI insight** included in the same `warranty-fund-insight` edge function call — returns a one-line benchmarking observation.
-
----
-
-## Files to Create
-1. `src/pages/dealer/DealerWarrantyFund.tsx` — Warranty Fund + Profit Dashboard + Benchmarking
-2. `supabase/functions/warranty-fund-insight/index.ts` — AI insight edge function
-
-## Files to Edit
-1. `src/components/layouts/DealerLayout.tsx` — Add "Warranty Fund" sidebar item
-2. `src/App.tsx` — Add route `/dealer/warranty-fund`
-3. `src/pages/dealer/DealerClaimAssist.tsx` — Add "Generate Evidence Pack" button + generator logic
-4. `src/pages/dealer/DealerCustomers.tsx` — Add "View Timeline" button + timeline modal
-
----
-
-## Design Rules
-- All glass-card styling, consistent with existing pages
-- Large readable numbers, card-based layout
-- No tables unless necessary
-- Dark mode compatible (uses existing CSS variables)
-- Premium SaaS feel throughout
+- **Files modified**: `src/components/PublicNav.tsx`, `src/pages/LandingPage.tsx`
+- No new dependencies or components
+- All changes are CSS class adjustments — no logic changes
+- Approximately 15-20 line edits across both files
 
