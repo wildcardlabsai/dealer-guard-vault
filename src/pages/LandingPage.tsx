@@ -83,36 +83,93 @@ function TestimonialCarousel() {
   );
 }
 
-function DashboardMock() {
+function HeroMock() {
   return (
     <motion.div
-      className="glass-card-strong rounded-xl p-4 w-full max-w-sm mx-auto"
-      initial={{ opacity: 0, y: 16, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: 0.6, duration: 0.7 }}
+      className="relative w-full max-w-md mx-auto"
+      initial={{ opacity: 0, y: 24, rotateX: 4, rotateY: -3 }}
+      animate={{ opacity: 1, y: 0, rotateX: 2, rotateY: -2 }}
+      transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+      style={{ perspective: "1200px", transformStyle: "preserve-3d" }}
     >
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-2 h-2 rounded-full bg-emerald-400" />
-        <span className="text-xs text-white/40 font-medium">Warranty Fund</span>
-      </div>
-      <div className="text-2xl font-bold text-white mb-1">£4,280</div>
-      <div className="text-xs text-emerald-400 mb-3">+£320 this month · Healthy</div>
-      <div className="grid grid-cols-3 gap-2 mb-3">
-        {[
-          { label: "Active", val: "24" },
-          { label: "Claims", val: "4" },
-          { label: "Profit", val: "£1,860" },
-        ].map(s => (
-          <div key={s.label} className="bg-white/5 rounded-lg p-2 text-center">
-            <div className="text-xs text-white/40">{s.label}</div>
-            <div className="text-sm font-semibold text-white">{s.val}</div>
+      {/* Glow backdrop */}
+      <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-[40px] pointer-events-none" />
+
+      {/* Warranty Fund card */}
+      <motion.div
+        className="glass-card-strong rounded-xl p-4 mb-3 relative"
+        animate={{ y: [0, -4, 0] }}
+        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+      >
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Wallet className="w-4 h-4 text-primary" />
+            <span className="text-xs text-white/50 font-medium">Warranty Fund</span>
           </div>
-        ))}
-      </div>
-      <div className="flex gap-1 items-end h-10">
-        {[35, 50, 40, 65, 55, 70, 60, 80, 75, 90, 85, 95].map((h, i) => (
-          <div key={i} className="flex-1 bg-primary/40 rounded-t" style={{ height: `${h}%` }} />
-        ))}
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-medium">Healthy</span>
+        </div>
+        <div className="text-2xl font-bold text-white mb-0.5">£4,280</div>
+        <div className="text-[11px] text-emerald-400/80 mb-3">+£320 this month</div>
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          {[
+            { label: "Active", val: "24" },
+            { label: "Claims", val: "4" },
+            { label: "Profit", val: "£1,860" },
+          ].map(s => (
+            <div key={s.label} className="bg-white/5 rounded-lg p-1.5 text-center">
+              <div className="text-[10px] text-white/35">{s.label}</div>
+              <div className="text-xs font-semibold text-white">{s.val}</div>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-0.5 items-end h-8">
+          {[35, 50, 40, 65, 55, 70, 60, 80, 75, 90, 85, 95].map((h, i) => (
+            <div key={i} className="flex-1 bg-primary/30 rounded-t transition-all" style={{ height: `${h}%` }} />
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Bottom row: Claim Assist + DisputeIQ */}
+      <div className="grid grid-cols-2 gap-3">
+        <motion.div
+          className="glass-card rounded-lg p-3"
+          animate={{ y: [0, -3, 0] }}
+          transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 0.3 }}
+        >
+          <div className="flex items-center gap-1.5 mb-2">
+            <Headphones className="w-3 h-3 text-primary" />
+            <span className="text-[10px] text-white/45 font-medium">Claim Assist</span>
+          </div>
+          <div className="bg-white/5 rounded p-2 mb-1.5">
+            <div className="text-[10px] text-white/60">Gearbox fault — 2019 Focus</div>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-4 h-4 rounded-full bg-[hsl(var(--cta))]/20 flex items-center justify-center">
+              <AlertTriangle className="w-2.5 h-2.5 text-[hsl(var(--cta))]" />
+            </div>
+            <span className="text-[9px] text-white/40">Under review</span>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="glass-card rounded-lg p-3"
+          animate={{ y: [0, -3, 0] }}
+          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.6 }}
+        >
+          <div className="flex items-center gap-1.5 mb-2">
+            <Sparkles className="w-3 h-3 text-primary" />
+            <span className="text-[10px] text-white/45 font-medium">DisputeIQ</span>
+          </div>
+          <div className="bg-primary/10 border border-primary/20 rounded p-2 mb-1.5">
+            <div className="text-[10px] text-white/60">Repair is the appropriate remedy under CRA 2015.</div>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="h-1 flex-1 bg-primary/20 rounded-full">
+              <div className="h-full w-4/5 bg-primary/60 rounded-full" />
+            </div>
+            <span className="text-[9px] text-primary/60">Strong</span>
+          </div>
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -226,7 +283,7 @@ export default function LandingPage() {
             </div>
 
             <div className="hidden lg:flex justify-center">
-              <DashboardMock />
+              <HeroMock />
             </div>
           </div>
         </div>
