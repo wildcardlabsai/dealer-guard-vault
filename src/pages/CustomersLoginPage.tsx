@@ -50,6 +50,7 @@ export default function CustomersLoginPage() {
       <SEOHead
         title="Customer Login | WarrantyVault"
         description="Sign in to your WarrantyVault customer account to view warranties, track claims, and download certificates."
+        noindex
       />
       <div className="min-h-screen flex items-center justify-center px-6 relative">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />

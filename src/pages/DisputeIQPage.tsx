@@ -32,8 +32,8 @@ export default function DisputeIQPage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="DisputeIQ — AI Complaint Handling for UK Car Dealers | WarrantyVault"
-        description="Handle customer complaints confidently with AI-powered guidance. Know your position, avoid costly mistakes, and send the right response every time."
+        title="Consumer Rights Act Help for Car Dealers | DisputeIQ"
+        description="Handle customer complaints properly with DisputeIQ. Get guidance, risk levels, and response templates for UK car dealers."
         canonical="https://dealer-guard-vault.lovable.app/disputeiq"
       />
       <PublicNav currentPage="/disputeiq" />

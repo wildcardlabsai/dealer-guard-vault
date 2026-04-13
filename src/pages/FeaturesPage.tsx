@@ -199,8 +199,8 @@ export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Self-Funded Warranty Features & Comparison | WarrantyVault"
-        description="Compare self-funded warranties vs third-party providers. See how WarrantyVault gives UK dealers full control, higher margins, and faster claim decisions."
+        title="WarrantyVault Features | Warranty Management System for Dealers"
+        description="Explore WarrantyVault features including claims management, DisputeIQ, and warranty fund tracking for car dealers."
         canonical="https://dealer-guard-vault.lovable.app/features"
       />
 
@@ -342,7 +342,8 @@ export default function FeaturesPage() {
       <section className="hero-gradient pt-20 pb-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Ready to take control?</h2>
-          <p className="text-white/50 mb-8 text-lg">Join dealers who are keeping more profit and running warranties their way.</p>
+          <p className="text-white/50 mb-4 text-lg">Join dealers who are keeping more profit and running warranties their way.</p>
+          <p className="text-white/40 mb-8 text-sm">Need help with customer complaints? <Link to="/disputeiq" className="text-primary hover:underline font-semibold">Handle complaints with DisputeIQ</Link> — completely free.</p>
           <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
             <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
           </Button>
