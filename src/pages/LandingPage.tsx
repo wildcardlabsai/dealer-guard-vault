@@ -86,91 +86,151 @@ function TestimonialCarousel() {
 function HeroMock() {
   return (
     <motion.div
-      className="relative w-full max-w-md mx-auto"
-      initial={{ opacity: 0, y: 24, rotateX: 4, rotateY: -3 }}
-      animate={{ opacity: 1, y: 0, rotateX: 2, rotateY: -2 }}
+      className="relative w-full max-w-[480px] mx-auto"
+      initial={{ opacity: 0, y: 28 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-      style={{ perspective: "1200px", transformStyle: "preserve-3d" }}
+      style={{ perspective: "1200px" }}
     >
-      {/* Glow backdrop */}
-      <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-[40px] pointer-events-none" />
+      {/* Glow layers */}
+      <div className="absolute -inset-6 bg-primary/8 rounded-3xl blur-[50px] pointer-events-none" />
+      <div className="absolute -inset-3 bg-[hsl(var(--cta))]/5 rounded-3xl blur-[30px] pointer-events-none" />
 
-      {/* Warranty Fund card */}
       <motion.div
-        className="glass-card-strong rounded-xl p-4 mb-3 relative"
-        animate={{ y: [0, -4, 0] }}
-        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        className="relative rounded-3xl border border-white/[0.08] bg-[hsl(222_30%_9%)]/90 backdrop-blur-2xl shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5),0_0_40px_-10px_hsl(172,66%,40%,0.1)] overflow-hidden"
+        style={{ transform: "rotateX(2deg) rotateY(-2deg)", transformStyle: "preserve-3d" }}
       >
-        <div className="flex items-center justify-between mb-2">
+        {/* Top status bar */}
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
           <div className="flex items-center gap-2">
-            <Wallet className="w-4 h-4 text-primary" />
-            <span className="text-xs text-white/50 font-medium">Warranty Fund</span>
-          </div>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-medium">Healthy</span>
-        </div>
-        <div className="text-2xl font-bold text-white mb-0.5">£4,280</div>
-        <div className="text-[11px] text-emerald-400/80 mb-3">+£320 this month</div>
-        <div className="grid grid-cols-3 gap-2 mb-3">
-          {[
-            { label: "Active", val: "24" },
-            { label: "Claims", val: "4" },
-            { label: "Profit", val: "£1,860" },
-          ].map(s => (
-            <div key={s.label} className="bg-white/5 rounded-lg p-1.5 text-center">
-              <div className="text-[10px] text-white/35">{s.label}</div>
-              <div className="text-xs font-semibold text-white">{s.val}</div>
+            <Shield className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[11px] font-semibold text-white/70 tracking-wide">WarrantyVault</span>
+            <div className="flex items-center gap-1 ml-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[9px] text-white/30">Live</span>
             </div>
-          ))}
+          </div>
+          <div className="flex items-center gap-1.5">
+            {[
+              { label: "124 Warranties", color: "bg-primary/15 text-primary" },
+              { label: "9 Claims", color: "bg-white/[0.06] text-white/50" },
+              { label: "Healthy Fund", color: "bg-emerald-500/15 text-emerald-400/80" },
+            ].map(p => (
+              <span key={p.label} className={`text-[8px] font-medium px-1.5 py-0.5 rounded-full ${p.color}`}>{p.label}</span>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-0.5 items-end h-8">
-          {[35, 50, 40, 65, 55, 70, 60, 80, 75, 90, 85, 95].map((h, i) => (
-            <div key={i} className="flex-1 bg-primary/30 rounded-t transition-all" style={{ height: `${h}%` }} />
-          ))}
+
+        {/* Main content */}
+        <div className="grid grid-cols-[1.1fr_1fr] gap-2.5 p-3">
+          {/* Left column */}
+          <div className="space-y-2.5">
+            {/* Warranty Fund card */}
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-1.5">
+                  <Wallet className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-[10px] font-semibold text-white/50">Warranty Fund</span>
+                </div>
+                <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-medium">Healthy</span>
+              </div>
+              <div className="text-[28px] font-bold text-white leading-none mb-0.5 tracking-tight">£12,450</div>
+              <div className="text-[10px] text-emerald-400/70 mb-2.5">+£2,300 this month</div>
+              <div className="text-[9px] text-white/25 mb-2">Buffer: £2,650</div>
+              {/* Balance / Liability bars */}
+              <div className="space-y-1.5">
+                <div>
+                  <div className="flex justify-between text-[8px] text-white/30 mb-0.5">
+                    <span>Balance</span><span>£12,450</span>
+                  </div>
+                  <div className="h-1 bg-white/[0.04] rounded-full">
+                    <div className="h-full w-[78%] bg-primary/50 rounded-full" />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-[8px] text-white/30 mb-0.5">
+                    <span>Liability</span><span>£9,800</span>
+                  </div>
+                  <div className="h-1 bg-white/[0.04] rounded-full">
+                    <div className="h-full w-[62%] bg-[hsl(var(--cta))]/40 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Claim Assist card */}
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Headphones className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[10px] font-semibold text-white/50">Claim Assist</span>
+              </div>
+              <div className="space-y-1 mb-2.5">
+                <div className="flex justify-between text-[9px]">
+                  <span className="text-white/30">Ref</span>
+                  <span className="text-white/60 font-medium">CLM-1042</span>
+                </div>
+                <div className="flex justify-between text-[9px]">
+                  <span className="text-white/30">Issue</span>
+                  <span className="text-white/60">Engine warning light</span>
+                </div>
+                <div className="flex justify-between text-[9px]">
+                  <span className="text-white/30">Status</span>
+                  <span className="text-[hsl(var(--cta))]/80 font-medium">Awaiting review</span>
+                </div>
+              </div>
+              <div className="inline-flex items-center gap-1 text-[8px] font-medium text-primary bg-primary/10 px-2 py-1 rounded-full cursor-default">
+                <ClipboardList className="w-2.5 h-2.5" />
+                Review Claim
+              </div>
+            </div>
+          </div>
+
+          {/* Right column */}
+          <div className="space-y-2.5">
+            {/* DisputeIQ card */}
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-[10px] font-semibold text-white/50">DisputeIQ</span>
+                </div>
+                <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-[hsl(var(--cta))]/15 text-[hsl(var(--cta))] font-medium">Medium Risk</span>
+              </div>
+              <div className="space-y-1.5 mb-2.5">
+                <div className="flex items-start gap-1.5 text-[9px] text-white/50">
+                  <div className="w-1 h-1 rounded-full bg-[hsl(var(--cta))]/50 mt-1 shrink-0" />
+                  <span>Within 6 months of sale</span>
+                </div>
+                <div className="flex items-start gap-1.5 text-[9px] text-white/50">
+                  <div className="w-1 h-1 rounded-full bg-primary/50 mt-1 shrink-0" />
+                  <span>Inspect vehicle and offer repair if fault confirmed</span>
+                </div>
+              </div>
+              <div className="rounded-lg bg-primary/[0.06] border border-primary/10 p-2 mb-2">
+                <div className="text-[8px] text-primary/50 mb-0.5">Suggested reply</div>
+                <div className="text-[9px] text-white/55 leading-relaxed">
+                  "Thanks for getting in touch. We'd like to arrange an inspection to assess the issue properly."
+                </div>
+              </div>
+              <span className="text-[8px] text-primary/60 font-medium cursor-default hover:text-primary/80 transition-colors">View full response →</span>
+            </div>
+
+            {/* Quick links mini cards */}
+            <div className="grid grid-cols-3 gap-1.5">
+              {[
+                { icon: Shield, label: "Cover\nBreakdown" },
+                { icon: MessageSquare, label: "Complaint\nGuidance" },
+                { icon: TrendingUp, label: "Profit\nTracking" },
+              ].map(item => (
+                <div key={item.label} className="rounded-lg bg-white/[0.03] border border-white/[0.05] p-2 text-center cursor-default hover:bg-white/[0.05] transition-colors">
+                  <item.icon className="w-3 h-3 text-primary/60 mx-auto mb-1" />
+                  <div className="text-[7px] text-white/30 leading-tight whitespace-pre-line">{item.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </motion.div>
-
-      {/* Bottom row: Claim Assist + DisputeIQ */}
-      <div className="grid grid-cols-2 gap-3">
-        <motion.div
-          className="glass-card rounded-lg p-3"
-          animate={{ y: [0, -3, 0] }}
-          transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 0.3 }}
-        >
-          <div className="flex items-center gap-1.5 mb-2">
-            <Headphones className="w-3 h-3 text-primary" />
-            <span className="text-[10px] text-white/45 font-medium">Claim Assist</span>
-          </div>
-          <div className="bg-white/5 rounded p-2 mb-1.5">
-            <div className="text-[10px] text-white/60">Gearbox fault — 2019 Focus</div>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-full bg-[hsl(var(--cta))]/20 flex items-center justify-center">
-              <AlertTriangle className="w-2.5 h-2.5 text-[hsl(var(--cta))]" />
-            </div>
-            <span className="text-[9px] text-white/40">Under review</span>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="glass-card rounded-lg p-3"
-          animate={{ y: [0, -3, 0] }}
-          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.6 }}
-        >
-          <div className="flex items-center gap-1.5 mb-2">
-            <Sparkles className="w-3 h-3 text-primary" />
-            <span className="text-[10px] text-white/45 font-medium">DisputeIQ</span>
-          </div>
-          <div className="bg-primary/10 border border-primary/20 rounded p-2 mb-1.5">
-            <div className="text-[10px] text-white/60">Repair is the appropriate remedy under CRA 2015.</div>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="h-1 flex-1 bg-primary/20 rounded-full">
-              <div className="h-full w-4/5 bg-primary/60 rounded-full" />
-            </div>
-            <span className="text-[9px] text-primary/60">Strong</span>
-          </div>
-        </motion.div>
-      </div>
     </motion.div>
   );
 }
