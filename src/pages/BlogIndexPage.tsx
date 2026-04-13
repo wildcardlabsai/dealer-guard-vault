@@ -66,7 +66,7 @@ export default function BlogIndexPage() {
           <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
             <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
           </Button>
-          <p className="text-xs text-white/30 mt-5">No monthly fees. £19 per warranty.</p>
+          <p className="text-xs text-white/30 mt-5">No monthly fees. £15 per warranty.</p>
         </div>
       </section>
 
