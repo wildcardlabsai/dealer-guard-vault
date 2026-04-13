@@ -17,6 +17,9 @@ import {
 
 export default function DealerCustomers() {
   const { user } = useAuth();
+  const { warranties } = useWarrantyStore();
+  const claimStore = useClaimStore();
+  const disputeStore = useDisputeIQStore();
   const dealerId = user?.dealerId || "d-1";
   const dealerName = dealerId === "d-1" ? "Prestige Motors" : "City Autos";
   const [search, setSearch] = useState("");
@@ -24,6 +27,28 @@ export default function DealerCustomers() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteName, setInviteName] = useState("");
   const [inviting, setInviting] = useState(false);
+  const [timelineCustomer, setTimelineCustomer] = useState<string | null>(null);
+
+  const getTimeline = (customerId: string) => {
+    const events: { date: string; type: string; detail: string }[] = [];
+    warranties.filter(w => w.customerId === customerId).forEach(w => {
+      events.push({ date: w.createdAt, type: "warranty", detail: `Warranty created — ${w.vehicleMake} ${w.vehicleModel} (${w.vehicleReg})` });
+    });
+    claimStore.getClaimsForCustomer(customerId).forEach(c => {
+      events.push({ date: c.createdAt, type: "claim", detail: `Claim submitted — ${c.issueTitle} (${c.reference})` });
+      if (c.decision) events.push({ date: c.decision.timestamp, type: "decision", detail: `Claim ${c.decision.type.replace(/_/g, " ")} — ${c.reference}` });
+      (c.messages || []).filter(m => !m.internal).forEach(m => {
+        events.push({ date: m.timestamp, type: "message", detail: `Message from ${m.from}: "${m.message.slice(0, 60)}..."` });
+      });
+    });
+    disputeStore.getCasesForDealer(dealerId).filter(d => d.customerName === demoCustomers.find(c => c.id === customerId)?.name).forEach(d => {
+      events.push({ date: d.createdAt, type: "dispute", detail: `DisputeIQ case opened — ${d.complaintType}` });
+    });
+    return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  };
+
+  const timelineEvents = timelineCustomer ? getTimeline(timelineCustomer) : [];
+  const timelineCustomerName = demoCustomers.find(c => c.id === timelineCustomer)?.name || "";
 
   const customers = demoCustomers
     .filter(c => c.dealerId === dealerId)
