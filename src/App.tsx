@@ -18,6 +18,7 @@ import FeaturesPage from "@/pages/FeaturesPage";
 import WarrantyLinePage from "@/pages/WarrantyLinePage";
 import FAQPage from "@/pages/FAQPage";
 import BlogIndexPage from "@/pages/BlogIndexPage";
+import DisputeIQPage from "@/pages/DisputeIQPage";
 
 import DealerLayout from "@/components/layouts/DealerLayout";
 import DealerDashboard from "@/pages/dealer/DealerDashboard";
@@ -33,6 +34,8 @@ import DealerCoverTemplates from "@/pages/dealer/DealerCoverTemplates";
 import DealerClaimAssist from "@/pages/dealer/DealerClaimAssist";
 import DealerClaimSettings from "@/pages/dealer/DealerClaimSettings";
 import DealerSupport from "@/pages/dealer/DealerSupport";
+import DealerDisputeIQ from "@/pages/dealer/DealerDisputeIQ";
+import DisputeIQAssessment from "@/pages/dealer/DisputeIQAssessment";
 
 import CustomerLayout from "@/components/layouts/CustomerLayout";
 import CustomerDashboard from "@/pages/customer/CustomerDashboard";
@@ -74,6 +77,7 @@ function AppRoutes() {
       <Route path="/warranty-line" element={<WarrantyLinePage />} />
       <Route path="/faq" element={<FAQPage />} />
       <Route path="/blog" element={<BlogIndexPage />} />
+      <Route path="/disputeiq" element={<DisputeIQPage />} />
       <Route path="/blog/:slug" element={<BlogArticlePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
@@ -96,6 +100,8 @@ function AppRoutes() {
       <Route path="/dealer/claim-assist" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimAssist /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/claim-settings" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimSettings /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/support" element={<ProtectedRoute role="dealer"><DealerLayout><DealerSupport /></DealerLayout></ProtectedRoute>} />
+      <Route path="/dealer/disputeiq" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDisputeIQ /></DealerLayout></ProtectedRoute>} />
+      <Route path="/dealer/disputeiq/:id" element={<ProtectedRoute role="dealer"><DealerLayout><DisputeIQAssessment /></DealerLayout></ProtectedRoute>} />
 
       {/* Customer Routes */}
       <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerDashboard /></CustomerLayout></ProtectedRoute>} />
