@@ -4,6 +4,7 @@ import { useWarrantyStore } from "@/lib/warranty-store";
 import { useWarrantyLineStore } from "@/lib/warranty-line-store";
 import { useDealerSettingsStore } from "@/lib/dealer-settings-store";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSimpleMode } from "@/components/layouts/DealerLayout";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,22 +13,35 @@ import { Badge } from "@/components/ui/badge";
 import {
   Shield, FileText, Users, ClipboardList, TrendingUp, AlertTriangle,
   Search, Plus, Car, CheckCircle2, Loader2, ArrowRight, Clock, Phone,
-  Target, Activity, CalendarClock, PercentCircle, PoundSterling
+  Target, Activity, CalendarClock, PercentCircle, PoundSterling, Sparkles, Wallet
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
 
-function StatCard({ icon: Icon, label, value, sub, color }: { icon: any; label: string; value: string | number; sub?: string; color?: string }) {
+function SectionHeader({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
-    <div className="glass-card rounded-xl p-5">
-      <div className="flex items-start justify-between mb-3">
-        <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color || "bg-primary/10"}`}>
-          <Icon className={`w-4 h-4 ${color ? "text-primary-foreground" : "text-primary"}`} />
+    <div className="flex items-center justify-between mb-4">
+      <h2 className="text-xs font-semibold uppercase tracking-[0.1em] text-white/25">{title}</h2>
+      {children}
+    </div>
+  );
+}
+
+function StatCard({ icon: Icon, label, value, sub, accent }: { icon: any; label: string; value: string | number; sub?: string; accent?: boolean }) {
+  return (
+    <div className={`rounded-xl p-4 border transition-all duration-200 hover:-translate-y-0.5 ${
+      accent
+        ? "bg-[hsl(222_28%_12%)] border-primary/20 shadow-[0_0_16px_-6px_hsl(172,66%,40%,0.12)]"
+        : "bg-[hsl(222_28%_10%)] border-white/[0.06] hover:border-white/[0.1]"
+    }`}>
+      <div className="flex items-start justify-between mb-2">
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${accent ? "bg-primary/15" : "bg-white/[0.04]"}`}>
+          <Icon className={`w-3.5 h-3.5 ${accent ? "text-primary" : "text-white/40"}`} />
         </div>
       </div>
-      <p className="text-2xl font-bold font-display">{value}</p>
-      <p className="text-sm text-muted-foreground">{label}</p>
-      {sub && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
+      <p className="text-xl font-bold font-display text-white/90">{value}</p>
+      <p className="text-xs text-white/35 mt-0.5">{label}</p>
+      {sub && <p className="text-[10px] text-white/20 mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -37,6 +51,7 @@ export default function DealerDashboard() {
   const navigate = useNavigate();
   const store = useWarrantyStore();
   const warrantyLineStore = useWarrantyLineStore();
+  const { simple } = useSimpleMode();
   const dealerId = user?.dealerId || "d-1";
   const warrantyLine = warrantyLineStore.getLine(dealerId);
   store.ensureExpiryCheck(dealerId);
@@ -50,24 +65,17 @@ export default function DealerDashboard() {
   const totalValue = warranties.reduce((s, w) => s + w.cost, 0);
   const openClaims = claims.filter(c => c.status === "pending" || c.status === "under_review").length;
   const resolvedClaims = claims.filter(c => c.status === "approved" || c.status === "rejected").length;
-
-  // Claim approval rate
   const approvedClaims = claims.filter(c => c.status === "approved").length;
   const approvalRate = resolvedClaims > 0 ? Math.round((approvedClaims / resolvedClaims) * 100) : 0;
 
-  // Expiring warranties (within 30 days)
   const now = new Date();
   const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   const expiringWarranties = warranties.filter(w => {
     if (w.status !== "active") return false;
     const end = new Date(w.endDate);
     return end >= now && end <= in30Days;
-  }).map(w => {
-    const daysLeft = Math.ceil((new Date(w.endDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    return { ...w, daysLeft };
-  });
+  }).map(w => ({ ...w, daysLeft: Math.ceil((new Date(w.endDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) }));
 
-  // Sales target progress
   const dealerSettingsStore = useDealerSettingsStore();
   const dealerSettings = dealerSettingsStore.getSettings(dealerId);
   const currentMonth = now.getMonth();
@@ -121,286 +129,314 @@ export default function DealerDashboard() {
   const dealerFreeTotal = dealerSettings.freeWarrantiesTotal;
   const freeUsed = dealerSettings.freeWarrantiesUsed;
 
+  // Fund calculations
+  const contributions = warranties.reduce((s, w) => s + w.cost, 0);
+  const claimsPaid = claims.filter(c => c.status === "approved").reduce((s, c) => s + (c.amount || 0), 0);
+  const fundBalance = contributions - claimsPaid;
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-bold font-display">Dashboard</h1>
-          <p className="text-muted-foreground text-sm">Welcome back, {user?.name}</p>
-        </div>
+    <div className="space-y-8 max-w-6xl">
+      {/* Page header */}
+      <div>
+        <h1 className="text-2xl font-bold font-display text-white/90">Dashboard</h1>
+        <p className="text-sm text-white/30">Welcome back, {user?.name}</p>
       </div>
 
-      {/* Free Warranties Banner */}
-      {freeRemaining > 0 ? (
-        <div className="glass-card-strong rounded-xl p-5 border-primary/30 bg-primary/5 glow-primary relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-          <div className="relative flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                <PoundSterling className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold font-display text-sm">Free Warranties Remaining</h3>
-                <p className="text-xs text-muted-foreground">Your first {dealerFreeTotal} warranties are on us — no charge</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-2xl font-bold font-display text-primary">{freeRemaining}</p>
-                <p className="text-xs text-muted-foreground">{freeUsed}/{dealerFreeTotal} used</p>
-              </div>
-              <Progress value={(freeUsed / dealerFreeTotal) * 100} className="w-24 h-2" />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="glass-card rounded-xl p-4 border-border/30">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-secondary/50 flex items-center justify-center">
-              <PoundSterling className="w-4 h-4 text-muted-foreground" />
-            </div>
-            <div>
-              <p className="text-sm font-medium">All {dealerFreeTotal} free warranties used</p>
-              <p className="text-xs text-muted-foreground">New warranties are now charged at £19 each via Stripe</p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ── ACTIONS ── */}
+      <section>
+        <SectionHeader title="Actions" />
 
-      {/* Expiring Warranties Alert */}
-      {expiringWarranties.length > 0 && (
-        <div className="glass-card rounded-xl p-4 border-yellow-500/30 bg-yellow-500/5">
-          <div className="flex items-center gap-2 mb-3">
-            <CalendarClock className="w-4 h-4 text-yellow-500" />
-            <h3 className="font-semibold font-display text-sm">Expiring Soon ({expiringWarranties.length})</h3>
-          </div>
-          <div className="space-y-2">
-            {expiringWarranties.map(w => (
-              <div key={w.id} className="flex items-center justify-between p-2 rounded-lg bg-secondary/30 hover:bg-secondary/50 cursor-pointer transition-colors"
-                onClick={() => navigate("/dealer/warranties")}>
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-sm">{w.vehicleReg}</span>
-                  <span className="text-sm text-muted-foreground">{w.vehicleMake} {w.vehicleModel}</span>
+        {/* Free Warranties Banner */}
+        {freeRemaining > 0 && (
+          <div className="rounded-xl p-4 border border-primary/20 bg-primary/[0.04] mb-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/[0.06] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="relative flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center">
+                  <PoundSterling className="w-4 h-4 text-primary" />
                 </div>
-                <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">
-                  {w.daysLeft} days left
-                </Badge>
+                <div>
+                  <h3 className="font-semibold font-display text-sm text-white/80">Free Warranties Remaining</h3>
+                  <p className="text-[11px] text-white/30">Your first {dealerFreeTotal} warranties are on us</p>
+                </div>
               </div>
-            ))}
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="text-xl font-bold font-display text-primary">{freeRemaining}</p>
+                  <p className="text-[10px] text-white/25">{freeUsed}/{dealerFreeTotal} used</p>
+                </div>
+                <Progress value={(freeUsed / dealerFreeTotal) * 100} className="w-20 h-1.5" />
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Quick Actions Hero Section */}
-      <div className="grid lg:grid-cols-2 gap-4">
-        <div className="glass-card-strong rounded-xl p-6 glow-primary relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-1">
-              <Car className="w-5 h-5 text-primary" />
-              <h2 className="font-semibold font-display text-lg">Add New Warranty</h2>
+        {/* Expiring Alert */}
+        {expiringWarranties.length > 0 && (
+          <div className="rounded-xl p-4 border border-yellow-500/20 bg-yellow-500/[0.03] mb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <CalendarClock className="w-4 h-4 text-yellow-500/80" />
+              <h3 className="font-semibold font-display text-sm text-white/70">Expiring Soon ({expiringWarranties.length})</h3>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">Enter a registration to get started instantly</p>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Enter reg e.g. AB12 CDE"
-                value={reg}
-                onChange={e => setReg(e.target.value.toUpperCase())}
-                onKeyDown={e => e.key === "Enter" && handleQuickLookup()}
-                className="font-mono text-base tracking-widest bg-background/60 border-border/80 h-12 text-lg"
-              />
-              <Button onClick={handleQuickLookup} disabled={loading} size="lg" className="h-12 px-6 glow-primary-sm">
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Search className="w-5 h-5 mr-1" /> Look Up</>}
-              </Button>
-            </div>
-            {vehicle && (
-              <div className="mt-4 bg-primary/5 border border-primary/20 rounded-lg p-4 animate-fade-in">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                    <CheckCircle2 className="w-4 h-4" /> Vehicle Found
+            <div className="space-y-1.5">
+              {expiringWarranties.map(w => (
+                <div key={w.id} className="flex items-center justify-between p-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] cursor-pointer transition-colors"
+                  onClick={() => navigate("/dealer/warranties")}>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-sm text-white/60">{w.vehicleReg}</span>
+                    <span className="text-xs text-white/30">{w.vehicleMake} {w.vehicleModel}</span>
                   </div>
-                  <Button size="sm" onClick={() => navigate("/dealer/warranties/new", { state: { reg: vehicle.registration, vehicle } })} className="glow-primary-sm">
-                    Continue <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </div>
-                <div className="grid grid-cols-3 gap-2 text-sm">
-                  <div><span className="text-muted-foreground">Make:</span> <span className="font-medium">{vehicle.make}</span></div>
-                  <div><span className="text-muted-foreground">Model:</span> <span className="font-medium">{vehicle.model}</span></div>
-                  <div><span className="text-muted-foreground">Year:</span> <span className="font-medium">{vehicle.year}</span></div>
-                  <div><span className="text-muted-foreground">Colour:</span> <span className="font-medium">{vehicle.colour}</span></div>
-                  <div><span className="text-muted-foreground">Fuel:</span> <span className="font-medium">{vehicle.fuelType}</span></div>
-                  <div><span className="text-muted-foreground">Engine:</span> <span className="font-medium">{vehicle.engineSize}</span></div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <button onClick={() => navigate("/dealer/warranties/new")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
-            <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
-              <Plus className="w-5 h-5 text-primary" />
-            </div>
-            <p className="font-semibold font-display">Add Warranty</p>
-            <p className="text-xs text-muted-foreground mt-1">Issue a new warranty</p>
-          </button>
-          <button onClick={() => navigate("/dealer/claim-assist")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
-            <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
-              <ClipboardList className="w-5 h-5 text-primary" />
-            </div>
-            <p className="font-semibold font-display">Claim Assist</p>
-            <p className="text-xs text-muted-foreground mt-1">{openClaims} open claims</p>
-          </button>
-          <button onClick={() => navigate("/dealer/customers")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
-            <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
-              <Users className="w-5 h-5 text-primary" />
-            </div>
-            <p className="font-semibold font-display">Customers</p>
-            <p className="text-xs text-muted-foreground mt-1">{customers} total</p>
-          </button>
-          <button onClick={() => navigate("/dealer/requests")} className="glass-card rounded-xl p-5 text-left hover:border-primary/40 hover:bg-primary/5 transition-all group">
-            <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
-              <Clock className="w-5 h-5 text-primary" />
-            </div>
-            <p className="font-semibold font-display">Requests</p>
-            <p className="text-xs text-muted-foreground mt-1">Customer requests</p>
-          </button>
-        </div>
-      </div>
-
-      {/* Stats Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
-        <StatCard icon={FileText} label="Total Warranties" value={warranties.length} />
-        <StatCard icon={Shield} label="Active" value={active} sub={`${expired} expired`} />
-        <StatCard icon={TrendingUp} label="Total Value" value={`£${totalValue.toLocaleString()}`} />
-        <StatCard icon={ClipboardList} label="Open Claims" value={openClaims} />
-        <StatCard icon={AlertTriangle} label="Resolved Claims" value={resolvedClaims} />
-        <StatCard icon={Users} label="Customers" value={customers} />
-        <StatCard icon={PercentCircle} label="Approval Rate" value={`${approvalRate}%`} sub={`${approvedClaims}/${resolvedClaims} approved`} />
-      </div>
-
-      {/* Sales Target Progress */}
-      <div className="glass-card rounded-xl p-5">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Target className="w-4 h-4 text-primary" />
-            <h3 className="font-semibold font-display text-sm">Monthly Sales Target</h3>
-          </div>
-          <span className="text-sm text-muted-foreground">{thisMonthWarranties} / {monthlyTarget} warranties</span>
-        </div>
-        <Progress value={targetProgress} className="h-2.5" />
-        <p className="text-xs text-muted-foreground mt-2">
-          {thisMonthWarranties >= monthlyTarget ? "🎉 Target reached!" : `${monthlyTarget - thisMonthWarranties} more to reach your target this month`}
-        </p>
-      </div>
-
-      {/* Charts + Recent Claims + Activity */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 glass-card rounded-xl p-6">
-          <h3 className="font-semibold font-display mb-4">Monthly Revenue</h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={monthlyData}>
-              <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={v => `£${v}`} />
-              <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
-              <Bar dataKey="revenue" fill="hsl(172, 66%, 40%)" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="glass-card rounded-xl p-6">
-          <h3 className="font-semibold font-display mb-4">Recent Claims</h3>
-          <div className="space-y-3">
-            {recentClaims.length === 0 && <p className="text-sm text-muted-foreground">No claims yet</p>}
-            {recentClaims.map(claim => (
-              <div key={claim.id} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors cursor-pointer"
-                onClick={() => navigate("/dealer/claims")}>
-                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                  claim.status === "pending" ? "bg-yellow-500" :
-                  claim.status === "under_review" ? "bg-blue-500" :
-                  claim.status === "approved" ? "bg-primary" : "bg-destructive"
-                }`} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{claim.description}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{claim.status.replace("_", " ")}</p>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-border/50">
-            <h4 className="text-sm font-medium mb-3">Warranty Status</h4>
-            <div className="space-y-2">
-              {statusData.map(d => (
-                <div key={d.name} className="flex items-center gap-2 text-sm">
-                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: d.color }} />
-                  <span className="text-muted-foreground">{d.name}</span>
-                  <div className="flex-1 h-1.5 rounded-full bg-secondary mx-2">
-                    <div className="h-full rounded-full" style={{ background: d.color, width: `${(d.value / (warranties.length || 1)) * 100}%` }} />
-                  </div>
-                  <span className="font-medium tabular-nums">{d.value}</span>
+                  <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500/80 border-yellow-500/15 text-[10px]">
+                    {w.daysLeft}d left
+                  </Badge>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Recent Activity Feed */}
-      <div className="glass-card rounded-xl p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Activity className="w-4 h-4 text-primary" />
-          <h3 className="font-semibold font-display">Recent Activity</h3>
-        </div>
-        <div className="space-y-3">
-          {recentActivity.length === 0 && <p className="text-sm text-muted-foreground">No activity recorded yet</p>}
-          {recentActivity.map(entry => {
-            const EntryIcon = activityIcon(entry.action);
-            return (
-              <div key={entry.id} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/20">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <EntryIcon className="w-3.5 h-3.5 text-primary" />
+        {/* Primary action row */}
+        <div className="grid lg:grid-cols-2 gap-4">
+          {/* Add Warranty — Primary card */}
+          <div className="rounded-xl p-6 border border-primary/15 bg-[hsl(222_28%_10%)] shadow-[0_0_20px_-8px_hsl(172,66%,40%,0.1)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-36 h-36 bg-primary/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-1">
+                <Car className="w-5 h-5 text-primary" />
+                <h2 className="font-semibold font-display text-base text-white/80">Add New Warranty</h2>
+              </div>
+              <p className="text-xs text-white/30 mb-4">Enter a registration to get started</p>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter reg e.g. AB12 CDE"
+                  value={reg}
+                  onChange={e => setReg(e.target.value.toUpperCase())}
+                  onKeyDown={e => e.key === "Enter" && handleQuickLookup()}
+                  className="font-mono text-sm tracking-widest bg-white/[0.03] border-white/[0.08] h-11"
+                />
+                <Button onClick={handleQuickLookup} disabled={loading} className="h-11 px-5 btn-cta shadow-[0_0_12px_-3px_hsl(24,100%,50%,0.2)]">
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Search className="w-4 h-4 mr-1" /> Look Up</>}
+                </Button>
+              </div>
+              {vehicle && (
+                <div className="mt-3 bg-primary/[0.05] border border-primary/15 rounded-lg p-3 animate-fade-in">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 text-primary text-xs font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Vehicle Found
+                    </div>
+                    <Button size="sm" className="h-7 text-xs btn-cta" onClick={() => navigate("/dealer/warranties/new", { state: { reg: vehicle.registration, vehicle } })}>
+                      Continue <ArrowRight className="w-3 h-3 ml-1" />
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5 text-xs">
+                    <div><span className="text-white/30">Make:</span> <span className="text-white/70">{vehicle.make}</span></div>
+                    <div><span className="text-white/30">Model:</span> <span className="text-white/70">{vehicle.model}</span></div>
+                    <div><span className="text-white/30">Year:</span> <span className="text-white/70">{vehicle.year}</span></div>
+                    <div><span className="text-white/30">Colour:</span> <span className="text-white/70">{vehicle.colour}</span></div>
+                    <div><span className="text-white/30">Fuel:</span> <span className="text-white/70">{vehicle.fuelType}</span></div>
+                    <div><span className="text-white/30">Engine:</span> <span className="text-white/70">{vehicle.engineSize}</span></div>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{entry.details}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {new Date(entry.timestamp).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                    {" · "}
-                    {new Date(entry.timestamp).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
-                  </p>
+              )}
+            </div>
+          </div>
+
+          {/* Quick stats — simple mode shows fewer */}
+          <div className="grid grid-cols-2 gap-3">
+            <StatCard icon={Shield} label="Active Warranties" value={active} accent />
+            <StatCard icon={ClipboardList} label="Open Claims" value={openClaims} sub={openClaims > 0 ? `${openClaims} need attention` : undefined} accent={openClaims > 0} />
+            {!simple && (
+              <>
+                <StatCard icon={Wallet} label="Fund Balance" value={`£${fundBalance.toLocaleString()}`} accent />
+                <StatCard icon={Users} label="Customers" value={customers} />
+              </>
+            )}
+            {simple && (
+              <>
+                <button onClick={() => navigate("/dealer/disputeiq")} className="rounded-xl p-4 border border-[hsl(var(--cta))]/15 bg-[hsl(var(--cta))]/[0.04] text-left transition-all hover:-translate-y-0.5 hover:border-[hsl(var(--cta))]/25 group">
+                  <div className="w-8 h-8 rounded-lg bg-[hsl(var(--cta))]/10 flex items-center justify-center mb-2">
+                    <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--cta))]" />
+                  </div>
+                  <p className="text-sm font-semibold text-white/70">DisputeIQ</p>
+                  <p className="text-[10px] text-white/30 mt-0.5">Handle complaints</p>
+                </button>
+                <StatCard icon={Wallet} label="Fund Balance" value={`£${fundBalance.toLocaleString()}`} />
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PERFORMANCE ── (hidden in simple mode) */}
+      {!simple && (
+        <section>
+          <SectionHeader title="Performance" />
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
+            <StatCard icon={FileText} label="Total Warranties" value={warranties.length} />
+            <StatCard icon={TrendingUp} label="Total Value" value={`£${totalValue.toLocaleString()}`} />
+            <StatCard icon={AlertTriangle} label="Resolved Claims" value={resolvedClaims} />
+            <StatCard icon={PercentCircle} label="Approval Rate" value={`${approvalRate}%`} sub={`${approvedClaims}/${resolvedClaims}`} />
+            <StatCard icon={Shield} label="Expired" value={expired} />
+          </div>
+
+          {/* Sales Target */}
+          <div className="rounded-xl p-4 border border-white/[0.06] bg-[hsl(222_28%_10%)]">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Target className="w-3.5 h-3.5 text-primary" />
+                <h3 className="font-semibold font-display text-xs text-white/50">Monthly Sales Target</h3>
+              </div>
+              <span className="text-xs text-white/30">{thisMonthWarranties} / {monthlyTarget}</span>
+            </div>
+            <Progress value={targetProgress} className="h-1.5" />
+            <p className="text-[10px] text-white/20 mt-1.5">
+              {thisMonthWarranties >= monthlyTarget ? "🎉 Target reached!" : `${monthlyTarget - thisMonthWarranties} more needed`}
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* ── CLAIMS ── */}
+      {!simple && (
+        <section>
+          <SectionHeader title="Claims">
+            {openClaims > 0 && <span className="text-[10px] text-[hsl(var(--cta))] font-medium">{openClaims} need attention</span>}
+          </SectionHeader>
+          <div className="grid lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 rounded-xl p-5 border border-white/[0.06] bg-[hsl(222_28%_10%)]">
+              <h3 className="font-semibold font-display text-sm text-white/60 mb-4">Monthly Revenue</h3>
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={monthlyData}>
+                  <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 35%)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: "hsl(215, 15%, 35%)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `£${v}`} />
+                  <Tooltip contentStyle={{ background: "hsl(222, 28%, 12%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff", fontSize: 12 }} />
+                  <Bar dataKey="revenue" fill="hsl(172, 66%, 40%)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="rounded-xl p-5 border border-white/[0.06] bg-[hsl(222_28%_10%)]">
+              <h3 className="font-semibold font-display text-sm text-white/60 mb-3">Recent Claims</h3>
+              <div className="space-y-2">
+                {recentClaims.length === 0 && <p className="text-xs text-white/25">No claims yet</p>}
+                {recentClaims.map(claim => (
+                  <div key={claim.id} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] transition-colors cursor-pointer"
+                    onClick={() => navigate("/dealer/claims")}>
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                      claim.status === "pending" ? "bg-yellow-500" :
+                      claim.status === "under_review" ? "bg-blue-400" :
+                      claim.status === "approved" ? "bg-primary" : "bg-destructive"
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-white/60 truncate">{claim.description}</p>
+                      <p className="text-[10px] text-white/25 capitalize">{claim.status.replace("_", " ")}</p>
+                    </div>
+                    {(claim.status === "pending" || claim.status === "under_review") && (
+                      <span className="text-[9px] text-[hsl(var(--cta))] font-medium">Review</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/[0.04]">
+                <h4 className="text-xs font-medium text-white/40 mb-2">Warranty Status</h4>
+                <div className="space-y-1.5">
+                  {statusData.map(d => (
+                    <div key={d.name} className="flex items-center gap-2 text-xs">
+                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: d.color }} />
+                      <span className="text-white/30 w-16">{d.name}</span>
+                      <div className="flex-1 h-1 rounded-full bg-white/[0.04]">
+                        <div className="h-full rounded-full" style={{ background: d.color, width: `${(d.value / (warranties.length || 1)) * 100}%` }} />
+                      </div>
+                      <span className="text-white/50 font-medium tabular-nums w-6 text-right">{d.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </div>
+            </div>
+          </div>
+        </section>
+      )}
 
-      {/* DisputeIQ Upsell */}
-      <div className="glass-card rounded-xl p-5 flex items-center gap-4 cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all"
-        onClick={() => navigate("/dealer/disputeiq")}>
-        <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <Shield className="w-5 h-5 text-primary" />
-        </div>
-        <div className="flex-1">
-          <p className="font-semibold font-display text-sm">Not sure how to handle a complaint?</p>
-          <p className="text-xs text-muted-foreground">Try DisputeIQ — AI-powered complaint guidance & response generator</p>
-        </div>
-        <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-      </div>
+      {/* ── ACTIVITY ── (hidden in simple mode) */}
+      {!simple && (
+        <section>
+          <SectionHeader title="Activity" />
+          <div className="rounded-xl p-5 border border-white/[0.06] bg-[hsl(222_28%_10%)]">
+            <div className="space-y-2">
+              {recentActivity.length === 0 && <p className="text-xs text-white/25">No activity recorded yet</p>}
+              {recentActivity.map(entry => {
+                const EntryIcon = activityIcon(entry.action);
+                return (
+                  <div key={entry.id} className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02]">
+                    <div className="w-7 h-7 rounded-lg bg-white/[0.04] flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <EntryIcon className="w-3 h-3 text-white/30" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-white/60">{entry.details}</p>
+                      <p className="text-[10px] text-white/20 mt-0.5">
+                        {new Date(entry.timestamp).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        {" · "}
+                        {new Date(entry.timestamp).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
-      {/* Warranty Line Upsell */}
-      {!warrantyLine && (
-        <div className="glass-card rounded-xl p-5 flex items-center gap-4 cursor-pointer hover:border-[hsl(var(--cta))]/40 hover:bg-[hsl(var(--cta))]/5 transition-all"
-          onClick={() => navigate("/dealer/warranty-line")}>
-          <div className="w-11 h-11 rounded-lg bg-[hsl(var(--cta))]/10 flex items-center justify-center flex-shrink-0">
-            <Phone className="w-5 h-5 text-[hsl(var(--cta))]" />
+      {/* DisputeIQ Widget */}
+      {!simple && (
+        <div className="rounded-xl p-5 border border-[hsl(var(--cta))]/15 bg-[hsl(var(--cta))]/[0.03] flex items-center gap-4 cursor-pointer hover:border-[hsl(var(--cta))]/25 hover:bg-[hsl(var(--cta))]/[0.05] transition-all hover:-translate-y-0.5"
+          onClick={() => navigate("/dealer/disputeiq")}>
+          <div className="w-10 h-10 rounded-lg bg-[hsl(var(--cta))]/10 flex items-center justify-center flex-shrink-0">
+            <Sparkles className="w-5 h-5 text-[hsl(var(--cta))]" />
           </div>
           <div className="flex-1">
-            <p className="font-semibold font-display text-sm">Add a dedicated warranty phone line</p>
-            <p className="text-xs text-muted-foreground">Give customers a professional number for claims — £25/month</p>
+            <p className="font-semibold font-display text-sm text-white/70">Not sure how to handle a complaint?</p>
+            <p className="text-[11px] text-white/30">DisputeIQ gives you the right response — fast</p>
           </div>
-          <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+          <Button size="sm" className="btn-cta rounded-lg h-8 text-xs px-4 shadow-[0_0_12px_-3px_hsl(24,100%,50%,0.2)]">
+            Use DisputeIQ <ArrowRight className="w-3 h-3 ml-1" />
+          </Button>
+        </div>
+      )}
+
+      {/* Warranty Fund Hero (hidden in simple) */}
+      {!simple && (
+        <div className="rounded-xl p-5 border border-primary/15 bg-[hsl(222_28%_10%)] shadow-[0_0_16px_-6px_hsl(172,66%,40%,0.08)] flex items-center gap-5 cursor-pointer hover:-translate-y-0.5 transition-all"
+          onClick={() => navigate("/dealer/warranty-fund")}>
+          <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0">
+            <Wallet className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1">
+            <p className="text-xs text-white/30 mb-0.5">Warranty Fund</p>
+            <p className="text-2xl font-bold font-display text-white/90">£{fundBalance.toLocaleString()}</p>
+          </div>
+          <Badge variant="outline" className={`${fundBalance > 2000 ? "bg-primary/10 text-primary border-primary/20" : "bg-[hsl(var(--cta))]/10 text-[hsl(var(--cta))] border-[hsl(var(--cta))]/20"} text-[10px]`}>
+            {fundBalance > 2000 ? "Healthy" : "Watch"}
+          </Badge>
+          <Button variant="outline" size="sm" className="h-7 text-xs border-white/[0.08] text-white/40 bg-transparent hover:bg-white/[0.04]">
+            View Details <ArrowRight className="w-3 h-3 ml-1" />
+          </Button>
+        </div>
+      )}
+
+      {/* Warranty Line Upsell */}
+      {!simple && !warrantyLine && (
+        <div className="rounded-xl p-4 border border-white/[0.06] bg-[hsl(222_28%_10%)] flex items-center gap-3 cursor-pointer hover:border-white/[0.1] hover:bg-[hsl(222_28%_11%)] transition-all"
+          onClick={() => navigate("/dealer/warranty-line")}>
+          <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center flex-shrink-0">
+            <Phone className="w-4 h-4 text-white/40" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-xs text-white/50">Add a dedicated warranty phone line</p>
+            <p className="text-[10px] text-white/20">Professional claims number — £25/month</p>
+          </div>
+          <ArrowRight className="w-3.5 h-3.5 text-white/20" />
         </div>
       )}
     </div>
