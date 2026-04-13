@@ -183,6 +183,9 @@ ${c.decision.payoutAmount ? `<tr><td>Payout</td><td>£${c.decision.payoutAmount}
               }})}>
               <Sparkles className="w-3.5 h-3.5 mr-1" /> Open in DisputeIQ
             </Button>
+            <Button size="sm" variant="outline" onClick={() => generateEvidencePack(claim)}>
+              <Download className="w-3.5 h-3.5 mr-1" /> Evidence Pack
+            </Button>
             {["submitted", "awaiting_review", "under_assessment", "awaiting_info"].includes(claim.status) && (
               <>
                 <Button size="sm" variant="outline" onClick={() => { claimStore.updateStatus(claim.id, "under_assessment", user?.name || ""); toast.success("Moved to assessment"); }}>Under Assessment</Button>
