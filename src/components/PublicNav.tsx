@@ -6,6 +6,7 @@ import logo from "@/assets/warrantylogo.png";
 
 const navLinks = [
   { to: "/features", label: "Features" },
+  { to: "/disputeiq", label: "DisputeIQ" },
   { to: "/#pricing", label: "Pricing", isAnchor: true },
   { to: "/faq", label: "FAQ" },
   { to: "/blog", label: "Blog" },

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClaimStore } from "@/lib/claim-store";
 import { useCoverStore } from "@/lib/cover-store";
@@ -13,7 +14,7 @@ import type { EnhancedClaim, ClaimStatus, ClaimChecklistItem } from "@/data/clai
 import {
   ClipboardList, AlertTriangle, Clock, CheckCircle2, XCircle, Eye, Search,
   MessageSquare, FileText, ListChecks, ArrowLeft, Send, BarChart3,
-  Shield, User, Car, ChevronDown, ChevronUp,
+  Shield, User, Car, ChevronDown, ChevronUp, Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,6 +32,7 @@ function KPICard({ icon: Icon, label, value, color }: { icon: any; label: string
 
 export default function DealerClaimAssist() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const dealerId = user?.dealerId || "d-1";
   const claimStore = useClaimStore();
   const coverStore = useCoverStore();
@@ -139,6 +141,15 @@ export default function DealerClaimAssist() {
             <h1 className="text-lg font-bold font-display mt-0.5">{claim.issueTitle}</h1>
           </div>
           <div className="flex gap-2">
+            <Button size="sm" variant="outline" className="text-primary border-primary/30"
+              onClick={() => navigate("/dealer/disputeiq/new", { state: {
+                customerName: claim.customerName, vehicleReg: claim.vehicleReg,
+                customerSummary: claim.description, drivable: claim.vehicleDrivable,
+                warrantyStatus: "active", claimId: claim.id,
+                complaintType: "mechanical",
+              }})}>
+              <Sparkles className="w-3.5 h-3.5 mr-1" /> Open in DisputeIQ
+            </Button>
             {["submitted", "awaiting_review", "under_assessment", "awaiting_info"].includes(claim.status) && (
               <>
                 <Button size="sm" variant="outline" onClick={() => { claimStore.updateStatus(claim.id, "under_assessment", user?.name || ""); toast.success("Moved to assessment"); }}>Under Assessment</Button>
