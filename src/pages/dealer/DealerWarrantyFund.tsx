@@ -49,7 +49,7 @@ export default function DealerWarrantyFund() {
   // Core calculations
   const contributions = dealerWarranties.reduce((s, w) => s + w.cost, 0);
   const approvedClaims = dealerClaims.filter(c => ["approved", "partially_approved"].includes(c.status));
-  const claimsPaid = approvedClaims.reduce((s, c) => s + (c.amount || 0), 0);
+  const claimsPaid = approvedClaims.reduce((s, c) => s + (c.decision?.payoutAmount || 0), 0);
   const balance = contributions - claimsPaid;
   const avgClaimCost = approvedClaims.length > 0 ? claimsPaid / approvedClaims.length : 0;
   const claimRate = dealerWarranties.length > 0 ? dealerClaims.length / dealerWarranties.length : 0;
@@ -74,7 +74,7 @@ export default function DealerWarrantyFund() {
   const marketWarrantyCount = allWarranties.length;
   const marketAvgContribution = marketWarrantyCount > 0 ? marketContributions / marketWarrantyCount : 0;
   const marketApprovedClaims = allClaims.filter(c => ["approved", "partially_approved"].includes(c.status));
-  const marketClaimsPaid = marketApprovedClaims.reduce((s, c) => s + (c.amount || 0), 0);
+  const marketClaimsPaid = marketApprovedClaims.reduce((s, c) => s + (c.decision?.payoutAmount || 0), 0);
   const marketAvgClaimCost = marketApprovedClaims.length > 0 ? marketClaimsPaid / marketApprovedClaims.length : 0;
   const marketClaimRate = marketWarrantyCount > 0 ? allClaims.length / marketWarrantyCount : 0;
 
@@ -89,7 +89,7 @@ export default function DealerWarrantyFund() {
     approvedClaims.forEach(c => {
       const m = c.createdAt.slice(0, 7);
       if (!months[m]) months[m] = { revenue: 0, claims: 0 };
-      months[m].claims += c.amount || 0;
+      months[m].claims += c.decision?.payoutAmount || 0;
     });
     return Object.entries(months).sort().slice(-6).map(([month, d]) => ({
       month: new Date(month + "-01").toLocaleDateString("en-GB", { month: "short", year: "2-digit" }),
