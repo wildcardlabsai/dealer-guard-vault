@@ -200,6 +200,46 @@ export default function DealerCustomers() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Timeline Modal */}
+      <Dialog open={!!timelineCustomer} onOpenChange={() => setTimelineCustomer(null)}>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Customer Timeline — {timelineCustomerName}</DialogTitle>
+            <DialogDescription>Chronological history of all interactions</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-0 pt-2">
+            {timelineEvents.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">No activity found</p>
+            ) : (
+              timelineEvents.map((ev, i) => {
+                const typeColors: Record<string, string> = {
+                  warranty: "bg-primary/20 text-primary",
+                  claim: "bg-amber-500/20 text-amber-400",
+                  decision: "bg-emerald-500/20 text-emerald-400",
+                  message: "bg-muted text-muted-foreground",
+                  dispute: "bg-purple-500/20 text-purple-400",
+                };
+                return (
+                  <div key={i} className="flex gap-3 py-3 border-b border-border/30 last:border-0">
+                    <div className="flex flex-col items-center">
+                      <div className={`w-2 h-2 rounded-full mt-1.5 ${typeColors[ev.type]?.split(" ")[0] || "bg-muted"}`} />
+                      {i < timelineEvents.length - 1 && <div className="w-px flex-1 bg-border/30 mt-1" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm">{ev.detail}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{new Date(ev.date).toLocaleDateString("en-GB")} {new Date(ev.date).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>
+                    </div>
+                    <Badge variant="outline" className={`text-[10px] h-5 shrink-0 ${typeColors[ev.type] || ""}`}>
+                      {ev.type}
+                    </Badge>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
