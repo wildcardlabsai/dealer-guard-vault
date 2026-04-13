@@ -289,6 +289,181 @@ function FundMock() {
   );
 }
 
+const demoResponses: Record<string, { risk: string; riskColor: string; action: string; response: string; legal: string }> = {
+  "engine-under30-sudden": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect and repair under warranty. Likely covered.", response: "Thanks for getting in touch. We take this seriously and would like to arrange an inspection at our earliest convenience to assess the issue properly.", legal: "Consumer Rights Act 2015 — fault within 30 days may entitle rejection or repair." },
+  "engine-under30-wear": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Inspect vehicle. Wear and tear within 30 days is unusual — assess carefully.", response: "Thank you for contacting us. We'd like to inspect the vehicle to understand the issue before confirming next steps.", legal: "Wear and tear within 30 days is uncommon. Inspection recommended." },
+  "engine-under30-unknown": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Arrange independent inspection to determine fault type.", response: "Thanks for your message. We'd like to arrange an independent inspection to determine the nature of the issue.", legal: "Burden of proof is on the dealer within 6 months of sale." },
+  "engine-6months-sudden": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Offer inspection and repair if fault is confirmed.", response: "Thank you for letting us know. We'd like to book the vehicle in for inspection so we can assess the fault and discuss options.", legal: "Within 6 months, fault is presumed present at sale unless proven otherwise." },
+  "engine-6months-wear": { risk: "Low", riskColor: "text-primary", action: "Inspect. Wear and tear is generally not covered.", response: "Thanks for getting in touch. We'll arrange an inspection to assess whether this is a manufacturing fault or general wear.", legal: "Wear and tear is not typically covered under CRA 2015." },
+  "engine-6months-unknown": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Independent inspection recommended.", response: "We appreciate you raising this. We'd like to arrange an independent assessment to determine the nature of the fault.", legal: "Within 6 months — burden of proof on dealer." },
+  "engine-over6-sudden": { risk: "Low", riskColor: "text-primary", action: "Customer must prove fault existed at point of sale.", response: "Thank you for contacting us. We'd recommend an independent inspection report to support your claim, as the vehicle is outside the 6-month period.", legal: "After 6 months, burden of proof shifts to the consumer." },
+  "engine-over6-wear": { risk: "Low", riskColor: "text-primary", action: "Wear and tear after 6 months is expected. Unlikely to be covered.", response: "Thanks for your message. Wear and tear after this period is generally expected and not typically covered.", legal: "Wear and tear is not a fault under CRA 2015." },
+  "engine-over6-unknown": { risk: "Low", riskColor: "text-primary", action: "Request independent inspection from customer.", response: "We'd suggest obtaining an independent report to confirm the nature of the fault before we can assess further.", legal: "After 6 months, consumer must prove fault was present at sale." },
+  "gearbox-under30-sudden": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect immediately. Likely requires repair or replacement under warranty.", response: "We're sorry to hear about this. We'd like to arrange an urgent inspection to assess the gearbox and discuss the appropriate resolution.", legal: "Sudden gearbox failure within 30 days — strong consumer position." },
+  "gearbox-under30-wear": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Unusual for gearbox wear within 30 days. Inspect thoroughly.", response: "Thanks for letting us know. We'll arrange an inspection to assess the gearbox.", legal: "Wear within 30 days may indicate pre-sale issue." },
+  "gearbox-under30-unknown": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect and diagnose. Dealer bears burden of proof.", response: "Thank you for raising this. We'll arrange a full diagnostic to determine the cause.", legal: "Within 30 days — burden on dealer." },
+  "gearbox-6months-sudden": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Offer inspection and repair if fault confirmed.", response: "Thank you for letting us know. We'd like to arrange an inspection to assess the gearbox fault.", legal: "Within 6 months — fault presumed present at sale." },
+  "gearbox-6months-wear": { risk: "Low", riskColor: "text-primary", action: "Inspect. Gearbox wear may not be covered.", response: "We'll inspect the vehicle to determine the cause and advise accordingly.", legal: "Wear and tear generally not covered." },
+  "gearbox-6months-unknown": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Independent inspection recommended.", response: "We'd like to arrange an assessment to understand the issue before confirming our position.", legal: "Burden of proof on dealer within 6 months." },
+  "gearbox-over6-sudden": { risk: "Low", riskColor: "text-primary", action: "Customer to provide independent report.", response: "Thank you for contacting us. We'd recommend an independent inspection to support your claim.", legal: "After 6 months — consumer must prove fault existed at sale." },
+  "gearbox-over6-wear": { risk: "Low", riskColor: "text-primary", action: "Wear and tear after 6 months is expected.", response: "Gearbox wear over this period is generally considered normal usage.", legal: "Wear and tear is not a manufacturing fault." },
+  "gearbox-over6-unknown": { risk: "Low", riskColor: "text-primary", action: "Request independent inspection.", response: "We'd suggest an independent report to confirm the issue before we can advise further.", legal: "Consumer must prove fault after 6 months." },
+  "electrical-under30-sudden": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect immediately. Strong consumer rights apply.", response: "We're sorry about this issue. We'd like to inspect the vehicle as soon as possible to identify and resolve the electrical fault.", legal: "Electrical fault within 30 days — strong position for consumer." },
+  "electrical-under30-wear": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Inspect. Electrical wear within 30 days is uncommon.", response: "Thanks for letting us know. We'll arrange an inspection to assess the electrical system.", legal: "Unusual wear within 30 days may indicate pre-sale issue." },
+  "electrical-under30-unknown": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect and diagnose. Dealer bears burden of proof.", response: "Thank you for raising this. We'll arrange a full diagnostic to determine the cause.", legal: "Within 30 days — burden on dealer." },
+  "electrical-6months-sudden": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Offer diagnostic and repair if fault confirmed.", response: "We'd like to arrange a diagnostic to understand the electrical issue and discuss options.", legal: "Within 6 months — fault presumed present at sale." },
+  "electrical-6months-wear": { risk: "Low", riskColor: "text-primary", action: "Inspect. Electrical wear may not be covered.", response: "We'll inspect the vehicle to determine whether this is a fault or general wear.", legal: "Wear and tear generally not covered under CRA." },
+  "electrical-6months-unknown": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Arrange diagnostic inspection.", response: "Thanks for contacting us. We'll arrange a full diagnostic to establish the cause.", legal: "Within 6 months — dealer burden of proof." },
+  "electrical-over6-sudden": { risk: "Low", riskColor: "text-primary", action: "Customer to provide independent diagnosis.", response: "Thank you. We'd recommend an independent diagnostic report to support your claim.", legal: "After 6 months — consumer must prove pre-existing fault." },
+  "electrical-over6-wear": { risk: "Low", riskColor: "text-primary", action: "Electrical wear after 6 months is expected.", response: "Electrical component wear over this period is generally considered normal and not typically covered.", legal: "Wear and tear is not a fault." },
+  "electrical-over6-unknown": { risk: "Low", riskColor: "text-primary", action: "Request independent diagnostic.", response: "We'd suggest an independent diagnostic to confirm the issue before we can advise further.", legal: "Consumer must prove fault after 6 months." },
+};
+
+function LiveDemoSection() {
+  const [issue, setIssue] = useState("engine");
+  const [time, setTime] = useState("under30");
+  const [fault, setFault] = useState("sudden");
+  const [result, setResult] = useState<(typeof demoResponses)[string] | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerate = () => {
+    setLoading(true);
+    setResult(null);
+    setTimeout(() => {
+      const key = `${issue}-${time}-${fault}`;
+      setResult(demoResponses[key] || demoResponses["engine-6months-sudden"]);
+      setLoading(false);
+    }, 800);
+  };
+
+  const radioGroup = (label: string, options: { value: string; label: string }[], selected: string, onChange: (v: string) => void) => (
+    <div>
+      <label className="text-xs font-medium text-white/40 mb-2 block">{label}</label>
+      <div className="space-y-1.5">
+        {options.map(o => (
+          <button
+            key={o.value}
+            onClick={() => onChange(o.value)}
+            className={`w-full text-left text-sm px-3 py-2 rounded-lg border transition-all ${
+              selected === o.value
+                ? "border-primary/40 bg-primary/10 text-white"
+                : "border-white/[0.06] bg-white/[0.02] text-white/50 hover:bg-white/[0.04] hover:text-white/70"
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <section className="py-16 px-6 bg-secondary/20">
+      <div className="max-w-5xl mx-auto">
+        <motion.div className="text-center mb-10" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">See how it works in seconds</h2>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">Try a real example of how WarrantyVault helps you respond properly</p>
+        </motion.div>
+
+        <motion.div
+          className="glass-card-strong rounded-2xl overflow-hidden relative"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <div className="absolute top-0 left-0 w-40 h-40 bg-primary/5 rounded-full blur-[60px] pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-[hsl(var(--cta))]/5 rounded-full blur-[60px] pointer-events-none" />
+
+          <div className="grid md:grid-cols-2 relative">
+            {/* Left — inputs */}
+            <div className="p-6 sm:p-8 border-r border-white/[0.06] space-y-5">
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-xs font-semibold text-white/50 tracking-wide uppercase">DisputeIQ Demo</span>
+              </div>
+
+              {radioGroup("Customer issue", [
+                { value: "engine", label: "Engine fault" },
+                { value: "gearbox", label: "Gearbox issue" },
+                { value: "electrical", label: "Electrical fault" },
+              ], issue, setIssue)}
+
+              {radioGroup("Time since purchase", [
+                { value: "under30", label: "Under 30 days" },
+                { value: "6months", label: "30 days – 6 months" },
+                { value: "over6", label: "Over 6 months" },
+              ], time, setTime)}
+
+              {radioGroup("Fault type", [
+                { value: "sudden", label: "Sudden failure" },
+                { value: "wear", label: "Wear and tear" },
+                { value: "unknown", label: "Unknown" },
+              ], fault, setFault)}
+
+              <Button onClick={handleGenerate} disabled={loading} className="btn-cta rounded-full w-full h-10 text-sm shadow-[0_0_20px_-4px_hsl(24,100%,50%,0.3)]">
+                {loading ? "Analysing…" : "Get Recommendation"}
+                {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
+              </Button>
+            </div>
+
+            {/* Right — output */}
+            <div className="p-6 sm:p-8 flex flex-col justify-center min-h-[400px]">
+              {!result && !loading && (
+                <div className="text-center text-white/20">
+                  <Sparkles className="w-8 h-8 mx-auto mb-3 text-white/10" />
+                  <p className="text-sm">Select a scenario and click<br />"Get Recommendation"</p>
+                </div>
+              )}
+
+              {loading && (
+                <div className="text-center">
+                  <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-3" />
+                  <p className="text-sm text-white/30">Analysing scenario…</p>
+                </div>
+              )}
+
+              {result && !loading && (
+                <motion.div
+                  className="space-y-4"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">Risk Level</span>
+                    <span className={`text-sm font-bold ${result.riskColor}`}>{result.risk}</span>
+                  </div>
+
+                  <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] p-3">
+                    <div className="text-[10px] text-white/30 mb-1 uppercase tracking-wide">Legal context</div>
+                    <p className="text-xs text-white/60 leading-relaxed">{result.legal}</p>
+                  </div>
+
+                  <div className="rounded-lg bg-primary/[0.06] border border-primary/15 p-3">
+                    <div className="text-[10px] text-primary/60 mb-1 uppercase tracking-wide">Recommended action</div>
+                    <p className="text-sm text-white/70 leading-relaxed">{result.action}</p>
+                  </div>
+
+                  <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] p-3">
+                    <div className="text-[10px] text-white/30 mb-1 uppercase tracking-wide">Suggested response</div>
+                    <p className="text-sm text-white/60 leading-relaxed italic">"{result.response}"</p>
+                  </div>
+
+                  <div className="pt-1">
+                    <Button variant="outline" size="sm" className="rounded-full text-xs border-white/10 text-white/50 hover:bg-white/5 hover:text-white bg-transparent" asChild>
+                      <Link to="/signup">Try DisputeIQ with your own claims <ArrowRight className="ml-1.5 w-3 h-3" /></Link>
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
