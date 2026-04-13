@@ -47,7 +47,7 @@ export default function PublicNav({ currentPage }: PublicNavProps) {
               Product <ChevronDown className={`w-3 h-3 transition-transform ${productOpen ? "rotate-180" : ""}`} />
             </button>
             {productOpen && (
-              <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-64 rounded-xl border border-white/[0.06] bg-[hsl(222_28%_10%)]/95 backdrop-blur-xl shadow-[0_12px_40px_-8px_rgba(0,0,0,0.5)] p-2 animate-fade-in">
+              <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-64 z-[60] rounded-xl border border-white/[0.1] bg-[hsl(222_28%_12%)] shadow-[0_16px_50px_-8px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,255,255,0.04)] p-2 animate-fade-in">
                 {productItems.map(item => (
                   <Link
                     key={item.label}
