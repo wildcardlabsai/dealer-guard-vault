@@ -226,13 +226,17 @@ export default function DisputeIQPage() {
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}>
             Stop guessing. Start responding <span className="text-[hsl(var(--cta))]">properly.</span>
           </motion.h2>
-          <motion.p className="text-white/50 mb-8 max-w-xl mx-auto"
+          <motion.p className="text-white/50 mb-3 max-w-xl mx-auto"
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}>
             Join the dealers who handle complaints with confidence, not fear.
           </motion.p>
+          <motion.p className="text-sm text-[hsl(var(--cta))] font-semibold mb-8"
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1.5}>
+            🎉 DisputeIQ is completely free — no warranty purchase required. Just sign up.
+          </motion.p>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={2}>
             <Button size="lg" className="btn-cta text-base px-10 rounded-full h-14" asChild>
-              <Link to="/signup">Try DisputeIQ <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              <Link to="/signup">Try DisputeIQ Free <ArrowRight className="ml-2 w-4 h-4" /></Link>
             </Button>
           </motion.div>
         </div>

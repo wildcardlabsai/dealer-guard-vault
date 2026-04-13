@@ -206,7 +206,7 @@ export default function SignupPage() {
         </form>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-white/30">
-          {["£0/month", "£19 per warranty", "No contracts"].map(item => (
+          {["£0/month", "£15 per warranty", "No contracts"].map(item => (
             <div key={item} className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3 h-3 text-primary/50" />
               <span>{item}</span>

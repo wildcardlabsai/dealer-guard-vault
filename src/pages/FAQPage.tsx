@@ -20,7 +20,7 @@ const faqItems = [
   { question: "What happens if I get a large claim I can't cover?", answer: "Smart dealers set aside a claims reserve fund from warranty revenue. WarrantyVault's profit tracking helps you monitor your reserve ratio so you're always prepared. Some dealers also use a hybrid model — self-funding smaller claims while insuring against catastrophic losses." },
   { question: "Is WarrantyVault suitable for independent dealers?", answer: "Absolutely. WarrantyVault is built for independent and small-group dealers who want to take control of their warranty process without the overhead of enterprise software. You can start with a single dealership and scale as you grow." },
   { question: "How do customers view their warranty and submit claims?", answer: "Each customer gets access to a dedicated portal where they can view their warranty details, download their certificate, and submit claims directly. This reduces inbound calls and gives customers a professional, transparent experience." },
-  { question: "What does WarrantyVault cost?", answer: "There are no monthly fees or subscriptions. You pay £19 per warranty issued — that's it. No setup costs, no hidden charges, and no long-term contracts." },
+  { question: "What does WarrantyVault cost?", answer: "There are no monthly fees or subscriptions. You pay £15 per warranty issued — that's it. No setup costs, no hidden charges, and no long-term contracts." },
 ];
 
 export default function FAQPage() {
@@ -97,7 +97,7 @@ export default function FAQPage() {
               Contact Us
             </Button>
           </div>
-          <p className="text-xs text-white/30 mt-5">No monthly fees. £19 per warranty.</p>
+          <p className="text-xs text-white/30 mt-5">No monthly fees. £15 per warranty.</p>
         </div>
       </section>
 

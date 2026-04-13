@@ -94,8 +94,8 @@ const intelligenceFeatures: FeatureShowcase[] = [
   {
     icon: Sparkles,
     title: "DisputeIQ",
-    desc: "AI-powered complaint handler that analyses disputes against UK Consumer Rights Act timelines, identifies risk levels, and generates professional responses.",
-    bullets: ["CRA-based legal reasoning and risk scoring", "Response generation in 4 styles: Helpful, Firm, Defensive, De-escalation", "Strategy Mode with internal risks and 'what NOT to say'", "One-click transfer to Claim Assist for disputed claims"],
+    desc: "AI-powered complaint handler that analyses disputes against UK Consumer Rights Act timelines, identifies risk levels, and generates professional responses. Completely free for all dealers — no warranty purchase required.",
+    bullets: ["100% free — just sign up, no purchase needed", "CRA-based legal reasoning and risk scoring", "Response generation in 4 styles: Helpful, Firm, Defensive, De-escalation", "Strategy Mode with internal risks and 'what NOT to say'"],
     screenshot: screenshotClaims,
   },
   {
@@ -346,7 +346,7 @@ export default function FeaturesPage() {
           <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
             <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
           </Button>
-          <p className="text-xs text-white/30 mt-5">No monthly fees. £19 per warranty.</p>
+          <p className="text-xs text-white/30 mt-5">No monthly fees. £15 per warranty.</p>
         </div>
       </section>
 

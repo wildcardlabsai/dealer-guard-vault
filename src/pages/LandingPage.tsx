@@ -514,7 +514,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.p className="text-xs text-white/25 mt-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
-                No monthly fees · First 5 warranties free · £19 per warranty after that
+                No monthly fees · First 5 warranties free · £15 per warranty after that
               </motion.p>
             </div>
 
@@ -711,7 +711,7 @@ export default function LandingPage() {
             <div className="absolute top-0 right-0 w-44 h-44 bg-primary/[0.05] rounded-full blur-[80px] pointer-events-none" />
             <div className="relative">
               <p className="text-5xl sm:text-6xl font-bold font-display mb-0.5 text-white">£0<span className="text-xl text-white/30 font-normal">/month</span></p>
-              <p className="text-lg font-semibold font-display mb-1.5 text-white/80">Only £19 per warranty</p>
+              <p className="text-lg font-semibold font-display mb-1.5 text-white/80">Only £15 per warranty</p>
               <p className="text-sm text-[hsl(var(--cta))] font-semibold mb-1">🎉 First 5 warranties FREE</p>
               <p className="text-white/25 text-xs mb-6 max-w-xs mx-auto">No contracts. No risk. Cancel anytime.</p>
 
@@ -761,7 +761,7 @@ export default function LandingPage() {
           <Button size="lg" className="btn-cta rounded-full px-14 text-base h-14 shadow-[0_0_30px_-4px_hsl(24,100%,50%,0.4)]" asChild>
             <Link to="/signup">Start Free Today <ArrowRight className="ml-2 w-4 h-4" /></Link>
           </Button>
-          <p className="text-xs text-white/20 mt-4">First 5 warranties free · £19 per warranty after that</p>
+          <p className="text-xs text-white/20 mt-4">First 5 warranties free · £15 per warranty after that</p>
         </div>
       </section>
 
