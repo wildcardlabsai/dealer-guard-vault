@@ -1,45 +1,68 @@
 
 
-# Fix Nav Dropdown Overlap + Improve Section Differentiation
+# Update Features Page + Nav Scroll Anchors
 
-## Problems Identified
+## What's Missing
 
-1. **Dropdown clash**: The Product dropdown (`z-50` on nav) renders behind or visually clashes with the HeroMock because the mock has its own layered glow, borders, and 3D transform that compete visually. The dropdown's `bg-[hsl(222_28%_10%)]/95` blends into the mock's similar dark tones.
+The Features page is outdated — it doesn't include **DisputeIQ**, **Warranty Fund**, **Claim Assist**, or **Evidence Pack Generator**. These are core product features that need showcasing.
 
-2. **Section differentiation**: Yes — the page is hard to scan. Sections alternate between `hsl(222 30% 6%)` and `hsl(222 30% 7.5%)` which is only a 1.5% lightness difference — barely perceptible. Cards use similarly dark backgrounds. The result is a wall of dark UI where sections blur together.
+The nav Product dropdown currently sends Warranty Management, Claim Assist, and Warranty Fund all to `/features` with no scroll targeting. DisputeIQ already has `/disputeiq`.
 
----
+## Approach: Hybrid Navigation
 
-## Plan
+- **DisputeIQ** → keeps its own page (`/disputeiq`) — already works
+- **Warranty Management** → scrolls to `#warranty-management` on `/features`
+- **Claim Assist** → scrolls to `#claim-assist` on `/features`
+- **Warranty Fund** → scrolls to `#warranty-fund` on `/features`
 
-### 1. Fix dropdown z-index and visual clash
+## Changes
 
-**File: `src/components/PublicNav.tsx`**
-- Increase dropdown `z-index` to `z-[60]` (above the nav's `z-50`)
-- Make dropdown background fully opaque and slightly lighter: `bg-[hsl(222_28%_12%)]` (no transparency)
-- Add a stronger border: `border-white/[0.1]`
-- Add a stronger shadow to lift it visually above the hero mock
+### 1. Add missing features to FeaturesPage (`src/pages/FeaturesPage.tsx`)
 
-### 2. Improve section differentiation across the landing page
+Restructure the feature groups to include all current product capabilities:
 
-**File: `src/pages/LandingPage.tsx`**
-- Widen the background alternation gap: use `hsl(222 30% 6%)` for dark sections and `hsl(222 28% 10%)` for lighter ones (4% lightness jump instead of 1.5%)
-- Give the lighter sections a subtle top/bottom inner border or padding container with a visible rounded panel
-- Increase section padding slightly on key sections (Problem, DisputeIQ, Pricing) to create more breathing room between groups
-- Make section dividers slightly more visible: `via-white/[0.08]` instead of `0.06`
-- Add a subtle top-border accent to the DisputeIQ and Pricing sections (their signature colours — orange and teal respectively)
+**Core Features** (keep):
+- Warranty Management
+- Customer Portal
 
-### 3. Card contrast boost
+**Claims & Control** — add two new entries:
+- Claims Management (keep)
+- **Claim Assist** (NEW) — end-to-end claim handling with evidence requests, checklists, messaging, decisions, and the Evidence Pack Generator
+- **Evidence Pack Generator** (as a bullet under Claim Assist) — generates printable HTML claim summaries for records and disputes
 
-- Bump card backgrounds from `bg-white/[0.03]` to `bg-white/[0.05]` and borders from `border-white/[0.06]` to `border-white/[0.08]` across all feature/step/testimonial cards
-- This creates a clearer card-on-section hierarchy
+**Intelligence & Risk** (NEW section):
+- **DisputeIQ** — AI complaint handler, CRA reasoning, risk levels, response generation in 4 styles, Strategy Mode
+- **Warranty Fund** — financial oversight, buffer calculation, health status, scenario simulator, AI contribution recommendations
+
+**Add-ons** (keep existing):
+- Warranty Line, Cover Templates, Documents, Support
+
+Also update the **quick overview grid** at the top to include DisputeIQ, Warranty Fund, Claim Assist, and Evidence Pack.
+
+Add `id` attributes to each feature group section for scroll targeting.
+
+### 2. Update nav links (`src/components/PublicNav.tsx`)
+
+Change dropdown `to` values to use hash links:
+- Warranty Management → `/features#warranty-management`
+- Claim Assist → `/features#claim-assist`
+- DisputeIQ → `/disputeiq` (unchanged)
+- Warranty Fund → `/features#warranty-fund`
+
+Add scroll-into-view logic in FeaturesPage using `useLocation` + `useEffect` to handle hash-based scrolling with `scroll-margin-top` for the fixed nav.
+
+### 3. Update comparison table
+
+Add rows for:
+- **Complaint Handling**: "No guidance, risk of escalation" vs "AI-powered responses with legal reasoning"
+- **Financial Visibility**: "No real-time fund tracking" vs "Live fund health with buffer calculations"
 
 ---
 
 ## Technical Details
 
-- **Files modified**: `src/components/PublicNav.tsx`, `src/pages/LandingPage.tsx`
-- No new dependencies or components
-- All changes are CSS class adjustments — no logic changes
-- Approximately 15-20 line edits across both files
+- **Files modified**: `src/pages/FeaturesPage.tsx`, `src/components/PublicNav.tsx`
+- Screenshots for new features will use placeholder images (same pattern as existing) — you can swap real screenshots later
+- No new dependencies
+- Smooth scroll behaviour via `scrollIntoView({ behavior: 'smooth' })` with `scroll-margin-top` on sections to account for fixed nav
 
