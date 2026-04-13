@@ -151,14 +151,14 @@ export default function DealerCustomers() {
               <p className="text-sm text-muted-foreground">{c.phone}</p>
               <p className="text-xs text-muted-foreground mt-2">{c.address}, {c.city}, {c.postcode}</p>
               <p className="text-xs text-muted-foreground mt-1">Joined: {new Date(c.createdAt).toLocaleDateString("en-GB")}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-3 w-full"
-                onClick={() => handleInviteExisting(c)}
-              >
-                <Mail className="w-3.5 h-3.5 mr-1.5" /> Send Portal Invite
-              </Button>
+              <div className="flex gap-2 mt-3">
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => handleInviteExisting(c)}>
+                  <Mail className="w-3.5 h-3.5 mr-1.5" /> Invite
+                </Button>
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => setTimelineCustomer(c.id)}>
+                  <Clock className="w-3.5 h-3.5 mr-1.5" /> Timeline
+                </Button>
+              </div>
             </div>
           );
         })}
