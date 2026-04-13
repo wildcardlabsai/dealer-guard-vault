@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
 
 const productItems = [
-  { to: "/features", label: "Warranty Management", icon: Shield, desc: "Issue and manage warranties" },
-  { to: "/features", label: "Claim Assist", icon: Headphones, desc: "Handle claims end to end" },
+  { to: "/features#warranty-management", label: "Warranty Management", icon: Shield, desc: "Issue and manage warranties" },
+  { to: "/features#claim-assist", label: "Claim Assist", icon: Headphones, desc: "Handle claims end to end" },
   { to: "/disputeiq", label: "DisputeIQ", icon: Sparkles, desc: "Respond to complaints properly", highlight: true },
-  { to: "/features", label: "Warranty Fund", icon: Wallet, desc: "Track your risk and profit" },
+  { to: "/features#warranty-fund", label: "Warranty Fund", icon: Wallet, desc: "Track your risk and profit" },
 ];
 
 interface PublicNavProps {

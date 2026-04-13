@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Shield, ArrowRight, CheckCircle2, X,
   BarChart3, UserCheck, ClipboardCheck,
-  Phone, FileText, FolderOpen, Headphones
+  Phone, FileText, FolderOpen, Headphones,
+  Sparkles, Wallet, Gavel, FileSearch
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PublicNav from "@/components/PublicNav";
@@ -28,11 +30,15 @@ const featureOverview = [
   { icon: Shield, title: "Warranty Management" },
   { icon: UserCheck, title: "Customer Portal" },
   { icon: ClipboardCheck, title: "Claims Management" },
+  { icon: Gavel, title: "Claim Assist" },
+  { icon: FileSearch, title: "Evidence Pack" },
+  { icon: Sparkles, title: "DisputeIQ" },
+  { icon: Wallet, title: "Warranty Fund" },
   { icon: BarChart3, title: "Profit Tracking" },
   { icon: Phone, title: "Warranty Line" },
   { icon: FileText, title: "Cover Templates" },
-  { icon: FolderOpen, title: "Dealer Documents" },
-  { icon: Headphones, title: "Dealer Support" },
+  { icon: FolderOpen, title: "Documents" },
+  { icon: Headphones, title: "Support" },
 ];
 
 interface FeatureShowcase {
@@ -69,10 +75,34 @@ const claimsFeatures: FeatureShowcase[] = [
     screenshot: screenshotClaims,
   },
   {
+    icon: Gavel,
+    title: "Claim Assist",
+    desc: "End-to-end claim handling workspace with evidence requests, checklists, messaging, and structured decision workflows — all in one place.",
+    bullets: ["Review evidence and photos inline", "Checklist-driven claim process", "Built-in messaging with customers", "Evidence Pack Generator for printable claim summaries"],
+    screenshot: screenshotClaims,
+  },
+  {
     icon: BarChart3,
     title: "Profit Tracking",
     desc: "See exactly what you're making from warranties vs what you're paying out. Real-time dashboards show your true margin.",
     bullets: ["Revenue vs payout breakdown", "Per-warranty profit visibility", "Monthly and yearly trends", "Helps build your claims reserve"],
+    screenshot: screenshotProfit,
+  },
+];
+
+const intelligenceFeatures: FeatureShowcase[] = [
+  {
+    icon: Sparkles,
+    title: "DisputeIQ",
+    desc: "AI-powered complaint handler that analyses disputes against UK Consumer Rights Act timelines, identifies risk levels, and generates professional responses.",
+    bullets: ["CRA-based legal reasoning and risk scoring", "Response generation in 4 styles: Helpful, Firm, Defensive, De-escalation", "Strategy Mode with internal risks and 'what NOT to say'", "One-click transfer to Claim Assist for disputed claims"],
+    screenshot: screenshotClaims,
+  },
+  {
+    icon: Wallet,
+    title: "Warranty Fund",
+    desc: "Financial oversight system that tracks contributions against payouts, calculates buffer health, and projects future claim impact with AI-powered recommendations.",
+    bullets: ["Live fund health: Healthy, Watch, or Risk status", "Buffer calculation based on active warranties and risk", "Scenario simulator to project future claim impact", "AI contribution recommendations and market benchmarking"],
     screenshot: screenshotProfit,
   },
 ];
@@ -113,6 +143,8 @@ const comparisonRows = [
   { label: "Claim Decisions", left: "Delayed by third-party queues", right: "Same-day decisions in your dashboard" },
   { label: "Control", left: "Limited rules and visibility", right: "Full control over approvals and payouts" },
   { label: "Dependency", left: "Provider outages and handoffs", right: "Fully in-house process you control" },
+  { label: "Complaint Handling", left: "No guidance, risk of escalation", right: "AI-powered responses with legal reasoning" },
+  { label: "Financial Visibility", left: "No real-time fund tracking", right: "Live fund health with buffer calculations" },
 ];
 
 function FeatureSection({ feature, index }: { feature: FeatureShowcase; index: number }) {
@@ -152,6 +184,18 @@ function FeatureSection({ feature, index }: { feature: FeatureShowcase; index: n
 }
 
 export default function FeaturesPage() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
@@ -174,7 +218,7 @@ export default function FeaturesPage() {
       {/* Quick overview grid */}
       <section className="py-14 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
             {featureOverview.map((f, i) => (
               <motion.div key={f.title} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="glass-card rounded-xl p-4 text-center group hover:border-primary/30 transition-all">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-primary/15 transition-colors">
@@ -188,7 +232,7 @@ export default function FeaturesPage() {
       </section>
 
       {/* Core Features */}
-      <section className="py-14 px-6 bg-secondary/30">
+      <section id="warranty-management" className="py-14 px-6 bg-secondary/30 scroll-mt-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Core Features</span>
@@ -203,7 +247,7 @@ export default function FeaturesPage() {
       </section>
 
       {/* Claims & Control */}
-      <section className="py-14 px-6">
+      <section id="claim-assist" className="py-14 px-6 scroll-mt-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-[hsl(var(--cta))] text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Claims & Control</span>
@@ -217,8 +261,23 @@ export default function FeaturesPage() {
         </div>
       </section>
 
+      {/* Intelligence & Risk */}
+      <section id="warranty-fund" className="py-14 px-6 bg-secondary/30 scroll-mt-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Intelligence & Risk</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display">AI-powered tools to protect your business</h2>
+          </div>
+          <div className="space-y-20">
+            {intelligenceFeatures.map((f, i) => (
+              <FeatureSection key={f.title} feature={f} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Add-ons */}
-      <section className="py-14 px-6 bg-secondary/30">
+      <section className="py-14 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Add-ons & Extras</span>
@@ -233,7 +292,7 @@ export default function FeaturesPage() {
       </section>
 
       {/* Comparison */}
-      <section className="py-16 px-6">
+      <section className="py-16 px-6 bg-secondary/30">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Dealer Comparison</span>
