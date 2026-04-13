@@ -68,6 +68,15 @@ export default function PublicNav({ currentPage }: PublicNavProps) {
                     </div>
                   </Link>
                 ))}
+                <div className="border-t border-white/[0.06] mt-1 pt-1">
+                  <Link
+                    to="/features"
+                    onClick={() => setProductOpen(false)}
+                    className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-primary hover:bg-primary/[0.06] transition-colors"
+                  >
+                    View All Features <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
               </div>
             )}
           </div>
