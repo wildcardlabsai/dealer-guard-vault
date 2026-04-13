@@ -320,7 +320,7 @@ export default function DisputeIQAssessment() {
             </div>
             <div className="space-y-2">
               <Label>Is the vehicle drivable?</Label>
-              <Select value={drivable} onValueChange={v => setDrivable(v)}>
+              <Select value={drivable} onValueChange={v => setDrivable(v as "yes" | "no" | "limited")}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="yes">Yes</SelectItem>
@@ -331,7 +331,7 @@ export default function DisputeIQAssessment() {
             </div>
             <div className="space-y-2">
               <Label>Repairs authorised?</Label>
-              <Select value={repairsAuthorised} onValueChange={v => setRepairsAuthorised(v)}>
+              <Select value={repairsAuthorised} onValueChange={v => setRepairsAuthorised(v as "yes" | "no" | "partial")}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="yes">Yes</SelectItem>
@@ -342,7 +342,7 @@ export default function DisputeIQAssessment() {
             </div>
             <div className="space-y-2">
               <Label>Warranty Status</Label>
-              <Select value={warrantyStatus} onValueChange={v => setWarrantyStatus(v)}>
+              <Select value={warrantyStatus} onValueChange={v => setWarrantyStatus(v as "active" | "expired" | "none")}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="active">Active</SelectItem>
