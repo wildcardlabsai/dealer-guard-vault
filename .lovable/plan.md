@@ -1,45 +1,131 @@
 
 
-# Consistent Nav + Enhanced Features Page
+# WarrantyVault Expansion — 5 Focused Features
 
-## Problem
-1. **Nav inconsistency**: Landing page has 6 links (Features, Pricing, FAQ, Blog, Dealers, Customers) plus mobile hamburger menu. Features, FAQ, Blog pages only have 3 links (Features, FAQ, Blog) and no mobile menu, no Dealers/Customers links.
-2. **Features page is missing newer features**: Only lists 6 features. Missing: Warranty Line, Cover Templates, Claim Settings (max labour rate / per-claim limit), First 5 Free, Dealer Documents, Dealer Support.
-3. **Features page layout is plain**: Just a grid of icon cards with no visual interest or screenshot placeholders.
+## Summary
+Add five tightly scoped features to WarrantyVault: Warranty Fund dashboard with AI insights, Profit Dashboard, Evidence Pack Generator, Customer Timeline, and Light Benchmarking. All built using existing demo data stores, matching the current glass-card dark-mode aesthetic.
 
-## Plan
+---
 
-### 1. Extract shared nav into a reusable component
-Create `src/components/PublicNav.tsx` — a shared navigation bar used across all public pages:
-- Same links as landing page: Features, Pricing (links to `/#pricing`), FAQ, Blog, Dealers, Customers
-- Mobile hamburger menu with all links + Sign Up button
-- Accepts `currentPage` prop to highlight the active link
-- Replace nav in: `LandingPage.tsx`, `FeaturesPage.tsx`, `FAQPage.tsx`, `BlogIndexPage.tsx`, `WarrantyLinePage.tsx`
+## Technical Approach
 
-### 2. Expand features list on Features page
-Add all missing features to the page (12 total):
-- Warranty Management, Branded Certificates, DVLA Lookup, Customer Portal, Claims Management, Profit Tracking (existing)
-- **Warranty Line** — dedicated phone line for warranty calls
-- **Cover Templates** — customisable warranty cover documents
-- **Claim Limits** — set max labour rate and per-claim limits
-- **First 5 Free** — no cost on your first 5 warranties
-- **Dealer Documents** — manage and store warranty documents
-- **Dealer Support** — built-in support ticket system
+All features use the existing in-memory stores (`warranty-store`, `claim-store`, `dealer-settings-store`) and demo data. Calculations are derived from current warranty costs (as contributions) and claim amounts (as payouts). One new edge function for AI-powered fund insights and benchmarking analysis.
 
-### 3. Redesign Features page layout
-Instead of a plain grid, use an alternating showcase layout:
-- Each feature gets a **full-width row** with text on one side and a **screenshot placeholder** (a styled empty container with a dashed border, aspect-ratio box, and "Screenshot coming soon" text) on the other side
-- Alternate left/right layout for visual rhythm
-- Keep the quick icon grid at the top as an overview, then expand into detailed sections below
-- Each detailed section includes: title, description, 3-4 bullet points, and the screenshot placeholder
-- Group features into 3-4 categories (e.g. "Core", "Claims & Control", "Add-ons") with section headers
-- Add subtle background alternation between sections
+---
 
-## Files
-- **New**: `src/components/PublicNav.tsx`
-- **Edit**: `src/pages/FeaturesPage.tsx` (new features, new layout with screenshot placeholders)
-- **Edit**: `src/pages/LandingPage.tsx` (use PublicNav)
-- **Edit**: `src/pages/FAQPage.tsx` (use PublicNav)
-- **Edit**: `src/pages/BlogIndexPage.tsx` (use PublicNav)
-- **Edit**: `src/pages/WarrantyLinePage.tsx` (use PublicNav)
+## Feature 1: Warranty Fund
+
+**New page:** `/dealer/warranty-fund` → `src/pages/dealer/DealerWarrantyFund.tsx`  
+**New sidebar item:** "Warranty Fund" with `Wallet` icon
+
+**Data model (computed from existing stores):**
+- `contributions` = sum of all warranty `cost` values for dealer
+- `claimsPaid` = sum of all approved/partially-approved claim `amount` values
+- `balance` = contributions − claimsPaid
+- `avgClaimCost` = mean of claim amounts
+- `claimRate` = total claims / total warranties
+- `estimatedLiability` = active warranties × avgClaimCost × riskFactor (0.15 default)
+- `buffer` = balance − estimatedLiability
+
+**UI sections:**
+1. **Hero card** — Large fund balance, monthly change, status badge (Healthy/Watch/Risk based on buffer %)
+2. **Key metrics row** — Total contributions, claims paid, active warranties, claim rate, avg claim cost
+3. **AI Fund Insight** — Calls new edge function `warranty-fund-insight` to get plain-English recommendation on contribution levels
+4. **Contribution slider** — £50–£300 range, shows recommended range from AI
+5. **Scenario simulator** — Select 1/3/5 claims, see projected balance and status change
+
+**Edge function:** `supabase/functions/warranty-fund-insight/index.ts`  
+Uses Lovable AI (gemini-3-flash-preview) with structured tool calling to return: recommended contribution range, risk assessment, plain-English summary. Non-streaming, invoked via supabase SDK.
+
+---
+
+## Feature 2: Profit Dashboard
+
+**New section** integrated into the Warranty Fund page (as a tab or below the fund section).
+
+**Calculations:**
+- Revenue = sum(warranty costs)
+- Claims cost = sum(approved claim amounts)
+- Profit = revenue − claims
+- Profit per warranty = profit / warranty count
+- Monthly trend (derived from warranty `createdAt` and claim dates)
+
+**UI:**
+- Three hero stat cards: Total Revenue, Claims Cost, Net Profit
+- Profit per warranty callout
+- Monthly trend bar chart (revenue vs claims)
+- Simple AI insight line: "You are making £X per warranty on average"
+
+---
+
+## Feature 3: Evidence Pack Generator
+
+**Added to:** `src/pages/dealer/DealerClaimAssist.tsx` (new "Generate Evidence Pack" button in claim workspace)
+
+**Implementation:**
+- Button appears in claim detail view header
+- Generates a clean HTML document in a new tab containing:
+  - Claim reference and summary
+  - Customer details
+  - Vehicle details
+  - Full timeline
+  - Messages (non-internal only)
+  - Decision details
+  - Checklist results
+- Styled for print with `@media print` CSS
+- Also offers download as HTML file (same approach as existing DealerDocuments)
+
+No PDF library needed — clean printable HTML that browsers can "Print to PDF."
+
+---
+
+## Feature 4: Customer Timeline
+
+**New page:** `/dealer/customers/:id/timeline` OR integrated as a view within `DealerCustomers.tsx`
+
+**Approach:** Add a "View Timeline" button on each customer card in DealerCustomers. Opens a modal/panel showing a chronological list pulling from:
+- Warranty store (warranty created events)
+- Claim store (claims, messages, decisions)
+- DisputeIQ store (dispute cases)
+- Audit log entries
+
+**UI:** Simple vertical timeline with icons, dates, and brief descriptions. No new data model — just aggregates existing stores filtered by customerId.
+
+---
+
+## Feature 5: Light Benchmarking
+
+**Integrated into:** Warranty Fund page as a "Market Comparison" section.
+
+**Data:** Uses anonymised averages from all dealers in demo data (d-1, d-2, d-3) to create "market" benchmarks.
+
+**Comparisons:**
+- Contribution per warranty (your avg vs market avg)
+- Claim rate (yours vs market)
+- Avg claim cost (yours vs market)
+
+Each metric shows: your value, market value, and a badge (Above/Below/On Par).
+
+**AI insight** included in the same `warranty-fund-insight` edge function call — returns a one-line benchmarking observation.
+
+---
+
+## Files to Create
+1. `src/pages/dealer/DealerWarrantyFund.tsx` — Warranty Fund + Profit Dashboard + Benchmarking
+2. `supabase/functions/warranty-fund-insight/index.ts` — AI insight edge function
+
+## Files to Edit
+1. `src/components/layouts/DealerLayout.tsx` — Add "Warranty Fund" sidebar item
+2. `src/App.tsx` — Add route `/dealer/warranty-fund`
+3. `src/pages/dealer/DealerClaimAssist.tsx` — Add "Generate Evidence Pack" button + generator logic
+4. `src/pages/dealer/DealerCustomers.tsx` — Add "View Timeline" button + timeline modal
+
+---
+
+## Design Rules
+- All glass-card styling, consistent with existing pages
+- Large readable numbers, card-based layout
+- No tables unless necessary
+- Dark mode compatible (uses existing CSS variables)
+- Premium SaaS feel throughout
 
