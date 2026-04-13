@@ -85,9 +85,9 @@ export default function DisputeIQAssessment() {
   const [issueDate, setIssueDate] = useState(existing?.issueDate || prefilledClaim?.issueDate || "");
   const [mileageAtSale, setMileageAtSale] = useState(existing?.mileageAtSale?.toString() || prefilledClaim?.mileageAtSale || "");
   const [mileageNow, setMileageNow] = useState(existing?.mileageNow?.toString() || prefilledClaim?.mileageNow || "");
-  const [drivable, setDrivable] = useState(existing?.drivable || prefilledClaim?.drivable || "yes");
-  const [repairsAuthorised, setRepairsAuthorised] = useState(existing?.repairsAuthorised || "no");
-  const [warrantyStatus, setWarrantyStatus] = useState(existing?.warrantyStatus || prefilledClaim?.warrantyStatus || "active");
+  const [drivable, setDrivable] = useState<"yes" | "no" | "limited">(existing?.drivable || prefilledClaim?.drivable || "yes");
+  const [repairsAuthorised, setRepairsAuthorised] = useState<"yes" | "no" | "partial">(existing?.repairsAuthorised || "no");
+  const [warrantyStatus, setWarrantyStatus] = useState<"active" | "expired" | "none">(existing?.warrantyStatus || prefilledClaim?.warrantyStatus || "active");
   const [customerSummary, setCustomerSummary] = useState(existing?.customerSummary || prefilledClaim?.customerSummary || "");
   const [customerName, setCustomerName] = useState(existing?.customerName || prefilledClaim?.customerName || "");
   const [vehicleReg, setVehicleReg] = useState(existing?.vehicleReg || prefilledClaim?.vehicleReg || "");
