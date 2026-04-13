@@ -410,6 +410,9 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Live Demo */}
+      <LiveDemoSection />
+
       {/* Core Features — 4 cards */}
       <section className="py-16 px-6">
         <div className="max-w-5xl mx-auto">
