@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown, Shield, Headphones, Sparkles, Wallet } from "lucide-react";
+import { Menu, X, ChevronDown, Shield, Headphones, Sparkles, Wallet, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/warrantylogo.png";
 
