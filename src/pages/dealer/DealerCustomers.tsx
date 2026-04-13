@@ -1,10 +1,13 @@
 import { demoCustomers, demoWarranties } from "@/data/demo-data";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWarrantyStore } from "@/lib/warranty-store";
+import { useClaimStore } from "@/lib/claim-store";
+import { useDisputeIQStore } from "@/lib/disputeiq-store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Search, Mail, Loader2, UserPlus } from "lucide-react";
+import { Search, Mail, Loader2, UserPlus, Clock } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
