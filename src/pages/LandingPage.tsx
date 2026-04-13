@@ -58,7 +58,7 @@ function TestimonialCarousel() {
     <div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {visible.map((t, i) => (
-          <motion.div key={t.name} custom={i} initial="hidden" animate="visible" variants={fadeUp} className="glass-card rounded-xl p-5">
+          <motion.div key={t.name} custom={i} initial="hidden" animate="visible" variants={fadeUp} className="rounded-xl p-5 border border-white/[0.08] bg-white/[0.05]">
             <div className="flex gap-0.5 mb-3">
               {[...Array(5)].map((_, j) => <Star key={j} className="w-3.5 h-3.5 fill-[hsl(var(--cta))] text-[hsl(var(--cta))]" />)}
             </div>
@@ -525,14 +525,14 @@ export default function LandingPage() {
         </div>
 
         <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[60px] w-full" preserveAspectRatio="none">
-            <path d="M0,50 C220,78 470,78 720,58 C980,36 1170,30 1440,55 L1440,80 L0,80 Z" fill="hsl(222 30% 7%)" />
+    <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[60px] w-full" preserveAspectRatio="none">
+            <path d="M0,50 C220,78 470,78 720,58 C980,36 1170,30 1440,55 L1440,80 L0,80 Z" fill="hsl(222 28% 10%)" />
           </svg>
         </div>
       </section>
 
       {/* Hook / Problem */}
-      <section className="bg-[hsl(222_30%_7%)]">
+      <section className="bg-[hsl(222_28%_10%)]">
         <motion.div className="max-w-2xl mx-auto text-center px-6 pt-14 pb-14" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display text-white leading-[1.15] tracking-[-0.02em] mb-6">
             Most dealers want to run their own warranties…<br />
@@ -551,11 +551,11 @@ export default function LandingPage() {
           <p className="text-lg font-semibold font-display text-primary">WarrantyVault fixes that.</p>
         </motion.div>
         {/* Section divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
       </section>
 
       {/* DisputeIQ Seller */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_6%)] relative">
+      <section className="py-20 px-6 bg-[hsl(222_30%_6%)] relative border-t border-[hsl(var(--cta))]/[0.08]">
         <div className="absolute top-0 right-[10%] w-[300px] h-[300px] bg-[hsl(var(--cta))]/[0.03] rounded-full blur-[100px] pointer-events-none" />
         <div className="max-w-5xl mx-auto">
           <motion.div className="rounded-2xl p-8 sm:p-10 relative overflow-hidden border border-[hsl(var(--cta))]/10 bg-[hsl(222_28%_9%)] shadow-[0_0_40px_-12px_hsl(24,100%,50%,0.06)]" initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
@@ -588,16 +588,16 @@ export default function LandingPage() {
       </section>
 
       {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       {/* Live Demo */}
       <LiveDemoSection />
 
       {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       {/* Core Features — 4 cards */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_6%)]">
+      <section className="py-16 px-6 bg-[hsl(222_28%_10%)]">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Everything you need. Nothing you don't.</h2>
@@ -605,7 +605,7 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {coreFeatures.map((f, i) => (
-              <motion.div key={f.title} className="rounded-xl p-6 border border-white/[0.06] bg-[hsl(222_28%_9%)] hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_hsl(172,66%,40%,0.1)] transition-all duration-300 group" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+              <motion.div key={f.title} className="rounded-xl p-6 border border-white/[0.08] bg-white/[0.05] hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_hsl(172,66%,40%,0.1)] transition-all duration-300 group" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
                   <f.icon className="w-5 h-5 text-primary" />
                 </div>
@@ -623,10 +623,10 @@ export default function LandingPage() {
       </section>
 
       {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       {/* Differentiator */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_7.5%)]">
+      <section className="py-16 px-6 bg-[hsl(222_30%_6%)]">
         <motion.div className="max-w-2xl mx-auto text-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-2xl sm:text-3xl font-bold font-display mb-4">This isn't just warranty software</h2>
           <p className="text-white/35 mb-6 text-base max-w-md mx-auto">Most systems help you <strong className="text-white/60">log claims</strong>. WarrantyVault helps you:</p>
@@ -648,10 +648,10 @@ export default function LandingPage() {
       </section>
 
       {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       {/* Warranty Fund */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_6%)] relative">
+      <section className="py-20 px-6 bg-[hsl(222_28%_10%)] relative border-t border-primary/[0.08]">
         <div className="absolute bottom-0 left-[5%] w-[250px] h-[250px] bg-primary/[0.03] rounded-full blur-[80px] pointer-events-none" />
         <div className="max-w-5xl mx-auto">
           <motion.div className="grid lg:grid-cols-2 gap-8 items-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -677,10 +677,10 @@ export default function LandingPage() {
       </section>
 
       {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-16 px-6 bg-[hsl(222_30%_7.5%)]">
+      <section id="how-it-works" className="py-16 px-6 bg-[hsl(222_30%_6%)]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">How it works</h2>
@@ -688,7 +688,7 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {steps.map((s, i) => (
-              <motion.div key={s.num} className="rounded-xl p-6 border border-white/[0.06] bg-[hsl(222_28%_9%)]" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+              <motion.div key={s.num} className="rounded-xl p-6 border border-white/[0.08] bg-white/[0.05]" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
                 <span className="text-2xl font-bold font-display text-primary/25 mb-2 block">{s.num}</span>
                 <h3 className="text-base font-semibold font-display mb-1.5 text-white/70">{s.title}</h3>
                 <p className="text-sm text-white/35 leading-relaxed">{s.desc}</p>
@@ -699,10 +699,10 @@ export default function LandingPage() {
       </section>
 
       {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       {/* Pricing */}
-      <section id="pricing" className="py-16 px-6 bg-[hsl(222_30%_6%)] relative">
+      <section id="pricing" className="py-20 px-6 bg-[hsl(222_28%_10%)] relative border-t border-primary/[0.08]">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-primary/[0.03] rounded-full blur-[120px] pointer-events-none" />
         <div className="max-w-2xl mx-auto text-center relative">
           <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Simple, transparent pricing</h2>
@@ -739,10 +739,10 @@ export default function LandingPage() {
       </section>
 
       {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       {/* Testimonials */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_7.5%)]">
+      <section className="py-16 px-6 bg-[hsl(222_30%_6%)]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Trusted by UK dealers</h2>
