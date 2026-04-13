@@ -199,8 +199,8 @@ export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Self-Funded Warranty Features & Comparison | WarrantyVault"
-        description="Compare self-funded warranties vs third-party providers. See how WarrantyVault gives UK dealers full control, higher margins, and faster claim decisions."
+        title="WarrantyVault Features | Warranty Management System for Dealers"
+        description="Explore WarrantyVault features including claims management, DisputeIQ, and warranty fund tracking for car dealers."
         canonical="https://dealer-guard-vault.lovable.app/features"
       />
 

@@ -468,8 +468,8 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[hsl(222_30%_6%)]">
       <SEOHead
-        title="Self-Funded Car Warranty Software for UK Dealers | WarrantyVault"
-        description="Run self-funded warranties properly. Manage claims, handle complaints, and stay in control of your risk and profit — built for UK independent car dealers."
+        title="Warranty Management Software for UK Car Dealers | WarrantyVault"
+        description="Manage self-funded warranties, handle claims, and respond to complaints correctly with WarrantyVault. Built for UK independent car dealers."
         canonical="https://dealer-guard-vault.lovable.app/"
       />
 
