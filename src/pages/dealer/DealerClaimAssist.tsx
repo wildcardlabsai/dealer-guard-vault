@@ -32,6 +32,7 @@ function KPICard({ icon: Icon, label, value, color }: { icon: any; label: string
 
 export default function DealerClaimAssist() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const dealerId = user?.dealerId || "d-1";
   const claimStore = useClaimStore();
   const coverStore = useCoverStore();
@@ -143,7 +144,7 @@ export default function DealerClaimAssist() {
             <Button size="sm" variant="outline" className="text-primary border-primary/30"
               onClick={() => navigate("/dealer/disputeiq/new", { state: {
                 customerName: claim.customerName, vehicleReg: claim.vehicleReg,
-                customerSummary: claim.issueDescription, drivable: claim.vehicleDrivable,
+                customerSummary: claim.description, drivable: claim.vehicleDrivable,
                 warrantyStatus: "active", claimId: claim.id,
                 complaintType: "mechanical",
               }})}>
