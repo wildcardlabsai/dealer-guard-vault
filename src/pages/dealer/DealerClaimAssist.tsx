@@ -14,7 +14,7 @@ import type { EnhancedClaim, ClaimStatus, ClaimChecklistItem } from "@/data/clai
 import {
   ClipboardList, AlertTriangle, Clock, CheckCircle2, XCircle, Eye, Search,
   MessageSquare, FileText, ListChecks, ArrowLeft, Send, BarChart3,
-  Shield, User, Car, ChevronDown, ChevronUp, Sparkles,
+  Shield, User, Car, ChevronDown, ChevronUp, Sparkles, Download,
 } from "lucide-react";
 import { toast } from "sonner";
 
