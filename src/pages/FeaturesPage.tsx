@@ -94,8 +94,8 @@ const intelligenceFeatures: FeatureShowcase[] = [
   {
     icon: Sparkles,
     title: "DisputeIQ",
-    desc: "AI-powered complaint handler that analyses disputes against UK Consumer Rights Act timelines, identifies risk levels, and generates professional responses.",
-    bullets: ["CRA-based legal reasoning and risk scoring", "Response generation in 4 styles: Helpful, Firm, Defensive, De-escalation", "Strategy Mode with internal risks and 'what NOT to say'", "One-click transfer to Claim Assist for disputed claims"],
+    desc: "AI-powered complaint handler that analyses disputes against UK Consumer Rights Act timelines, identifies risk levels, and generates professional responses. Completely free for all dealers — no warranty purchase required.",
+    bullets: ["100% free — just sign up, no purchase needed", "CRA-based legal reasoning and risk scoring", "Response generation in 4 styles: Helpful, Firm, Defensive, De-escalation", "Strategy Mode with internal risks and 'what NOT to say'"],
     screenshot: screenshotClaims,
   },
   {
