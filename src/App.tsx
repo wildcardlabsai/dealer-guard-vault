@@ -36,6 +36,7 @@ import DealerClaimSettings from "@/pages/dealer/DealerClaimSettings";
 import DealerSupport from "@/pages/dealer/DealerSupport";
 import DealerDisputeIQ from "@/pages/dealer/DealerDisputeIQ";
 import DisputeIQAssessment from "@/pages/dealer/DisputeIQAssessment";
+import DealerWarrantyFund from "@/pages/dealer/DealerWarrantyFund";
 
 import CustomerLayout from "@/components/layouts/CustomerLayout";
 import CustomerDashboard from "@/pages/customer/CustomerDashboard";
@@ -102,6 +103,7 @@ function AppRoutes() {
       <Route path="/dealer/support" element={<ProtectedRoute role="dealer"><DealerLayout><DealerSupport /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/disputeiq" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDisputeIQ /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/disputeiq/:id" element={<ProtectedRoute role="dealer"><DealerLayout><DisputeIQAssessment /></DealerLayout></ProtectedRoute>} />
+      <Route path="/dealer/warranty-fund" element={<ProtectedRoute role="dealer"><DealerLayout><DealerWarrantyFund /></DealerLayout></ProtectedRoute>} />
 
       {/* Customer Routes */}
       <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerDashboard /></CustomerLayout></ProtectedRoute>} />

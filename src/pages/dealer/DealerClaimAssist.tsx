@@ -14,7 +14,7 @@ import type { EnhancedClaim, ClaimStatus, ClaimChecklistItem } from "@/data/clai
 import {
   ClipboardList, AlertTriangle, Clock, CheckCircle2, XCircle, Eye, Search,
   MessageSquare, FileText, ListChecks, ArrowLeft, Send, BarChart3,
-  Shield, User, Car, ChevronDown, ChevronUp, Sparkles,
+  Shield, User, Car, ChevronDown, ChevronUp, Sparkles, Download,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -120,6 +120,39 @@ export default function DealerClaimAssist() {
     return result;
   };
 
+  const generateEvidencePack = (c: EnhancedClaim) => {
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Evidence Pack — ${c.reference}</title>
+<style>body{font-family:system-ui,sans-serif;max-width:800px;margin:0 auto;padding:40px 20px;color:#1a1a1a}
+h1{font-size:24px;border-bottom:2px solid #0066cc;padding-bottom:8px}h2{font-size:16px;margin-top:28px;color:#0066cc}
+table{width:100%;border-collapse:collapse;margin:12px 0}td{padding:6px 12px;border:1px solid #ddd;font-size:13px}
+td:first-child{font-weight:600;width:160px;background:#f8f9fa}.timeline-item{padding:8px 0;border-bottom:1px solid #eee;font-size:13px}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+@media print{body{padding:20px}}</style></head><body>
+<h1>Evidence Pack</h1><p style="color:#666;font-size:13px">Ref: ${c.reference} | Generated: ${new Date().toLocaleDateString("en-GB")} ${new Date().toLocaleTimeString("en-GB")}</p>
+<h2>Claim Summary</h2><table><tr><td>Reference</td><td>${c.reference}</td></tr><tr><td>Status</td><td>${c.status.replace(/_/g," ")}</td></tr>
+<tr><td>Priority</td><td>${c.priority}</td></tr><tr><td>Issue</td><td>${c.issueTitle}</td></tr>
+<tr><td>Description</td><td>${c.description}</td></tr><tr><td>Submitted</td><td>${new Date(c.createdAt).toLocaleDateString("en-GB")}</td></tr></table>
+<h2>Customer Details</h2><table><tr><td>Name</td><td>${c.customerName}</td></tr><tr><td>ID</td><td>${c.customerId}</td></tr></table>
+<h2>Vehicle Details</h2><table><tr><td>Registration</td><td>${c.vehicleReg}</td></tr><tr><td>Vehicle</td><td>${c.vehicleMake} ${c.vehicleModel}</td></tr>
+<tr><td>Mileage at Claim</td><td>${c.currentMileage?.toLocaleString() || "N/A"}</td></tr><tr><td>Drivable</td><td>${c.vehicleDrivable}</td></tr>
+${c.atGarage ? `<tr><td>Garage</td><td>${c.garageName || "N/A"}</td></tr>` : ""}</table>
+<h2>Timeline</h2>${c.timeline.map(t => `<div class="timeline-item"><strong>${t.date}</strong> — ${t.action} <span style="color:#666">(${t.by})</span></div>`).join("")}
+<h2>Messages</h2>${(c.messages || []).filter(m => !m.internal).map(m => `<div class="timeline-item"><strong>${m.from}</strong> (${new Date(m.timestamp).toLocaleDateString("en-GB")}): ${m.message}</div>`).join("") || "<p style='color:#666'>No messages</p>"}
+${c.decision ? `<h2>Decision</h2><table><tr><td>Type</td><td>${c.decision.type.replace(/_/g," ")}</td></tr><tr><td>Note</td><td>${c.decision.note}</td></tr>
+${c.decision.payoutAmount ? `<tr><td>Payout</td><td>£${c.decision.payoutAmount}</td></tr>` : ""}
+<tr><td>By</td><td>${c.decision.by}</td></tr><tr><td>Date</td><td>${new Date(c.decision.timestamp).toLocaleDateString("en-GB")}</td></tr></table>` : ""}
+<h2>Checklist</h2><table>${c.checklist.map(item => `<tr><td>${item.label}</td><td>${item.value}</td></tr>`).join("")}</table>
+<p style="margin-top:40px;color:#999;font-size:11px;border-top:1px solid #eee;padding-top:12px">WarrantyVault Evidence Pack — Confidential</p></body></html>`;
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `evidence-pack-${c.reference}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Evidence pack downloaded — open and print to PDF");
+  };
+
   // Claim workspace view
   if (claim) {
     const status = claimStatusConfig[claim.status];
@@ -149,6 +182,9 @@ export default function DealerClaimAssist() {
                 complaintType: "mechanical",
               }})}>
               <Sparkles className="w-3.5 h-3.5 mr-1" /> Open in DisputeIQ
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => generateEvidencePack(claim)}>
+              <Download className="w-3.5 h-3.5 mr-1" /> Evidence Pack
             </Button>
             {["submitted", "awaiting_review", "under_assessment", "awaiting_info"].includes(claim.status) && (
               <>

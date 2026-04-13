@@ -1,10 +1,13 @@
 import { demoCustomers, demoWarranties } from "@/data/demo-data";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWarrantyStore } from "@/lib/warranty-store";
+import { useClaimStore } from "@/lib/claim-store";
+import { useDisputeIQStore } from "@/lib/disputeiq-store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Search, Mail, Loader2, UserPlus } from "lucide-react";
+import { Search, Mail, Loader2, UserPlus, Clock } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +17,9 @@ import {
 
 export default function DealerCustomers() {
   const { user } = useAuth();
+  const { warranties } = useWarrantyStore();
+  const claimStore = useClaimStore();
+  const disputeStore = useDisputeIQStore();
   const dealerId = user?.dealerId || "d-1";
   const dealerName = dealerId === "d-1" ? "Prestige Motors" : "City Autos";
   const [search, setSearch] = useState("");
@@ -21,6 +27,28 @@ export default function DealerCustomers() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteName, setInviteName] = useState("");
   const [inviting, setInviting] = useState(false);
+  const [timelineCustomer, setTimelineCustomer] = useState<string | null>(null);
+
+  const getTimeline = (customerId: string) => {
+    const events: { date: string; type: string; detail: string }[] = [];
+    warranties.filter(w => w.customerId === customerId).forEach(w => {
+      events.push({ date: w.createdAt, type: "warranty", detail: `Warranty created — ${w.vehicleMake} ${w.vehicleModel} (${w.vehicleReg})` });
+    });
+    claimStore.getClaimsForCustomer(customerId).forEach(c => {
+      events.push({ date: c.createdAt, type: "claim", detail: `Claim submitted — ${c.issueTitle} (${c.reference})` });
+      if (c.decision) events.push({ date: c.decision.timestamp, type: "decision", detail: `Claim ${c.decision.type.replace(/_/g, " ")} — ${c.reference}` });
+      (c.messages || []).filter(m => !m.internal).forEach(m => {
+        events.push({ date: m.timestamp, type: "message", detail: `Message from ${m.from}: "${m.message.slice(0, 60)}..."` });
+      });
+    });
+    disputeStore.getCasesForDealer(dealerId).filter(d => d.customerName === demoCustomers.find(c => c.id === customerId)?.name).forEach(d => {
+      events.push({ date: d.createdAt, type: "dispute", detail: `DisputeIQ case opened — ${d.complaintType}` });
+    });
+    return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  };
+
+  const timelineEvents = timelineCustomer ? getTimeline(timelineCustomer) : [];
+  const timelineCustomerName = demoCustomers.find(c => c.id === timelineCustomer)?.name || "";
 
   const customers = demoCustomers
     .filter(c => c.dealerId === dealerId)
@@ -123,14 +151,14 @@ export default function DealerCustomers() {
               <p className="text-sm text-muted-foreground">{c.phone}</p>
               <p className="text-xs text-muted-foreground mt-2">{c.address}, {c.city}, {c.postcode}</p>
               <p className="text-xs text-muted-foreground mt-1">Joined: {new Date(c.createdAt).toLocaleDateString("en-GB")}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-3 w-full"
-                onClick={() => handleInviteExisting(c)}
-              >
-                <Mail className="w-3.5 h-3.5 mr-1.5" /> Send Portal Invite
-              </Button>
+              <div className="flex gap-2 mt-3">
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => handleInviteExisting(c)}>
+                  <Mail className="w-3.5 h-3.5 mr-1.5" /> Invite
+                </Button>
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => setTimelineCustomer(c.id)}>
+                  <Clock className="w-3.5 h-3.5 mr-1.5" /> Timeline
+                </Button>
+              </div>
             </div>
           );
         })}
@@ -169,6 +197,46 @@ export default function DealerCustomers() {
                 <><Mail className="w-4 h-4 mr-2" /> Create Account & Send Invite</>
               )}
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Timeline Modal */}
+      <Dialog open={!!timelineCustomer} onOpenChange={() => setTimelineCustomer(null)}>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Customer Timeline — {timelineCustomerName}</DialogTitle>
+            <DialogDescription>Chronological history of all interactions</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-0 pt-2">
+            {timelineEvents.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">No activity found</p>
+            ) : (
+              timelineEvents.map((ev, i) => {
+                const typeColors: Record<string, string> = {
+                  warranty: "bg-primary/20 text-primary",
+                  claim: "bg-amber-500/20 text-amber-400",
+                  decision: "bg-emerald-500/20 text-emerald-400",
+                  message: "bg-muted text-muted-foreground",
+                  dispute: "bg-purple-500/20 text-purple-400",
+                };
+                return (
+                  <div key={i} className="flex gap-3 py-3 border-b border-border/30 last:border-0">
+                    <div className="flex flex-col items-center">
+                      <div className={`w-2 h-2 rounded-full mt-1.5 ${typeColors[ev.type]?.split(" ")[0] || "bg-muted"}`} />
+                      {i < timelineEvents.length - 1 && <div className="w-px flex-1 bg-border/30 mt-1" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm">{ev.detail}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{new Date(ev.date).toLocaleDateString("en-GB")} {new Date(ev.date).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>
+                    </div>
+                    <Badge variant="outline" className={`text-[10px] h-5 shrink-0 ${typeColors[ev.type] || ""}`}>
+                      {ev.type}
+                    </Badge>
+                  </div>
+                );
+              })
+            )}
           </div>
         </DialogContent>
       </Dialog>
