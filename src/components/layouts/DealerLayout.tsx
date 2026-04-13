@@ -4,7 +4,7 @@ import { useNotificationStore } from "@/lib/notification-store";
 import {
   LayoutDashboard, FileText, Plus, ClipboardList, Users, MessageSquare,
   FolderOpen, Settings, LogOut, ChevronLeft, Menu, Phone, Shield, Headphones, Sliders, LifeBuoy,
-  Bell, Check
+  Bell, Check, Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,7 @@ const navItems = [
   { label: "Add Warranty", icon: Plus, path: "/dealer/warranties/new" },
   { label: "Cover Templates", icon: Shield, path: "/dealer/cover-templates" },
   { label: "Claim Assist", icon: Headphones, path: "/dealer/claim-assist" },
+  { label: "DisputeIQ", icon: Sparkles, path: "/dealer/disputeiq" },
   { label: "Claims", icon: ClipboardList, path: "/dealer/claims" },
   { label: "Customers", icon: Users, path: "/dealer/customers" },
   { label: "Requests", icon: MessageSquare, path: "/dealer/requests" },
