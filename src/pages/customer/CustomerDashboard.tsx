@@ -147,14 +147,25 @@ export default function CustomerDashboard() {
             </div>
           </div>
 
+          {/* Prominent Certificate Download */}
+          <div className="mt-4 pt-4 border-t border-border/50 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Download className="w-4 h-4 text-primary" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium">Download Your Warranty Certificate</p>
+              <p className="text-xs text-muted-foreground">Keep a copy for your records and garage visits</p>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => downloadCertificate(activeWarranty)}>
+              <Download className="w-3.5 h-3.5 mr-1" /> Download
+            </Button>
+          </div>
+
           {/* Action buttons — 2x2 grid on mobile */}
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mt-4 pt-4 border-t border-border/50">
             <Button size="sm" asChild><Link to="/customer/warranty">View Details</Link></Button>
             <Button size="sm" variant="outline" asChild><Link to="/customer/cover">Your Cover</Link></Button>
             <Button size="sm" variant="outline" asChild><Link to="/customer/claims">Submit Claim</Link></Button>
-            <Button size="sm" variant="outline" onClick={() => downloadCertificate(activeWarranty)}>
-              <Download className="w-3.5 h-3.5 mr-1" /> Certificate
-            </Button>
           </div>
         </div>
       ) : (
@@ -200,6 +211,7 @@ export default function CustomerDashboard() {
               </div>
             ))}
           </div>
+          <p className="text-[10px] text-muted-foreground mt-2 text-center">Typically 3–5 working days</p>
         </div>
       ) : (
         <div className="glass-card rounded-xl p-6 text-center">

@@ -28,9 +28,10 @@ export default function AdminDashboard() {
   const totalWarranties = demoWarranties.length;
   const totalClaims = demoClaims.length;
   const activeDealers = demoDealers.filter(d => d.status === "active").length;
-  const subscriptionRevenue = activeDealers * 50;
+
+  // Pay-per-use model: £15 per warranty, no subscriptions
   const warrantyRevenue = totalWarranties * 15;
-  const totalRevenue = subscriptionRevenue + warrantyRevenue;
+  const totalRevenue = warrantyRevenue;
 
   // Pending actions
   const pendingSignups = signupStore.signupRequests.filter(r => r.status === "pending").length;
@@ -38,8 +39,6 @@ export default function AdminDashboard() {
   const pendingClaims = demoClaims.filter(c => c.status === "pending").length;
   const totalPending = pendingSignups + openTickets + pendingClaims;
 
-  // MRR & Churn
-  const mrr = activeDealers * 50;
   const trialDealers = demoDealers.filter(d => d.status === "trial").length;
   const suspendedDealers = demoDealers.filter(d => d.status === "suspended").length;
   const churnRate = totalDealers > 0 ? Math.round((suspendedDealers / totalDealers) * 100) : 0;
@@ -59,16 +58,16 @@ export default function AdminDashboard() {
     { name: "Rejected", value: demoClaims.filter(c => c.status === "rejected").length, color: "hsl(0, 72%, 51%)" },
   ].filter(s => s.value > 0);
 
-  // Recent activity
   const recentLogs = demoAuditLog.slice(0, 5);
 
+  // Revenue trend — pay-per-use only
   const monthlyData = [
-    { month: "Oct", subscriptions: 100, warranties: 45 },
-    { month: "Nov", subscriptions: 100, warranties: 60 },
-    { month: "Dec", subscriptions: 150, warranties: 75 },
-    { month: "Jan", subscriptions: 150, warranties: 90 },
-    { month: "Feb", subscriptions: 150, warranties: 105 },
-    { month: "Mar", subscriptions: 150, warranties: 90 },
+    { month: "Oct", fees: 45 },
+    { month: "Nov", fees: 60 },
+    { month: "Dec", fees: 75 },
+    { month: "Jan", fees: 90 },
+    { month: "Feb", fees: 105 },
+    { month: "Mar", fees: 90 },
   ];
 
   return (
@@ -78,7 +77,6 @@ export default function AdminDashboard() {
         <p className="text-sm text-muted-foreground">Platform overview</p>
       </div>
 
-      {/* Pending Actions Banner */}
       {totalPending > 0 && (
         <div className="glass-card rounded-xl p-4 border-yellow-500/30 bg-yellow-500/5">
           <div className="flex items-center gap-2 mb-3">
@@ -108,33 +106,28 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <StatCard icon={Building2} label="Dealers" value={totalDealers} sub={`${activeDealers} active`} />
         <StatCard icon={FileText} label="Warranties" value={totalWarranties} />
         <StatCard icon={ClipboardList} label="Claims" value={totalClaims} />
-        <StatCard icon={DollarSign} label="Sub Revenue" value={`£${subscriptionRevenue}`} />
-        <StatCard icon={TrendingUp} label="Warranty Fees" value={`£${warrantyRevenue}`} />
+        <StatCard icon={DollarSign} label="Warranty Fees" value={`£${warrantyRevenue}`} sub={`${totalWarranties} × £15`} />
         <StatCard icon={Users} label="Total Revenue" value={`£${totalRevenue}`} />
-        <StatCard icon={DollarSign} label="MRR" value={`£${mrr}`} sub={`${trialDealers} on trial`} />
-        <StatCard icon={TrendingUp} label="Churn Rate" value={`${churnRate}%`} sub={`${suspendedDealers} suspended`} />
+        <StatCard icon={TrendingUp} label="Churn Rate" value={`${churnRate}%`} sub={`${suspendedDealers} suspended · ${trialDealers} trial`} />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Revenue Trend */}
         <div className="lg:col-span-2 glass-card rounded-xl p-6">
-          <h3 className="font-semibold font-display mb-4">Revenue Trend</h3>
+          <h3 className="font-semibold font-display mb-4">Revenue Trend (Pay-Per-Use)</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={monthlyData}>
               <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={v => `£${v}`} />
               <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
-              <Line type="monotone" dataKey="subscriptions" stroke="hsl(172, 66%, 40%)" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="warranties" stroke="hsl(190, 80%, 50%)" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="fees" stroke="hsl(172, 66%, 40%)" strokeWidth={2} dot={false} name="Warranty Fees" />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Claims Breakdown Pie Chart */}
         <div className="glass-card rounded-xl p-6">
           <h3 className="font-semibold font-display mb-4">Claims Breakdown</h3>
           <ResponsiveContainer width="100%" height={180}>
@@ -160,7 +153,6 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Dealer Leaderboard */}
         <div className="glass-card rounded-xl p-6">
           <div className="flex items-center gap-2 mb-4">
             <Trophy className="w-4 h-4 text-primary" />
@@ -182,7 +174,6 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Platform Activity Log */}
         <div className="glass-card rounded-xl p-6">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4 text-primary" />

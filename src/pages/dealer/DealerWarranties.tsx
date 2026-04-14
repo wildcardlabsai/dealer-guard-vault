@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { Plus, Search, Eye, Trash2, FileText, Download, Printer, Mail, Loader2 } from "lucide-react";
+import { Plus, Search, Eye, Trash2, FileText, Download, Printer, Mail, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { printCertificate, downloadCertificate } from "@/lib/generate-certificate";
 import {
@@ -36,6 +36,7 @@ const sortLabels: Record<SortOption, string> = {
 };
 
 export default function DealerWarranties() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const dealerId = user?.dealerId || "d-1";
   const store = useWarrantyStore();
@@ -160,7 +161,12 @@ export default function DealerWarranties() {
               </tr>
             </thead>
             <tbody>
-              {warranties.map(w => (
+              {warranties.map(w => {
+                const endDate = new Date(w.endDate);
+                const now = new Date();
+                const daysLeft = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                const isExpiring = w.status === "active" && daysLeft <= 30 && daysLeft > 0;
+                return (
                 <tr key={w.id} className="border-b border-border/30 hover:bg-secondary/20 transition-colors">
                   <td className="p-4 font-medium">{w.customerName}</td>
                   <td className="p-4 text-muted-foreground">{w.vehicleMake} {w.vehicleModel}</td>
@@ -182,13 +188,19 @@ export default function DealerWarranties() {
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEmailDialogId(w.id); setEmailMode("default"); setCustomEmail(""); }} title="Email Certificate">
                         <Mail className="w-4 h-4" />
                       </Button>
+                      {isExpiring && (
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-amber-400 hover:text-amber-300" onClick={() => navigate(`/dealer/warranties/new?renew=${w.id}`)} title="Renew">
+                          <RefreshCw className="w-4 h-4" />
+                        </Button>
+                      )}
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => { store.deleteWarranty(w.id); toast.success("Warranty deleted"); }} title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
