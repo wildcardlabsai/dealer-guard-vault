@@ -25,6 +25,9 @@ function getSettings(dealerId: string): DealerSettings {
       maxPerClaimLimit: 2500,
       freeWarrantiesTotal: 5,
       freeWarrantiesUsed: 0,
+      smartContributionMode: "recommend",
+      lastRecommendationDate: null,
+      dismissedRecommendationUntil: null,
     };
   }
   return settingsMap[dealerId];
