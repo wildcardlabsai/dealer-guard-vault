@@ -1,68 +1,56 @@
 
 
-# Update Features Page + Nav Scroll Anchors
+# Visual Improvements to Dealer and Customer Dashboards
 
-## What's Missing
-
-The Features page is outdated — it doesn't include **DisputeIQ**, **Warranty Fund**, **Claim Assist**, or **Evidence Pack Generator**. These are core product features that need showcasing.
-
-The nav Product dropdown currently sends Warranty Management, Claim Assist, and Warranty Fund all to `/features` with no scroll targeting. DisputeIQ already has `/disputeiq`.
-
-## Approach: Hybrid Navigation
-
-- **DisputeIQ** → keeps its own page (`/disputeiq`) — already works
-- **Warranty Management** → scrolls to `#warranty-management` on `/features`
-- **Claim Assist** → scrolls to `#claim-assist` on `/features`
-- **Warranty Fund** → scrolls to `#warranty-fund` on `/features`
-
-## Changes
-
-### 1. Add missing features to FeaturesPage (`src/pages/FeaturesPage.tsx`)
-
-Restructure the feature groups to include all current product capabilities:
-
-**Core Features** (keep):
-- Warranty Management
-- Customer Portal
-
-**Claims & Control** — add two new entries:
-- Claims Management (keep)
-- **Claim Assist** (NEW) — end-to-end claim handling with evidence requests, checklists, messaging, decisions, and the Evidence Pack Generator
-- **Evidence Pack Generator** (as a bullet under Claim Assist) — generates printable HTML claim summaries for records and disputes
-
-**Intelligence & Risk** (NEW section):
-- **DisputeIQ** — AI complaint handler, CRA reasoning, risk levels, response generation in 4 styles, Strategy Mode
-- **Warranty Fund** — financial oversight, buffer calculation, health status, scenario simulator, AI contribution recommendations
-
-**Add-ons** (keep existing):
-- Warranty Line, Cover Templates, Documents, Support
-
-Also update the **quick overview grid** at the top to include DisputeIQ, Warranty Fund, Claim Assist, and Evidence Pack.
-
-Add `id` attributes to each feature group section for scroll targeting.
-
-### 2. Update nav links (`src/components/PublicNav.tsx`)
-
-Change dropdown `to` values to use hash links:
-- Warranty Management → `/features#warranty-management`
-- Claim Assist → `/features#claim-assist`
-- DisputeIQ → `/disputeiq` (unchanged)
-- Warranty Fund → `/features#warranty-fund`
-
-Add scroll-into-view logic in FeaturesPage using `useLocation` + `useEffect` to handle hash-based scrolling with `scroll-margin-top` for the fixed nav.
-
-### 3. Update comparison table
-
-Add rows for:
-- **Complaint Handling**: "No guidance, risk of escalation" vs "AI-powered responses with legal reasoning"
-- **Financial Visibility**: "No real-time fund tracking" vs "Live fund health with buffer calculations"
+## Overview
+Eight visual upgrades across both dashboards, keeping the existing dark UI aesthetic and glass-card patterns.
 
 ---
 
-## Technical Details
+## Dealer Dashboard Changes (`src/pages/dealer/DealerDashboard.tsx`)
 
-- **Files modified**: `src/pages/FeaturesPage.tsx`, `src/components/PublicNav.tsx`
-- Screenshots for new features will use placeholder images (same pattern as existing) — you can swap real screenshots later
-- No new dependencies
-- Smooth scroll behaviour via `scrollIntoView({ behavior: 'smooth' })` with `scroll-margin-top` on sections to account for fixed nav
+### 1. Fund Health Score Widget
+Replace the simple Warranty Fund banner (lines 408-426) with a mini ring/donut chart showing the Fund Health Score (0-100). Import the `calcHealthScore`, `calcExposure`, `getEffectiveMetrics` functions from the Warranty Fund page (extract to a shared utility or inline). Display the numeric score inside a CSS circular progress ring, with the status label (Healthy/Stable/Watch/Risk) and colour-coded badge.
+
+### 2. Claim Priority Indicators
+In the Recent Claims list (lines 318-338), add an urgency indicator for claims pending longer than 7 days. Calculate days since `claim.createdAt`, and show an orange/red "Overdue" or "7d+" micro-badge next to claims exceeding the threshold. Claims under 7 days keep the existing dot indicator.
+
+### 3. New Dealer Onboarding State
+When `warranties.length === 0`, replace the stats grid and performance sections with a guided onboarding card. Show 3 steps: (1) Add your first warranty, (2) Set up your warranty fund, (3) Try DisputeIQ. Each step links to the relevant page. Use a checklist-style layout with the existing dark card styling.
+
+---
+
+## Customer Dashboard Changes (`src/pages/customer/CustomerDashboard.tsx`)
+
+### 4. Stat Card Upgrades
+Replace the plain `glass-card` stat blocks (lines 148-164) with the dealer-style `StatCard` pattern: icon in a rounded container, hover lift effect (`hover:-translate-y-0.5`), and subtle border glow on the active/accent card.
+
+### 5. Circular Warranty Countdown
+Replace the linear `<Progress>` bar (lines 80-91) with an SVG circular progress ring. Show `daysRemaining` in large text in the centre, with "days left" beneath. Keep the start/end date labels below.
+
+### 6. Empty Claim State
+When `latestClaim` is null (no claims), show a friendly empty state card instead of nothing. Include a shield icon, "No claims yet" message, and a "Submit a Claim" button linking to `/customer/claims`.
+
+### 7. Coverage Tier Badge
+Add a tier badge next to the "Active" badge on the warranty card (line 59). Derive tier from the cover template name (e.g., "Gold", "Silver", "Bronze") or warranty duration. Show as a small coloured badge.
+
+### 8. Mobile Button Grid
+Change the action buttons row (lines 93-100) from `flex flex-wrap` to a `grid grid-cols-2` layout on mobile, ensuring consistent button sizing and spacing.
+
+---
+
+## Shared Utility Extraction
+
+Extract `calcHealthScore`, `calcExposure`, `getEffectiveMetrics`, and `getScoreStatus` from `DealerWarrantyFund.tsx` into a new file `src/lib/fund-health.ts` so both the Fund page and Dealer Dashboard can import them without duplication.
+
+---
+
+## Files to Create/Edit
+
+| File | Action |
+|------|--------|
+| `src/lib/fund-health.ts` | Create — extract health score engine functions |
+| `src/pages/dealer/DealerWarrantyFund.tsx` | Edit — import from `fund-health.ts` instead of inline |
+| `src/pages/dealer/DealerDashboard.tsx` | Edit — add health ring widget, claim priority badges, onboarding state |
+| `src/pages/customer/CustomerDashboard.tsx` | Edit — stat card upgrade, circular countdown, empty claim state, coverage tier badge, mobile button grid |
 
