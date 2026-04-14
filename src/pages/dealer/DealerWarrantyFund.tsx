@@ -525,158 +525,258 @@ export default function DealerWarrantyFund() {
             </div>
           </div>
 
-          {/* Smart Contribution Adjustment */}
-          <div className="relative rounded-xl border border-primary/30 bg-gradient-to-br from-primary/5 via-card to-primary/5 p-6 shadow-lg">
-            <div className="absolute top-0 right-0 m-4">
-              <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded-lg hover:bg-muted/40 transition-colors">
-                <Settings2 className="w-4 h-4 text-muted-foreground" />
-              </button>
-            </div>
+          {/* ═══ Smart Contribution Adjustment — Premium Section ═══ */}
+          <div className="relative mt-10 -mx-2 sm:-mx-4 lg:-mx-6">
+            <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.04] via-card/80 to-card overflow-hidden shadow-2xl shadow-primary/5">
+              {/* Top accent line */}
+              <div className="h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
 
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Zap className="w-4 h-4 text-primary" />
-              </div>
-              <h2 className="text-lg font-semibold font-display">Smart Contribution Adjustment</h2>
-              <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/20 ml-1">AI</Badge>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4 ml-10">Intelligent recommendations to keep your fund healthy</p>
-
-            {/* Settings Panel */}
-            {showSettings && (
-              <div className="mb-5 p-4 rounded-lg bg-muted/20 border border-border/30 space-y-3">
-                <p className="text-sm font-medium">Smart Contribution Mode</p>
-                <RadioGroup
-                  value={dealerSettings.smartContributionMode}
-                  onValueChange={(v) => dealerSettingsStore.updateSettings(dealerId, { smartContributionMode: v as SmartContributionMode })}
-                  className="gap-3"
-                >
-                  {[
-                    { value: "off", label: "Off", desc: "No recommendations shown" },
-                    { value: "recommend", label: "Recommend Only", desc: "Show suggestions — you decide" },
-                    { value: "auto", label: "Auto-apply after confirmation", desc: "Apply automatically with a confirm prompt" },
-                  ].map(opt => (
-                    <div key={opt.value} className="flex items-start gap-3">
-                      <RadioGroupItem value={opt.value} id={`scm-${opt.value}`} className="mt-0.5" />
-                      <Label htmlFor={`scm-${opt.value}`} className="cursor-pointer">
-                        <span className="text-sm font-medium">{opt.label}</span>
-                        <p className="text-xs text-muted-foreground">{opt.desc}</p>
-                      </Label>
+              <div className="p-6 sm:p-8 lg:p-10">
+                {/* Header — full width */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/20">
+                      <Sparkles className="w-5 h-5 text-primary" />
                     </div>
-                  ))}
-                </RadioGroup>
-              </div>
-            )}
-
-            {dealerSettings.smartContributionMode === "off" ? (
-              <div className="text-center py-6">
-                <p className="text-sm text-muted-foreground">Smart recommendations are turned off.</p>
-                <Button variant="outline" size="sm" className="mt-2" onClick={() => setShowSettings(true)}>Enable</Button>
-              </div>
-            ) : dealerWarranties.length < MIN_WARRANTIES_FOR_REC ? (
-              <div className="text-center py-6">
-                <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                <p className="text-sm font-medium">We need more warranty data before making a recommendation.</p>
-                <p className="text-xs text-muted-foreground mt-1">You have {dealerWarranties.length} warranties — we need at least {MIN_WARRANTIES_FOR_REC}.</p>
-              </div>
-            ) : recommendation ? (
-              <div className="space-y-5">
-                {/* Current vs Suggested */}
-                <div className="grid sm:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-lg bg-muted/20 text-center">
-                    <p className="text-xs text-muted-foreground mb-1">Current</p>
-                    <p className="text-2xl font-bold font-display">£{recommendation.current}</p>
-                    <p className="text-xs text-muted-foreground">per warranty</p>
+                    <div>
+                      <h2 className="text-xl font-bold font-display">Smart Contribution Adjustment</h2>
+                      <p className="text-sm text-muted-foreground">AI-powered recommendation based on your claims, fund performance, and risk level</p>
+                    </div>
                   </div>
-                  <div className="p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
-                    <p className="text-xs text-primary mb-1 font-medium">Suggested</p>
-                    <p className="text-2xl font-bold font-display text-primary">£{recommendation.suggested}</p>
-                    <p className="text-xs text-muted-foreground">per warranty</p>
-                  </div>
-                  <div className="p-4 rounded-lg bg-muted/20 text-center">
-                    <p className="text-xs text-muted-foreground mb-1">Difference</p>
-                    <p className={`text-2xl font-bold font-display ${recommendation.diff > 0 ? "text-primary" : "text-emerald-400"}`}>
-                      {recommendation.diff > 0 ? "+" : ""}£{recommendation.diff}
-                    </p>
-                    <p className="text-xs text-muted-foreground">per warranty</p>
+                  <div className="flex items-center gap-2">
+                    {recommendation && !recApplied ? (
+                      <Badge className="bg-primary/15 text-primary border-primary/30 shadow-sm shadow-primary/20 animate-fade-in px-3 py-1">
+                        <Zap className="w-3 h-3 mr-1" /> New Recommendation
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-muted-foreground border-border/40 px-3 py-1">
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> Up to date
+                      </Badge>
+                    )}
+                    <button onClick={() => setShowSettings(!showSettings)} className="p-2 rounded-lg hover:bg-muted/40 transition-colors" title="Smart settings">
+                      <Settings2 className="w-4 h-4 text-muted-foreground" />
+                    </button>
                   </div>
                 </div>
 
-                {/* Reason */}
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/10">
-                  <Info className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                  <p className="text-sm">{recommendation.reason}</p>
-                </div>
-
-                {/* Impact Preview */}
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Impact Preview</p>
-                  <div className="grid sm:grid-cols-3 gap-3">
-                    <div className="p-3 rounded-lg bg-muted/10 border border-border/20">
-                      <p className="text-xs text-muted-foreground mb-1">Health Score</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold">{recommendation.impactScoreBefore}</span>
-                        <ArrowUpRight className="w-4 h-4 text-primary" />
-                        <span className="text-lg font-bold text-primary">{recommendation.impactScoreAfter}</span>
-                      </div>
-                      <p className="text-[11px] text-muted-foreground mt-1">
-                        Applying this could improve your score by {recommendation.impactScoreAfter - recommendation.impactScoreBefore} points
-                      </p>
-                    </div>
-                    <div className="p-3 rounded-lg bg-muted/10 border border-border/20">
-                      <p className="text-xs text-muted-foreground mb-1">3-Month Buffer</p>
-                      <p className={`text-lg font-bold ${recommendation.projected3MonthBuffer >= 0 ? "" : "text-destructive"}`}>
-                        £{recommendation.projected3MonthBuffer.toLocaleString()}
-                      </p>
-                      <p className="text-[11px] text-muted-foreground mt-1">Projected safety margin</p>
-                    </div>
-                    <div className="p-3 rounded-lg bg-muted/10 border border-border/20">
-                      <p className="text-xs text-muted-foreground mb-1">Exposure Impact</p>
-                      <p className="text-sm font-medium">{recommendation.exposureImpact}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Review Logic */}
-                {showReviewLogic && (
-                  <div className="p-4 rounded-lg bg-muted/10 border border-border/20 space-y-2 text-sm">
-                    <p className="font-medium flex items-center gap-2"><Eye className="w-4 h-4 text-primary" /> How we calculated this</p>
-                    <p className="text-muted-foreground">
-                      Recommended = (Avg Claim Cost × Claim Rate) + Safety Margin
-                    </p>
-                    <p className="text-muted-foreground">
-                      = (£{Math.round(avgClaimCost)} × {(claimRate * 100).toFixed(1)}%) + ~27.5% margin
-                    </p>
-                    <p className="text-muted-foreground">
-                      = £{Math.round(avgClaimCost * claimRate)} + £{Math.round(avgClaimCost * claimRate * 0.275)} = £{recommendation.suggested}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-2">Clamped to £{CONTRIB_FLOOR}–£{CONTRIB_CAP} range. Only shown when change ≥ £{CHANGE_THRESHOLD_ABS} or ≥ {CHANGE_THRESHOLD_PCT * 100}%.</p>
+                {/* Settings Panel (collapsible) */}
+                {showSettings && (
+                  <div className="mb-8 p-5 rounded-xl bg-muted/10 border border-border/20 animate-fade-in">
+                    <p className="text-sm font-semibold mb-3">Smart Contribution Mode</p>
+                    <RadioGroup
+                      value={dealerSettings.smartContributionMode}
+                      onValueChange={(v) => dealerSettingsStore.updateSettings(dealerId, { smartContributionMode: v as SmartContributionMode })}
+                      className="gap-3"
+                    >
+                      {[
+                        { value: "off", label: "Off", desc: "No recommendations shown" },
+                        { value: "recommend", label: "Recommend Only", desc: "Show suggestions — you decide" },
+                        { value: "auto", label: "Auto Apply", desc: "Apply automatically with a confirm prompt" },
+                      ].map(opt => (
+                        <div key={opt.value} className="flex items-start gap-3">
+                          <RadioGroupItem value={opt.value} id={`scm-${opt.value}`} className="mt-0.5" />
+                          <Label htmlFor={`scm-${opt.value}`} className="cursor-pointer">
+                            <span className="text-sm font-medium">{opt.label}</span>
+                            <p className="text-xs text-muted-foreground">{opt.desc}</p>
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
                   </div>
                 )}
 
-                {/* Actions */}
-                <div className="flex flex-wrap gap-2">
-                  <Button onClick={handleApplyRecommendation} className="glow-primary-sm">
-                    <CheckCircle2 className="w-4 h-4 mr-1" /> Apply Recommendation
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setShowReviewLogic(!showReviewLogic)}>
-                    <Eye className="w-4 h-4 mr-1" /> {showReviewLogic ? "Hide" : "Review"} Logic
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={handleDismiss}>
-                    <X className="w-4 h-4 mr-1" /> Dismiss
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={handleRemindLater}>
-                    <Clock className="w-4 h-4 mr-1" /> Remind Me Later
-                  </Button>
-                </div>
+                {/* Content States */}
+                {dealerSettings.smartContributionMode === "off" ? (
+                  <div className="text-center py-12">
+                    <Settings2 className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                    <p className="text-sm text-muted-foreground">Smart recommendations are turned off.</p>
+                    <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowSettings(true)}>Enable Recommendations</Button>
+                  </div>
+                ) : dealerWarranties.length < MIN_WARRANTIES_FOR_REC ? (
+                  <div className="text-center py-12">
+                    <Clock className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                    <p className="font-medium">We need more warranty data before making a recommendation.</p>
+                    <p className="text-sm text-muted-foreground mt-1">You have {dealerWarranties.length} warranties — we need at least {MIN_WARRANTIES_FOR_REC}.</p>
+                    <Progress value={(dealerWarranties.length / MIN_WARRANTIES_FOR_REC) * 100} className="h-1.5 max-w-xs mx-auto mt-4 [&>div]:bg-primary" />
+                  </div>
+                ) : recommendation && !recApplied ? (
+                  <div className="grid lg:grid-cols-5 gap-8">
+                    {/* LEFT SIDE (60%) */}
+                    <div className="lg:col-span-3 space-y-6">
+                      {/* 1. Contribution Comparison */}
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0">
+                        <div className="flex-1 p-5 rounded-xl bg-muted/15 border border-border/20 text-center">
+                          <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Current</p>
+                          <p className="text-4xl font-bold font-display">£{recommendation.current}</p>
+                          <p className="text-xs text-muted-foreground mt-1">per warranty</p>
+                        </div>
+                        <div className="flex sm:flex-col items-center justify-center px-4 py-2">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${recommendation.diff > 0 ? "bg-primary/15 text-primary" : "bg-emerald-500/15 text-emerald-400"}`}>
+                            {recommendation.diff > 0 ? "+" : ""}£{Math.abs(recommendation.diff)}
+                          </div>
+                        </div>
+                        <div className="flex-1 p-5 rounded-xl bg-primary/[0.08] border border-primary/25 text-center ring-1 ring-primary/10">
+                          <p className="text-xs text-primary mb-1 uppercase tracking-wider font-medium">Recommended</p>
+                          <p className="text-4xl font-bold font-display text-primary">£{recommendation.suggested}</p>
+                          <p className="text-xs text-muted-foreground mt-1">per warranty</p>
+                        </div>
+                      </div>
+
+                      {/* 2. Impact Preview */}
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="p-4 rounded-xl bg-muted/10 border border-border/15">
+                          <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Fund Health</p>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-2xl font-bold">{recommendation.impactScoreBefore}</span>
+                            <ArrowUpRight className="w-4 h-4 text-primary" />
+                            <span className="text-2xl font-bold text-primary">{recommendation.impactScoreAfter}</span>
+                          </div>
+                        </div>
+                        <div className="p-4 rounded-xl bg-muted/10 border border-border/15">
+                          <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2">3-Month Buffer</p>
+                          <p className={`text-2xl font-bold ${recommendation.projected3MonthBuffer >= 0 ? "text-primary" : "text-destructive"}`}>
+                            +£{Math.abs(recommendation.projected3MonthBuffer).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-muted/10 border border-border/15">
+                          <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Risk Level</p>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-semibold">{scoreStatus.label}</span>
+                            <ArrowUpRight className="w-3.5 h-3.5 text-primary" />
+                            <span className="text-sm font-semibold text-primary">{getScoreStatus(recommendation.impactScoreAfter).label}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 3. Reasoning Block */}
+                      <div className="p-5 rounded-xl bg-muted/[0.07] border border-border/15 space-y-3">
+                        <p className="text-sm font-semibold flex items-center gap-2">
+                          <Info className="w-4 h-4 text-primary" /> Why this is recommended
+                        </p>
+                        <div className="space-y-2">
+                          {[
+                            recommendation.reason,
+                            claimRate > 0.15 ? `Your claim rate is ${(claimRate * 100).toFixed(0)}%, above the 15% baseline` : null,
+                            avgClaimCost > 400 ? `Average claim cost (£${Math.round(avgClaimCost)}) is above your recent baseline` : null,
+                            contributionPerWarranty < RECOMMENDED_MIN ? "Your current contribution is below the recommended range" : null,
+                          ].filter(Boolean).map((text, i) => (
+                            <div key={i} className="flex items-start gap-2.5 text-sm">
+                              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                              <span className="text-muted-foreground">{text}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground/70 pt-1 border-t border-border/10">
+                          Most UK dealers set aside £100–£150 per warranty
+                        </p>
+                      </div>
+
+                      {/* Review Logic (expandable) */}
+                      {showReviewLogic && (
+                        <div className="p-4 rounded-xl bg-muted/[0.05] border border-border/10 space-y-2 text-sm animate-fade-in">
+                          <p className="font-medium flex items-center gap-2"><Eye className="w-4 h-4 text-primary" /> Calculation breakdown</p>
+                          <p className="text-muted-foreground">Recommended = (Avg Claim Cost × Claim Rate) + Safety Margin</p>
+                          <p className="text-muted-foreground">= (£{Math.round(avgClaimCost)} × {(claimRate * 100).toFixed(1)}%) + ~27.5% margin</p>
+                          <p className="text-muted-foreground">= £{Math.round(avgClaimCost * claimRate)} + £{Math.round(avgClaimCost * claimRate * 0.275)} = £{recommendation.suggested}</p>
+                          <p className="text-xs text-muted-foreground/60 mt-2">Clamped to £{CONTRIB_FLOOR}–£{CONTRIB_CAP}. Threshold: ≥£{CHANGE_THRESHOLD_ABS} or ≥{CHANGE_THRESHOLD_PCT * 100}%.</p>
+                        </div>
+                      )}
+
+                      {/* 4. Actions */}
+                      <div className="flex flex-wrap items-center gap-3 pt-2">
+                        <Button onClick={handleApplyRecommendation} size="lg" className="bg-[hsl(var(--cta))] hover:bg-[hsl(var(--cta))]/90 text-[hsl(var(--cta-foreground))] shadow-lg shadow-[hsl(var(--cta))]/20">
+                          <CheckCircle2 className="w-4 h-4 mr-1.5" /> Apply Recommendation
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => setShowReviewLogic(!showReviewLogic)}>
+                          <Eye className="w-4 h-4 mr-1" /> {showReviewLogic ? "Hide" : "Review"} Logic
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={handleRemindLater}>
+                          <Clock className="w-4 h-4 mr-1" /> Remind Me Later
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={handleDismiss} className="text-muted-foreground">
+                          <X className="w-4 h-4 mr-1" /> Dismiss
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* RIGHT SIDE (40%) — Chart + Summary */}
+                    <div className="lg:col-span-2 space-y-5">
+                      {/* Projection Chart */}
+                      <div className="p-5 rounded-xl bg-muted/[0.06] border border-border/15">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Fund Balance Projection</p>
+                        <div className="h-56">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={projectionData}>
+                              <defs>
+                                <linearGradient id="adjustedGrad" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                                </linearGradient>
+                                <linearGradient id="currentGrad" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="hsl(var(--muted-foreground))" stopOpacity={0.1} />
+                                  <stop offset="100%" stopColor="hsl(var(--muted-foreground))" stopOpacity={0} />
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.3} />
+                              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+                              <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => `£${v}`} axisLine={false} tickLine={false} width={55} />
+                              <RechartsTooltip
+                                contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))", fontSize: 12 }}
+                                formatter={(value: number, name: string) => [`£${value.toLocaleString()}`, name === "Current" ? "Current path" : "Adjusted path"]}
+                              />
+                              <Area type="monotone" dataKey="Current" stroke="hsl(var(--muted-foreground))" strokeWidth={2} strokeDasharray="6 3" fill="url(#currentGrad)" dot={false} />
+                              <Area type="monotone" dataKey="Adjusted" stroke="hsl(var(--primary))" strokeWidth={2.5} fill="url(#adjustedGrad)" dot={{ r: 3, fill: "hsl(var(--primary))", strokeWidth: 0 }} />
+                              {projectionData.some(d => d.Current < 0 || d.Adjusted < 0) && (
+                                <ReferenceLine y={0} stroke="hsl(var(--destructive))" strokeDasharray="3 3" strokeOpacity={0.5} />
+                              )}
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </div>
+                        <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1.5"><span className="w-4 h-[2px] bg-muted-foreground inline-block" style={{ borderTop: "2px dashed" }} /> Current path</span>
+                          <span className="flex items-center gap-1.5"><span className="w-4 h-[2px] bg-primary inline-block rounded-full" /> Adjusted path</span>
+                        </div>
+                      </div>
+
+                      {/* Summary Box */}
+                      <div className="p-5 rounded-xl bg-muted/[0.06] border border-border/15 space-y-3">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">3-Month Projection</p>
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">Balance (current path)</span>
+                            <span className="text-sm font-semibold">£{projectionData[3]?.Current.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">Balance (adjusted path)</span>
+                            <span className="text-sm font-bold text-primary">£{projectionData[3]?.Adjusted.toLocaleString()}</span>
+                          </div>
+                          <div className="h-px bg-border/20" />
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">Difference</span>
+                            <span className="text-sm font-bold text-primary">
+                              +£{((projectionData[3]?.Adjusted || 0) - (projectionData[3]?.Current || 0)).toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-[11px] text-muted-foreground/50 text-center">
+                        Projections based on current claim patterns • Updated dynamically
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  /* Up to date state */
+                  <div className="text-center py-12">
+                    <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+                    </div>
+                    <p className="font-semibold text-lg">Your contribution level looks good right now.</p>
+                    <p className="text-sm text-muted-foreground mt-1">We'll notify you when adjustments could help.</p>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="text-center py-6">
-                <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-                <p className="text-sm font-medium">Your contribution level looks good right now.</p>
-                <p className="text-xs text-muted-foreground mt-1">We'll notify you if anything changes.</p>
-              </div>
-            )}
+            </div>
           </div>
 
 
