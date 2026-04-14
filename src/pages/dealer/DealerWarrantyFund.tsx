@@ -2,15 +2,19 @@ import { useState, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useClaimStore } from "@/lib/claim-store";
+import { useDealerSettingsStore, SmartContributionMode } from "@/lib/dealer-settings-store";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Wallet, TrendingUp, TrendingDown, ShieldCheck, AlertTriangle, Activity,
   Sparkles, Loader2, DollarSign, BarChart3, Target, ArrowUpRight, ArrowDownRight,
-  Info,
+  Info, Zap, CheckCircle2, Clock, X, Eye, ChevronDown, ChevronUp, Settings2,
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { toast } from "sonner";
