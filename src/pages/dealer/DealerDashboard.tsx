@@ -57,6 +57,11 @@ export default function DealerDashboard() {
   const warrantyLine = warrantyLineStore.getLine(dealerId);
   store.ensureExpiryCheck(dealerId);
   const warranties = store.warranties.filter(w => w.dealerId === dealerId);
+
+  // Sync free warranty counter with actual warranty count
+  useEffect(() => {
+    dealerSettingsStore.syncFreeWarrantyCount(dealerId, warranties.length);
+  }, [warranties.length, dealerId]);
   const claims = store.claims.filter(c => c.dealerId === dealerId);
   const customers = new Set(warranties.map(w => w.customerId)).size;
   const dealerAuditLog = store.auditLog.filter(a => a.dealerId === dealerId);
