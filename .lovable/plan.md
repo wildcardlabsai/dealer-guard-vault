@@ -1,56 +1,84 @@
 
 
-# Visual Improvements to Dealer and Customer Dashboards
+# Dashboard & Feature Audit — Recommendations
 
-## Overview
-Eight visual upgrades across both dashboards, keeping the existing dark UI aesthetic and glass-card patterns.
-
----
-
-## Dealer Dashboard Changes (`src/pages/dealer/DealerDashboard.tsx`)
-
-### 1. Fund Health Score Widget
-Replace the simple Warranty Fund banner (lines 408-426) with a mini ring/donut chart showing the Fund Health Score (0-100). Import the `calcHealthScore`, `calcExposure`, `getEffectiveMetrics` functions from the Warranty Fund page (extract to a shared utility or inline). Display the numeric score inside a CSS circular progress ring, with the status label (Healthy/Stable/Watch/Risk) and colour-coded badge.
-
-### 2. Claim Priority Indicators
-In the Recent Claims list (lines 318-338), add an urgency indicator for claims pending longer than 7 days. Calculate days since `claim.createdAt`, and show an orange/red "Overdue" or "7d+" micro-badge next to claims exceeding the threshold. Claims under 7 days keep the existing dot indicator.
-
-### 3. New Dealer Onboarding State
-When `warranties.length === 0`, replace the stats grid and performance sections with a guided onboarding card. Show 3 steps: (1) Add your first warranty, (2) Set up your warranty fund, (3) Try DisputeIQ. Each step links to the relevant page. Use a checklist-style layout with the existing dark card styling.
+Keeping this strictly within the warranty platform scope. No DMS creep. Every recommendation directly serves warranty issuance, claims, fund management, or platform operations.
 
 ---
 
-## Customer Dashboard Changes (`src/pages/customer/CustomerDashboard.tsx`)
+## What's Already Strong (No Changes Needed)
 
-### 4. Stat Card Upgrades
-Replace the plain `glass-card` stat blocks (lines 148-164) with the dealer-style `StatCard` pattern: icon in a rounded container, hover lift effect (`hover:-translate-y-0.5`), and subtle border glow on the active/accent card.
-
-### 5. Circular Warranty Countdown
-Replace the linear `<Progress>` bar (lines 80-91) with an SVG circular progress ring. Show `daysRemaining` in large text in the centre, with "days left" beneath. Keep the start/end date labels below.
-
-### 6. Empty Claim State
-When `latestClaim` is null (no claims), show a friendly empty state card instead of nothing. Include a shield icon, "No claims yet" message, and a "Submit a Claim" button linking to `/customer/claims`.
-
-### 7. Coverage Tier Badge
-Add a tier badge next to the "Active" badge on the warranty card (line 59). Derive tier from the cover template name (e.g., "Gold", "Silver", "Bronze") or warranty duration. Show as a small coloured badge.
-
-### 8. Mobile Button Grid
-Change the action buttons row (lines 93-100) from `flex flex-wrap` to a `grid grid-cols-2` layout on mobile, ensuring consistent button sizing and spacing.
+- **Dealer Dashboard** — Well-structured with fund health ring, claim priority badges, onboarding flow, expiring alerts, and sales target. The simple/advanced mode toggle is smart.
+- **Warranty Fund + Smart Contribution AI** — This is a standout feature. Leave as-is.
+- **DisputeIQ** — Properly scoped and valuable. No changes.
+- **Customer Dashboard** — Clean circular countdown, tier badges, coverage summary, claim tracker all work well.
+- **Contact + Enquiry system** — Recently added and functional.
 
 ---
 
-## Shared Utility Extraction
+## Recommended Improvements
 
-Extract `calcHealthScore`, `calcExposure`, `getEffectiveMetrics`, and `getScoreStatus` from `DealerWarrantyFund.tsx` into a new file `src/lib/fund-health.ts` so both the Fund page and Dealer Dashboard can import them without duplication.
+### DEALER SIDE
+
+**1. Warranty Renewal Prompts**
+Expiring warranties show a "Xd left" badge but there's no way to renew. Add a "Renew" button on each expiring warranty row that pre-fills a new warranty for the same vehicle/customer. This is the single most useful action a dealer needs and it's missing.
+
+**2. Claim Assist — Quick Stats at Top**
+The Claim Assist page already has KPIs but the dealer Claims list (`DealerClaims.tsx`) is basic — just a list with action buttons. Add 3 summary stat cards at the top (Open, Approved, Rejected) so dealers can see the picture at a glance without navigating to Claim Assist.
+
+**3. Documents Page — Too Generic**
+Every document downloads the same generic HTML template. This page should dynamically generate documents using real warranty data:
+- "Warranty Certificate" should use `generateCertificate()` (already exists) for a selected warranty
+- Remove fake templates that don't tie to real data
+- Add a simple warranty selector so the dealer picks which warranty to generate a certificate for
+
+**4. Remove "Warranty Line" Upsell from Dashboard (simplify)**
+The Warranty Line upsell banner appears on the dashboard AND on the claims page AND on settings. That's 3 upsell points for a £25/month add-on. Keep it only on the Settings page to reduce clutter. The dashboard should focus on warranties and claims, not selling add-ons.
+
+### CUSTOMER SIDE
+
+**5. Warranty Document Download — More Prominent**
+The "Certificate" download button is buried in a 2x2 grid. Move it into the warranty card itself as a standalone row beneath the vehicle details, with a clear "Download Your Warranty Certificate" label. Customers need this for their records and garage visits.
+
+**6. Claim Progress — Add Expected Timeline**
+The 3-step claim tracker (Submitted → Under Review → Decision) is good but dealers often take 3-5 working days. Add a small "Typically 3-5 working days" note beneath the tracker so customers aren't left guessing.
+
+### ADMIN SIDE
+
+**7. Admin Dashboard — Revenue Uses £50/mo Subscription Model but Settings Says Pay-Per-Use**
+There's a contradiction: `AdminSettings.tsx` says "No monthly subscription fees — Pay-Per-Use Model" and charges £15 per warranty. But `AdminDashboard.tsx` calculates `subscriptionRevenue = activeDealers * 50` and shows MRR based on £50/month subscriptions. Pick one model and make both pages consistent. Given your positioning as a lean warranty platform, the pay-per-use model in Settings is better. Update the dashboard and revenue page to use per-warranty fee calculations only.
+
+**8. Admin System Logs — Add Filtering**
+The logs page is a raw table dump with no filtering or search. Add a search input and an action type filter dropdown (warranty, claim, customer) so admins can actually find things. This is a basic usability fix.
+
+**9. Admin Revenue — Add Time Period Selector**
+Revenue page shows a single bar chart with no date filtering. Add a simple period toggle (This Month / Last 3 Months / All Time) so admins can track trends.
 
 ---
 
-## Files to Create/Edit
+## What to NOT Add (Scope Discipline)
 
-| File | Action |
-|------|--------|
-| `src/lib/fund-health.ts` | Create — extract health score engine functions |
-| `src/pages/dealer/DealerWarrantyFund.tsx` | Edit — import from `fund-health.ts` instead of inline |
-| `src/pages/dealer/DealerDashboard.tsx` | Edit — add health ring widget, claim priority badges, onboarding state |
-| `src/pages/customer/CustomerDashboard.tsx` | Edit — stat card upgrade, circular countdown, empty claim state, coverage tier badge, mobile button grid |
+- No CRM features (customer birthday reminders, marketing campaigns)
+- No inventory or stock tracking
+- No vehicle history / MOT integration beyond what's needed for warranty issuance
+- No dealer-to-dealer messaging or marketplace
+- No invoicing or accounting tools
+
+---
+
+## Summary of Changes
+
+| # | Area | Change | Effort |
+|---|------|--------|--------|
+| 1 | Dealer | Warranty renewal button on expiring warranties | Small |
+| 2 | Dealer | Claim summary stats on DealerClaims page | Small |
+| 3 | Dealer | Documents page uses real warranty data | Medium |
+| 4 | Dealer | Remove duplicate Warranty Line upsells from dashboard/claims | Small |
+| 5 | Customer | More prominent certificate download | Small |
+| 6 | Customer | Expected timeline note on claim tracker | Tiny |
+| 7 | Admin | Fix revenue model contradiction (use pay-per-use consistently) | Medium |
+| 8 | Admin | Add search/filter to System Logs | Small |
+| 9 | Admin | Add time period selector to Revenue page | Small |
+
+All 9 changes stay firmly within warranty operations. No feature bloat.
 
