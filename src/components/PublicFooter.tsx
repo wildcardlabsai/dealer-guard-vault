@@ -23,6 +23,7 @@ export default function PublicFooter() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-white/25 mb-3">Resources</p>
             <div className="space-y-2">
               <Link to="/faq" className="block text-xs text-white/35 hover:text-white/60 transition-colors">FAQ</Link>
+              <Link to="/knowledge-base" className="block text-xs text-white/35 hover:text-white/60 transition-colors">Knowledge Base</Link>
               <Link to="/blog" className="block text-xs text-white/35 hover:text-white/60 transition-colors">Blog</Link>
               <Link to="/warranty-line" className="block text-xs text-white/35 hover:text-white/60 transition-colors">Warranty Line</Link>
               <Link to="/contact" className="block text-xs text-white/35 hover:text-white/60 transition-colors">Contact Us</Link>

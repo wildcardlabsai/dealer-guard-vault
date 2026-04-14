@@ -4,7 +4,7 @@ import { useNotificationStore } from "@/lib/notification-store";
 import {
   LayoutDashboard, FileText, Plus, ClipboardList, Users, MessageSquare,
   FolderOpen, Settings, LogOut, ChevronLeft, Menu, Phone, Shield, Headphones, Sliders, LifeBuoy,
-  Bell, Check, Sparkles, Wallet, ToggleLeft, ToggleRight
+  Bell, Check, Sparkles, Wallet, ToggleLeft, ToggleRight, BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -58,6 +58,7 @@ const navGroups: NavGroup[] = [
     label: "System",
     items: [
       { label: "Claim Settings", icon: Sliders, path: "/dealer/claim-settings" },
+      { label: "Knowledge Base", icon: BookOpen, path: "/knowledge-base", simpleMode: true },
       { label: "Support", icon: LifeBuoy, path: "/dealer/support" },
       { label: "Settings", icon: Settings, path: "/dealer/settings" },
     ],

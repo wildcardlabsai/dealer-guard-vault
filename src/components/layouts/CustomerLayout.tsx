@@ -13,6 +13,7 @@ const navItems = [
   { label: "Your Cover", icon: BookOpen, path: "/customer/cover" },
   { label: "Claims", icon: FileText, path: "/customer/claims" },
   { label: "Requests", icon: MessageSquare, path: "/customer/requests" },
+  { label: "Help & Guides", icon: BookOpen, path: "/knowledge-base" },
 ];
 
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
