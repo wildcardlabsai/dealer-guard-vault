@@ -211,6 +211,8 @@ export default function DealerWarrantyFund() {
   const dealerId = user?.dealerId || "d-1";
   const { warranties } = useWarrantyStore();
   const claimStore = useClaimStore();
+  const dealerSettingsStore = useDealerSettingsStore();
+  const dealerSettings = dealerSettingsStore.getSettings(dealerId);
 
   const dealerWarranties = warranties.filter(w => w.dealerId === dealerId);
   const allWarranties = warranties;
