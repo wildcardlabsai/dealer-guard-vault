@@ -171,6 +171,7 @@ export type Database = {
           dealer_id: string
           excluded_items: Json
           id: string
+          metadata: Json
           name: string
           updated_at: string
         }
@@ -181,6 +182,7 @@ export type Database = {
           dealer_id: string
           excluded_items?: Json
           id?: string
+          metadata?: Json
           name: string
           updated_at?: string
         }
@@ -191,6 +193,7 @@ export type Database = {
           dealer_id?: string
           excluded_items?: Json
           id?: string
+          metadata?: Json
           name?: string
           updated_at?: string
         }
