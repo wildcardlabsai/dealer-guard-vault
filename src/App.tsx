@@ -19,6 +19,7 @@ import FeaturesPage from "@/pages/FeaturesPage";
 import WarrantyLinePage from "@/pages/WarrantyLinePage";
 import FAQPage from "@/pages/FAQPage";
 import KnowledgeBasePage from "@/pages/KnowledgeBasePage";
+import KBArticlePage from "@/pages/KBArticlePage";
 import BlogIndexPage from "@/pages/BlogIndexPage";
 import DisputeIQPage from "@/pages/DisputeIQPage";
 
@@ -90,6 +91,7 @@ function AppRoutes() {
       <Route path="/warranty-line" element={<WarrantyLinePage />} />
       <Route path="/faq" element={<FAQPage />} />
       <Route path="/knowledge-base" element={<KnowledgeBasePage />} />
+      <Route path="/knowledge-base/:slug" element={<KBArticlePage />} />
       <Route path="/blog" element={<BlogIndexPage />} />
       <Route path="/disputeiq" element={<DisputeIQPage />} />
       <Route path="/blog/:slug" element={<BlogArticlePage />} />
