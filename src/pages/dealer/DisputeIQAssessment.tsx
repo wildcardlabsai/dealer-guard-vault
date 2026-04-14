@@ -110,7 +110,7 @@ export default function DisputeIQAssessment() {
     // Create or update case first
     let caseData: DisputeCase;
     if (isNew) {
-      caseData = store.createCase({
+      caseData = await store.createCase({
         dealerId,
         complaintType,
         saleDate,
