@@ -295,6 +295,53 @@ export default function DealerWarrantyFund() {
   // Contribution slider
   const [sliderValue, setSliderValue] = useState([Math.round(contributionPerWarranty) || 100]);
 
+  // Smart Contribution Recommendation
+  const [showReviewLogic, setShowReviewLogic] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  const recommendation = useMemo<ContribRecommendation | null>(() => {
+    if (dealerSettings.smartContributionMode === "off") return null;
+    if (dealerWarranties.length < MIN_WARRANTIES_FOR_REC) return null;
+    if (!shouldShowRecommendation(dealerSettings.lastRecommendationDate, dealerSettings.dismissedRecommendationUntil, scoreStatus.key)) return null;
+
+    const suggested = calcRecommendedContribution(avgClaimCost, claimRate);
+    const current = Math.round(contributionPerWarranty);
+    if (!isChangeSignificant(current, suggested)) return null;
+
+    const afterScore = calcHealthScore(buffer, exposure, suggested, claimRate, dealerWarranties.length);
+    const monthlyNewWarranties = Math.max(1, Math.round(dealerWarranties.length / 6));
+    const projected3MonthBuffer = buffer + (suggested - current) * monthlyNewWarranties * 3 - (exposure * 0.25);
+
+    return {
+      suggested,
+      current,
+      diff: suggested - current,
+      reason: generateRecommendationReason(current, suggested, claimRate, avgClaimCost, buffer, exposure),
+      impactScoreBefore: healthScore.total,
+      impactScoreAfter: afterScore.total,
+      projected3MonthBuffer: Math.round(projected3MonthBuffer),
+      exposureImpact: suggested > current ? "Stronger buffer against future claims" : "Optimised contributions with maintained safety",
+    };
+  }, [dealerWarranties.length, dealerSettings, scoreStatus.key, avgClaimCost, claimRate, contributionPerWarranty, buffer, exposure, healthScore.total]);
+
+  const handleApplyRecommendation = () => {
+    if (!recommendation) return;
+    dealerSettingsStore.updateSettings(dealerId, { lastRecommendationDate: new Date().toISOString() });
+    setSliderValue([recommendation.suggested]);
+    toast.success(`Contribution updated to £${recommendation.suggested} per warranty`);
+  };
+
+  const handleDismiss = () => {
+    dealerSettingsStore.updateSettings(dealerId, { lastRecommendationDate: new Date().toISOString() });
+  };
+
+  const handleRemindLater = () => {
+    const remind = new Date();
+    remind.setDate(remind.getDate() + 7);
+    dealerSettingsStore.updateSettings(dealerId, { dismissedRecommendationUntil: remind.toISOString() });
+    toast.info("We'll remind you in 7 days");
+  };
+
   // AI insight
   const [insight, setInsight] = useState<FundInsight | null>(null);
   const [loadingInsight, setLoadingInsight] = useState(false);
