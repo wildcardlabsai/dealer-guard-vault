@@ -57,6 +57,8 @@ import AdminLogs from "@/pages/admin/AdminLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminClaims from "@/pages/admin/AdminClaims";
 import AdminSupport from "@/pages/admin/AdminSupport";
+import AdminEnquiries from "@/pages/admin/AdminEnquiries";
+import ContactPage from "@/pages/ContactPage";
 
 const queryClient = new QueryClient();
 
@@ -95,6 +97,7 @@ function AppRoutes() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/dealers" element={<DealersLoginPage />} />
+      <Route path="/contact" element={<ContactPage />} />
 
       {/* Dealer Routes */}
       <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />
@@ -132,6 +135,7 @@ function AppRoutes() {
       <Route path="/admin/logs" element={<ProtectedRoute role="admin"><AdminLayout><AdminLogs /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/settings" element={<ProtectedRoute role="admin"><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/support" element={<ProtectedRoute role="admin"><AdminLayout><AdminSupport /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/enquiries" element={<ProtectedRoute role="admin"><AdminLayout><AdminEnquiries /></AdminLayout></ProtectedRoute>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
