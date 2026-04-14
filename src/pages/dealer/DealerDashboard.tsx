@@ -498,20 +498,7 @@ export default function DealerDashboard() {
         </div>
       )}
 
-      {/* Warranty Line Upsell */}
-      {!simple && !warrantyLine && (
-        <div className="rounded-xl p-4 border border-white/[0.06] bg-[hsl(222_28%_10%)] flex items-center gap-3 cursor-pointer hover:border-white/[0.1] hover:bg-[hsl(222_28%_11%)] transition-all"
-          onClick={() => navigate("/dealer/warranty-line")}>
-          <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center flex-shrink-0">
-            <Phone className="w-4 h-4 text-white/40" />
-          </div>
-          <div className="flex-1">
-            <p className="font-medium text-xs text-white/50">Add a dedicated warranty phone line</p>
-            <p className="text-[10px] text-white/20">Professional claims number — £25/month</p>
-          </div>
-          <ArrowRight className="w-3.5 h-3.5 text-white/20" />
-        </div>
-      )}
+      {/* Warranty Line Upsell removed — available in Settings only */}
     </div>
   );
 }
