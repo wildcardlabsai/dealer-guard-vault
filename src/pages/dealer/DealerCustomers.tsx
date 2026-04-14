@@ -116,6 +116,35 @@ export default function DealerCustomers() {
     }
   };
 
+  const handleResendWelcome = async (customer: typeof demoCustomers[0]) => {
+    setResendingId(customer.id);
+    const toastId = toast.loading(`Resending welcome email to ${customer.email}...`);
+    try {
+      const { data, error } = await supabase.functions.invoke("invite-customer", {
+        body: {
+          email: customer.email,
+          customerName: customer.name,
+          dealerName,
+        },
+      });
+      if (error) throw error;
+      if (data?.success) {
+        toast.success(
+          data.isNewAccount
+            ? `New account created and welcome email sent to ${customer.name}`
+            : `Welcome email resent to ${customer.name} with existing login details`,
+          { id: toastId }
+        );
+      } else {
+        throw new Error(data?.error || "Unknown error");
+      }
+    } catch (err: any) {
+      toast.error(`Failed to resend: ${err.message || "Unknown error"}`, { id: toastId });
+    } finally {
+      setResendingId(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
