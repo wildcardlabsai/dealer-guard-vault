@@ -1,9 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotificationStore } from "@/lib/notification-store";
-import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus, ClipboardList, Headphones, Bell, Check, Shield, LifeBuoy } from "lucide-react";
+import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus, ClipboardList, Headphones, Bell, Check, Shield, LifeBuoy, MessageSquare, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSignupStore } from "@/lib/signup-store";
+import { useEnquiryStore } from "@/lib/enquiry-store";
 import { useSupportStore } from "@/lib/support-store";
 import { useState, useRef, useEffect } from "react";
 import logo from "@/assets/warrantylogo.png";
@@ -16,6 +17,7 @@ const navItems = [
   { label: "Warranties", icon: FileText, path: "/admin/warranties" },
   { label: "All Claims", icon: ClipboardList, path: "/admin/claims" },
   { label: "Revenue", icon: BarChart3, path: "/admin/revenue" },
+  { label: "Enquiries", icon: MessageSquare, path: "/admin/enquiries" },
   { label: "Support Tickets", icon: Headphones, path: "/admin/support" },
   { label: "System Logs", icon: ScrollText, path: "/admin/logs" },
   { label: "Settings", icon: Settings, path: "/admin/settings" },

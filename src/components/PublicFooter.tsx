@@ -25,6 +25,7 @@ export default function PublicFooter() {
               <Link to="/faq" className="block text-xs text-white/35 hover:text-white/60 transition-colors">FAQ</Link>
               <Link to="/blog" className="block text-xs text-white/35 hover:text-white/60 transition-colors">Blog</Link>
               <Link to="/warranty-line" className="block text-xs text-white/35 hover:text-white/60 transition-colors">Warranty Line</Link>
+              <Link to="/contact" className="block text-xs text-white/35 hover:text-white/60 transition-colors">Contact Us</Link>
             </div>
           </div>
           <div>
@@ -40,7 +41,7 @@ export default function PublicFooter() {
           <div className="flex gap-5 text-[11px] text-white/20">
             <a href="#" className="hover:text-white/40 transition-colors">Privacy</a>
             <a href="#" className="hover:text-white/40 transition-colors">Terms</a>
-            <a href="#" className="hover:text-white/40 transition-colors">Contact</a>
+            <Link to="/contact" className="hover:text-white/40 transition-colors">Contact</Link>
           </div>
         </div>
       </div>
