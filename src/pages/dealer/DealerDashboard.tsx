@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
+import { calcHealthScore, calcExposure, getEffectiveMetrics, getScoreStatus, getScoreRingColor } from "@/lib/fund-health";
 
 function SectionHeader({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
@@ -134,6 +135,22 @@ export default function DealerDashboard() {
   const claimsPaid = claims.filter(c => c.status === "approved").reduce((s, c) => s + (c.amount || 0), 0);
   const fundBalance = contributions - claimsPaid;
 
+  // Fund health score
+  const activeCount = active;
+  const rawClaimRate = warranties.length > 0 ? claims.length / warranties.length : 0;
+  const rawAvgClaimCost = claimsPaid > 0 ? claimsPaid / claims.filter(c => c.status === "approved").length : 0;
+  const effectiveMetrics = getEffectiveMetrics(warranties.length, rawClaimRate, rawAvgClaimCost);
+  const exposure = calcExposure(activeCount, effectiveMetrics.claimRate, effectiveMetrics.avgClaimCost);
+  const buffer = fundBalance - exposure;
+  const contributionPerWarranty = warranties.length > 0 ? contributions / warranties.length : 0;
+  const healthScore = calcHealthScore(buffer, exposure, contributionPerWarranty, effectiveMetrics.claimRate, warranties.length);
+  const healthStatus = getScoreStatus(healthScore.total);
+  const ringColor = getScoreRingColor(healthScore.total);
+  const HealthIcon = healthStatus.icon;
+
+  // Onboarding check
+  const isNewDealer = warranties.length === 0;
+
   return (
     <div className="space-y-8 max-w-6xl">
       {/* Page header */}
@@ -141,6 +158,38 @@ export default function DealerDashboard() {
         <h1 className="text-2xl font-bold font-display text-white/90">Dashboard</h1>
         <p className="text-sm text-white/30">Welcome back, {user?.name}</p>
       </div>
+
+      {/* ── NEW DEALER ONBOARDING ── */}
+      {isNewDealer && (
+        <div className="rounded-xl p-6 border border-primary/20 bg-[hsl(222_28%_10%)] shadow-[0_0_20px_-8px_hsl(172,66%,40%,0.1)]">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="font-semibold font-display text-base text-white/80">Get started with WarrantyVault</h2>
+              <p className="text-xs text-white/30">Complete these steps to set up your account</p>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {[
+              { step: 1, label: "Add your first warranty", desc: "Enter a vehicle reg to get started", path: "/dealer/warranties/new", icon: Shield },
+              { step: 2, label: "Set up your warranty fund", desc: "Track contributions and claims", path: "/dealer/warranty-fund", icon: Wallet },
+              { step: 3, label: "Try DisputeIQ", desc: "AI-powered complaint handling", path: "/dealer/disputeiq", icon: Sparkles },
+            ].map(item => (
+              <div key={item.step} className="flex items-center gap-4 p-4 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] cursor-pointer transition-all hover:-translate-y-0.5 border border-white/[0.04] hover:border-white/[0.08]"
+                onClick={() => navigate(item.path)}>
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{item.step}</div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-white/70">{item.label}</p>
+                  <p className="text-[11px] text-white/25">{item.desc}</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-white/20" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── ACTIONS ── */}
       <section>
@@ -319,23 +368,31 @@ export default function DealerDashboard() {
               <h3 className="font-semibold font-display text-sm text-white/60 mb-3">Recent Claims</h3>
               <div className="space-y-2">
                 {recentClaims.length === 0 && <p className="text-xs text-white/25">No claims yet</p>}
-                {recentClaims.map(claim => (
-                  <div key={claim.id} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] transition-colors cursor-pointer"
-                    onClick={() => navigate("/dealer/claims")}>
-                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                      claim.status === "pending" ? "bg-yellow-500" :
-                      claim.status === "under_review" ? "bg-blue-400" :
-                      claim.status === "approved" ? "bg-primary" : "bg-destructive"
-                    }`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-white/60 truncate">{claim.description}</p>
-                      <p className="text-[10px] text-white/25 capitalize">{claim.status.replace("_", " ")}</p>
+                {recentClaims.map(claim => {
+                  const daysSince = Math.floor((Date.now() - new Date(claim.createdAt).getTime()) / (1000 * 60 * 60 * 24));
+                  const isOverdue = (claim.status === "pending" || claim.status === "under_review") && daysSince > 7;
+                  return (
+                    <div key={claim.id} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] transition-colors cursor-pointer"
+                      onClick={() => navigate("/dealer/claims")}>
+                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                        claim.status === "pending" ? "bg-yellow-500" :
+                        claim.status === "under_review" ? "bg-blue-400" :
+                        claim.status === "approved" ? "bg-primary" : "bg-destructive"
+                      }`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-white/60 truncate">{claim.description}</p>
+                        <p className="text-[10px] text-white/25 capitalize">{claim.status.replace("_", " ")}</p>
+                      </div>
+                      {isOverdue ? (
+                        <Badge variant="outline" className="bg-destructive/15 text-destructive border-destructive/25 text-[9px] px-1.5 py-0">
+                          {daysSince}d overdue
+                        </Badge>
+                      ) : (claim.status === "pending" || claim.status === "under_review") ? (
+                        <span className="text-[9px] text-[hsl(var(--cta))] font-medium">Review</span>
+                      ) : null}
                     </div>
-                    {(claim.status === "pending" || claim.status === "under_review") && (
-                      <span className="text-[9px] text-[hsl(var(--cta))] font-medium">Review</span>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="mt-4 pt-3 border-t border-white/[0.04]">
@@ -405,19 +462,35 @@ export default function DealerDashboard() {
         </div>
       )}
 
-      {/* Warranty Fund Hero (hidden in simple) */}
-      {!simple && (
+      {/* Warranty Fund Health Ring Widget (hidden in simple) */}
+      {!simple && !isNewDealer && (
         <div className="rounded-xl p-5 border border-primary/15 bg-[hsl(222_28%_10%)] shadow-[0_0_16px_-6px_hsl(172,66%,40%,0.08)] flex items-center gap-5 cursor-pointer hover:-translate-y-0.5 transition-all"
           onClick={() => navigate("/dealer/warranty-fund")}>
-          <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0">
-            <Wallet className="w-5 h-5 text-primary" />
+          {/* Health Score Ring */}
+          <div className="relative w-16 h-16 flex-shrink-0">
+            <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="hsl(222, 20%, 16%)" strokeWidth="5" />
+              <circle
+                cx="32" cy="32" r="26" fill="none"
+                stroke={ringColor}
+                strokeWidth="5"
+                strokeLinecap="round"
+                strokeDasharray={2 * Math.PI * 26}
+                strokeDashoffset={2 * Math.PI * 26 * (1 - healthScore.total / 100)}
+                className="transition-all duration-700"
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-sm font-bold font-display text-white/90">{healthScore.total}</span>
+            </div>
           </div>
           <div className="flex-1">
             <p className="text-xs text-white/30 mb-0.5">Warranty Fund</p>
             <p className="text-2xl font-bold font-display text-white/90">£{fundBalance.toLocaleString()}</p>
           </div>
-          <Badge variant="outline" className={`${fundBalance > 2000 ? "bg-primary/10 text-primary border-primary/20" : "bg-[hsl(var(--cta))]/10 text-[hsl(var(--cta))] border-[hsl(var(--cta))]/20"} text-[10px]`}>
-            {fundBalance > 2000 ? "Healthy" : "Watch"}
+          <Badge variant="outline" className={`${healthStatus.color} text-[10px]`}>
+            <HealthIcon className="w-3 h-3 mr-1" />
+            {healthStatus.label}
           </Badge>
           <Button variant="outline" size="sm" className="h-7 text-xs border-white/[0.08] text-white/40 bg-transparent hover:bg-white/[0.04]">
             View Details <ArrowRight className="w-3 h-3 ml-1" />
