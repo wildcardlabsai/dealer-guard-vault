@@ -58,6 +58,7 @@ const navGroups: NavGroup[] = [
     label: "System",
     items: [
       { label: "Claim Settings", icon: Sliders, path: "/dealer/claim-settings" },
+      { label: "Knowledge Base", icon: BookOpen, path: "/knowledge-base", simpleMode: true },
       { label: "Support", icon: LifeBuoy, path: "/dealer/support" },
       { label: "Settings", icon: Settings, path: "/dealer/settings" },
     ],
