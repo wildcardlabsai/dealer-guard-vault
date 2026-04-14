@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface SignupRequest {
@@ -19,70 +19,24 @@ export interface SignupRequest {
   rejectionReason?: string;
 }
 
-const STORAGE_KEY = "wv_signup_requests";
-
-function loadRequests(): SignupRequest[] {
-  const demoRequests: SignupRequest[] = [
-    {
-      id: "sr-1",
-      dealershipName: "Apex Auto Group",
-      contactName: "Marcus Reid",
-      email: "marcus@apexautogroup.co.uk",
-      phone: "07700 900100",
-      address: "14 Station Road",
-      city: "Bristol",
-      postcode: "BS1 4DJ",
-      fcaNumber: "FCA-567890",
-      estimatedVolume: "15-25",
-      message: "Looking to move away from our current warranty provider.",
-      status: "pending",
-      createdAt: "2025-03-28T10:30:00Z",
-    },
-    {
-      id: "sr-2",
-      dealershipName: "Northern Motors",
-      contactName: "Fiona Clarke",
-      email: "fiona@northernmotors.co.uk",
-      phone: "07700 900200",
-      address: "82 Westgate",
-      city: "Newcastle",
-      postcode: "NE1 4AG",
-      fcaNumber: "",
-      estimatedVolume: "5-10",
-      message: "",
-      status: "pending",
-      createdAt: "2025-03-30T14:15:00Z",
-    },
-  ];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const added = JSON.parse(raw) as SignupRequest[];
-      return [...added, ...demoRequests];
-    }
-  } catch {}
-  return demoRequests;
-}
-
-function getAdded(): SignupRequest[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return [];
-}
-
-function saveAdded(added: SignupRequest[]) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(added));
-  } catch {}
-}
-
-let signupRequests: SignupRequest[] = loadRequests();
-let listeners: (() => void)[] = [];
-
-function notify() {
-  listeners.forEach(l => l());
+function fromRow(row: any): SignupRequest {
+  return {
+    id: row.id,
+    dealershipName: row.dealership_name,
+    contactName: row.contact_name,
+    email: row.email,
+    phone: row.phone || "",
+    address: row.address || "",
+    city: row.city || "",
+    postcode: row.postcode || "",
+    fcaNumber: row.fca_number || "",
+    estimatedVolume: row.estimated_volume || "",
+    message: row.message || "",
+    status: row.status,
+    createdAt: row.created_at,
+    reviewedAt: row.reviewed_at || undefined,
+    rejectionReason: row.rejection_reason || undefined,
+  };
 }
 
 // Send admin notification email when a new signup request is submitted
@@ -122,52 +76,113 @@ async function notifyAdminOfSignup(req: SignupRequest) {
   }
 }
 
+let listeners: (() => void)[] = [];
+function notify() {
+  listeners.forEach(l => l());
+}
+
 export function useSignupStore() {
+  const [signupRequests, setSignupRequests] = useState<SignupRequest[]>([]);
+  const [loading, setLoading] = useState(true);
   const [, setTick] = useState(0);
 
-  useEffect(() => {
-    const listener = () => setTick(t => t + 1);
-    listeners.push(listener);
-    return () => { listeners = listeners.filter(l => l !== listener); };
+  const fetchRequests = useCallback(async () => {
+    try {
+      const { data } = await supabase.functions.invoke("admin-data", {
+        body: { table: "signup_requests", action: "select" },
+      });
+      if (data?.data) {
+        setSignupRequests(data.data.map(fromRow));
+      }
+    } catch (err) {
+      console.error("Failed to fetch signup requests:", err);
+    }
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchRequests();
+    const cb = () => {
+      setTick(t => t + 1);
+      fetchRequests();
+    };
+    listeners.push(cb);
+    return () => {
+      listeners = listeners.filter(l => l !== cb);
+    };
+  }, [fetchRequests]);
 
   return {
     signupRequests,
+    loading,
 
-    addRequest(req: SignupRequest) {
-      const added = getAdded();
-      added.unshift(req);
-      saveAdded(added);
-      signupRequests = loadRequests();
+    async addRequest(req: Omit<SignupRequest, "id" | "createdAt" | "status">) {
+      try {
+        await supabase.functions.invoke("admin-data", {
+          body: {
+            table: "signup_requests",
+            action: "insert",
+            updates: {
+              dealership_name: req.dealershipName,
+              contact_name: req.contactName,
+              email: req.email,
+              phone: req.phone,
+              address: req.address,
+              city: req.city,
+              postcode: req.postcode,
+              fca_number: req.fcaNumber,
+              estimated_volume: req.estimatedVolume,
+              message: req.message,
+              status: "pending",
+            },
+          },
+        });
+      } catch (err) {
+        console.error("Failed to save signup request:", err);
+      }
       notify();
-      // Send email notification to admin
-      notifyAdminOfSignup(req);
+      // Send email notification
+      notifyAdminOfSignup({
+        ...req,
+        id: "",
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      } as SignupRequest);
     },
 
-    approveRequest(id: string) {
-      // Update in added list if present
-      const added = getAdded();
-      const addedIdx = added.findIndex(r => r.id === id);
-      if (addedIdx >= 0) {
-        added[addedIdx] = { ...added[addedIdx], status: "approved", reviewedAt: new Date().toISOString() };
-        saveAdded(added);
+    async approveRequest(id: string) {
+      try {
+        await supabase.functions.invoke("admin-data", {
+          body: {
+            table: "signup_requests",
+            action: "update",
+            id,
+            updates: { status: "approved", reviewed_at: new Date().toISOString() },
+          },
+        });
+      } catch (err) {
+        console.error("Failed to approve request:", err);
       }
-      signupRequests = signupRequests.map(r =>
-        r.id === id ? { ...r, status: "approved" as const, reviewedAt: new Date().toISOString() } : r
-      );
       notify();
     },
 
-    rejectRequest(id: string, reason?: string) {
-      const added = getAdded();
-      const addedIdx = added.findIndex(r => r.id === id);
-      if (addedIdx >= 0) {
-        added[addedIdx] = { ...added[addedIdx], status: "rejected", reviewedAt: new Date().toISOString(), rejectionReason: reason };
-        saveAdded(added);
+    async rejectRequest(id: string, reason?: string) {
+      try {
+        await supabase.functions.invoke("admin-data", {
+          body: {
+            table: "signup_requests",
+            action: "update",
+            id,
+            updates: {
+              status: "rejected",
+              reviewed_at: new Date().toISOString(),
+              rejection_reason: reason || null,
+            },
+          },
+        });
+      } catch (err) {
+        console.error("Failed to reject request:", err);
       }
-      signupRequests = signupRequests.map(r =>
-        r.id === id ? { ...r, status: "rejected" as const, reviewedAt: new Date().toISOString(), rejectionReason: reason } : r
-      );
       notify();
     },
   };
