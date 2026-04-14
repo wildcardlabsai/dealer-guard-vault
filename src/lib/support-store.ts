@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface SupportMessage {
   id: string;
@@ -20,56 +21,43 @@ export interface SupportTicket {
   updatedAt: string;
 }
 
-const demoTickets: SupportTicket[] = [
-  {
-    id: "st-1",
-    dealerId: "d-1",
-    dealerName: "Prestige Motors",
-    subject: "How do I add a custom cover template?",
-    status: "resolved",
-    priority: "medium",
-    messages: [
-      { id: "sm-1", from: "James Harrison", fromRole: "dealer", message: "Hi, I want to create a custom cover template for our premium packages but I'm not sure how to add conditional items. Can you help?", timestamp: "2025-01-20T10:00:00Z" },
-      { id: "sm-2", from: "Platform Admin", fromRole: "admin", message: "Hi James, go to Cover Templates in your sidebar, click 'Add Template', then use the 'Conditional Items' tab to add items with conditions. Let me know if you need more help!", timestamp: "2025-01-20T11:30:00Z" },
-      { id: "sm-3", from: "James Harrison", fromRole: "dealer", message: "Perfect, got it working. Thanks for the quick response!", timestamp: "2025-01-20T14:00:00Z" },
-    ],
-    createdAt: "2025-01-20T10:00:00Z",
-    updatedAt: "2025-01-20T14:00:00Z",
-  },
-  {
-    id: "st-2",
-    dealerId: "d-1",
-    dealerName: "Prestige Motors",
-    subject: "Certificate not showing vehicle colour",
-    status: "open",
-    priority: "high",
-    messages: [
-      { id: "sm-4", from: "James Harrison", fromRole: "dealer", message: "When I generate a certificate for warranty W-6, the vehicle colour field is showing but it seems to be missing on some older warranties. Is this a known issue?", timestamp: "2025-02-15T09:30:00Z" },
-    ],
-    createdAt: "2025-02-15T09:30:00Z",
-    updatedAt: "2025-02-15T09:30:00Z",
-  },
-  {
-    id: "st-3",
-    dealerId: "d-2",
-    dealerName: "City Autos",
-    subject: "Can we get a bulk import feature?",
-    status: "in_progress",
-    priority: "low",
-    messages: [
-      { id: "sm-5", from: "Sarah Mitchell", fromRole: "dealer", message: "We have about 30 existing warranties we'd like to import. Is there a way to bulk upload them via CSV?", timestamp: "2025-02-10T16:00:00Z" },
-      { id: "sm-6", from: "Platform Admin", fromRole: "admin", message: "Thanks for the suggestion Sarah. We're looking into adding a bulk import feature. I'll keep you updated on progress.", timestamp: "2025-02-11T10:00:00Z" },
-    ],
-    createdAt: "2025-02-10T16:00:00Z",
-    updatedAt: "2025-02-11T10:00:00Z",
-  },
-];
+async function dbCall(body: Record<string, unknown>) {
+  try {
+    const { data } = await supabase.functions.invoke("admin-data", { body });
+    return data?.data || null;
+  } catch (err) {
+    console.error("Support DB call failed:", err);
+    return null;
+  }
+}
 
-let tickets = [...demoTickets];
+function rowToTicket(r: any): SupportTicket {
+  return {
+    id: r.id,
+    dealerId: r.dealer_id,
+    dealerName: r.dealer_name,
+    subject: r.subject,
+    status: r.status,
+    priority: r.priority,
+    messages: Array.isArray(r.messages) ? r.messages : [],
+    createdAt: r.created_at,
+    updatedAt: r.updated_at,
+  };
+}
+
+let tickets: SupportTicket[] = [];
 let listeners: (() => void)[] = [];
+let loaded = false;
 
-function notify() {
-  listeners.forEach(l => l());
+function notify() { listeners.forEach(l => l()); }
+
+async function loadTickets() {
+  const rows = await dbCall({ table: "support_tickets", action: "select" });
+  if (rows) {
+    tickets = rows.map(rowToTicket);
+    loaded = true;
+    notify();
+  }
 }
 
 export function useSupportStore() {
@@ -78,6 +66,7 @@ export function useSupportStore() {
   useEffect(() => {
     const listener = () => setTick(t => t + 1);
     listeners.push(listener);
+    if (!loaded) loadTickets();
     return () => { listeners = listeners.filter(l => l !== listener); };
   }, []);
 
@@ -88,24 +77,38 @@ export function useSupportStore() {
       return tickets.filter(t => t.dealerId === dealerId);
     },
 
-    addTicket(ticket: SupportTicket) {
-      tickets = [ticket, ...tickets];
-      notify();
-    },
-
-    addMessage(ticketId: string, msg: SupportMessage) {
-      tickets = tickets.map(t => {
-        if (t.id === ticketId) {
-          return { ...t, messages: [...t.messages, msg], updatedAt: msg.timestamp };
-        }
-        return t;
+    async addTicket(ticket: SupportTicket) {
+      await dbCall({
+        table: "support_tickets", action: "insert",
+        updates: {
+          dealer_id: ticket.dealerId,
+          dealer_name: ticket.dealerName,
+          subject: ticket.subject,
+          status: ticket.status || "open",
+          priority: ticket.priority || "medium",
+          messages: ticket.messages || [],
+        },
       });
-      notify();
+      await loadTickets();
     },
 
-    updateStatus(ticketId: string, status: SupportTicket["status"]) {
-      tickets = tickets.map(t => t.id === ticketId ? { ...t, status, updatedAt: new Date().toISOString() } : t);
-      notify();
+    async addMessage(ticketId: string, msg: SupportMessage) {
+      const ticket = tickets.find(t => t.id === ticketId);
+      if (!ticket) return;
+      const newMessages = [...ticket.messages, msg];
+      await dbCall({
+        table: "support_tickets", action: "update", id: ticketId,
+        updates: { messages: newMessages },
+      });
+      await loadTickets();
+    },
+
+    async updateStatus(ticketId: string, status: SupportTicket["status"]) {
+      await dbCall({
+        table: "support_tickets", action: "update", id: ticketId,
+        updates: { status },
+      });
+      await loadTickets();
     },
   };
 }

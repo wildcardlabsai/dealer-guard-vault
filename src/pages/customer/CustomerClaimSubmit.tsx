@@ -43,14 +43,14 @@ export default function CustomerClaimSubmit() {
 
   const [files] = useState<ClaimFile[]>([]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!warranty || !form.issueTitle || !form.description) {
       toast.error("Please fill in all required fields");
       return;
     }
 
     const templateId = coverStore.templateMap[warranty.id];
-    const claim = claimStore.submitClaim({
+    const claim = await claimStore.submitClaim({
       warrantyId: warranty.id,
       customerId: user?.id || "",
       customerName: user?.name || "",
@@ -73,7 +73,6 @@ export default function CustomerClaimSubmit() {
     });
 
     toast.success(`Claim submitted — Ref: ${claim.reference}`);
-    // Send claim confirmation email
     if (user?.email) {
       import("@/lib/email-service").then(m => m.sendClaimSubmittedEmail(
         user.email!, user.name || "Customer", claim.reference, warranty.vehicleReg, form.issueTitle
