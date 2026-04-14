@@ -1,5 +1,4 @@
-const listeners: Array<() => void> = [];
-const notify = () => listeners.forEach(l => l());
+import { useState, useEffect } from "react";
 
 export interface Enquiry {
   id: string;
@@ -14,8 +13,10 @@ export interface Enquiry {
 
 let idCounter = 1;
 const enquiries: Enquiry[] = [];
+const listeners: Array<() => void> = [];
+const notify = () => listeners.forEach(l => l());
 
-export function addEnquiry(e: Omit<Enquiry, "id" | "createdAt" | "read">) {
+export function addEnquiry(e: Omit<Enquiry, "id" | "createdAt" | "read">): Enquiry {
   const enquiry: Enquiry = {
     ...e,
     id: `enq-${idCounter++}`,
@@ -28,22 +29,24 @@ export function addEnquiry(e: Omit<Enquiry, "id" | "createdAt" | "read">) {
 }
 
 export function markEnquiryRead(id: string) {
-  const e = enquiries.find(e => e.id === id);
+  const e = enquiries.find(eq => eq.id === id);
   if (e) { e.read = true; notify(); }
 }
 
 export function markAllEnquiriesRead() {
-  enquiries.forEach(e => e.read = true);
+  enquiries.forEach(e => { e.read = true; });
   notify();
 }
 
 export function useEnquiryStore() {
-  const [, setState] = (await_import => {
-    // Use React hooks
-    const { useState, useEffect } = require("react");
-    return useState(0);
-  })();
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const cb = () => setTick(t => t + 1);
+    listeners.push(cb);
+    return () => { const i = listeners.indexOf(cb); if (i >= 0) listeners.splice(i, 1); };
+  }, []);
 
-  // Workaround: use the hook pattern from other stores
-  return { enquiries, addEnquiry, markEnquiryRead, markAllEnquiriesRead };
+  const unreadCount = enquiries.filter(e => !e.read).length;
+
+  return { enquiries, unreadCount, addEnquiry, markEnquiryRead, markAllEnquiriesRead };
 }
