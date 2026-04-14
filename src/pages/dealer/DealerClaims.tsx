@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, XCircle, MessageSquare, Clock, Phone, ArrowRight } from "lucide-react";
+import { CheckCircle2, XCircle, MessageSquare, Clock } from "lucide-react";
 import { toast } from "sonner";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
@@ -31,24 +31,32 @@ export default function DealerClaims() {
     toast.success(`Claim ${action.replace("_", " ")} successfully`);
   };
 
+  const openClaims = claims.filter(c => c.status === "pending" || c.status === "under_review").length;
+  const approvedClaims = claims.filter(c => c.status === "approved").length;
+  const rejectedClaims = claims.filter(c => c.status === "rejected").length;
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold font-display">Claims</h1>
         <p className="text-sm text-muted-foreground">{claims.length} claims</p>
       </div>
-      {/* Warranty Line upsell banner */}
-      {!warrantyLine && (
-        <div className="glass-card rounded-xl p-4 flex items-center gap-4 cursor-pointer hover:border-[hsl(var(--cta))]/40 transition-all"
-          onClick={() => navigate("/dealer/warranty-line")}>
-          <Phone className="w-5 h-5 text-[hsl(var(--cta))] flex-shrink-0" />
-          <div className="flex-1">
-            <p className="text-sm font-medium">Handle claims more professionally with a dedicated warranty line</p>
-            <p className="text-xs text-muted-foreground">Give customers a proper number to call — £25/month</p>
-          </div>
-          <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="glass-card rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold font-display text-amber-400">{openClaims}</p>
+          <p className="text-xs text-muted-foreground">Open</p>
         </div>
-      )}
+        <div className="glass-card rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold font-display text-primary">{approvedClaims}</p>
+          <p className="text-xs text-muted-foreground">Approved</p>
+        </div>
+        <div className="glass-card rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold font-display text-destructive">{rejectedClaims}</p>
+          <p className="text-xs text-muted-foreground">Rejected</p>
+        </div>
+      </div>
 
       <div className="space-y-4">
         {claims.map(claim => {
