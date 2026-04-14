@@ -29,15 +29,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navigate = useNavigate();
   const { signupRequests } = useSignupStore();
   const supportStore = useSupportStore();
+  const enquiryStore = useEnquiryStore();
   const notifStore = useNotificationStore();
   const userId = user?.id || "admin-1";
   const unreadCount = notifStore.unreadCount(userId);
   const notifications = notifStore.getNotifications(userId);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [mobileNav, setMobileNav] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
   const pendingCount = signupRequests.filter(r => r.status === "pending").length;
   const openTickets = supportStore.tickets.filter(t => t.status === "open" || t.status === "in_progress").length;
+  const enquiryCount = enquiryStore.unreadCount;
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
