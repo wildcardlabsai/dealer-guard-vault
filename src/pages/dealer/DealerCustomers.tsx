@@ -181,11 +181,15 @@ export default function DealerCustomers() {
               <p className="text-sm text-muted-foreground">{c.phone}</p>
               <p className="text-xs text-muted-foreground mt-2">{c.address}, {c.city}, {c.postcode}</p>
               <p className="text-xs text-muted-foreground mt-1">Joined: {new Date(c.createdAt).toLocaleDateString("en-GB")}</p>
-              <div className="flex gap-2 mt-3">
-                <Button variant="outline" size="sm" className="flex-1" onClick={() => handleInviteExisting(c)}>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <Button variant="outline" size="sm" onClick={() => handleResendWelcome(c)} disabled={resendingId === c.id}>
+                  {resendingId === c.id ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Send className="w-3.5 h-3.5 mr-1.5" />}
+                  Resend Welcome
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleInviteExisting(c)}>
                   <Mail className="w-3.5 h-3.5 mr-1.5" /> Invite
                 </Button>
-                <Button variant="outline" size="sm" className="flex-1" onClick={() => setTimelineCustomer(c.id)}>
+                <Button variant="outline" size="sm" onClick={() => setTimelineCustomer(c.id)}>
                   <Clock className="w-3.5 h-3.5 mr-1.5" /> Timeline
                 </Button>
               </div>
