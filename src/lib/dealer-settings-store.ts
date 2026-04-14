@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export type SmartContributionMode = "off" | "recommend" | "auto";
 
@@ -13,40 +14,100 @@ export interface DealerSettings {
   dismissedRecommendationUntil: string | null;
 }
 
-const STORAGE_KEY = "wv_dealer_settings";
-
-function loadSettingsMap(): Record<string, DealerSettings> {
+async function dbCall(body: Record<string, unknown>) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return {};
+    const { data } = await supabase.functions.invoke("admin-data", { body });
+    return data?.data || null;
+  } catch (err) {
+    console.error("DealerSettings DB call failed:", err);
+    return null;
+  }
 }
 
-function saveSettingsMap() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settingsMap));
-  } catch {}
+const defaultSettings: DealerSettings = {
+  monthlySalesTarget: 10,
+  maxLabourRate: 75,
+  maxPerClaimLimit: 2500,
+  freeWarrantiesTotal: 5,
+  freeWarrantiesUsed: 0,
+  smartContributionMode: "recommend",
+  lastRecommendationDate: null,
+  dismissedRecommendationUntil: null,
+};
+
+function rowToSettings(r: any): DealerSettings {
+  return {
+    monthlySalesTarget: r.monthly_sales_target ?? 10,
+    maxLabourRate: r.max_labour_rate ?? 75,
+    maxPerClaimLimit: r.max_per_claim_limit ?? 2500,
+    freeWarrantiesTotal: r.free_warranties_total ?? 5,
+    freeWarrantiesUsed: r.free_warranties_used ?? 0,
+    smartContributionMode: r.smart_contribution_mode || "recommend",
+    lastRecommendationDate: r.last_recommendation_date || null,
+    dismissedRecommendationUntil: r.dismissed_recommendation_until || null,
+  };
 }
 
-const settingsMap: Record<string, DealerSettings> = loadSettingsMap();
+// --- Global state ---
+const settingsMap: Record<string, DealerSettings> = {};
+const settingsDbIds: Record<string, string> = {};
 const listeners: Array<() => void> = [];
-const notify = () => { saveSettingsMap(); listeners.forEach(l => l()); };
+const notify = () => listeners.forEach(l => l());
+
+async function fetchSettings(dealerId: string): Promise<DealerSettings> {
+  if (settingsMap[dealerId]) return settingsMap[dealerId];
+  const rows = await dbCall({ table: "dealer_settings", action: "select", filters: { dealer_id: dealerId } });
+  if (rows && rows.length > 0) {
+    settingsMap[dealerId] = rowToSettings(rows[0]);
+    settingsDbIds[dealerId] = rows[0].id;
+  } else {
+    settingsMap[dealerId] = { ...defaultSettings };
+    // Create in DB
+    const row = await dbCall({
+      table: "dealer_settings", action: "insert",
+      updates: {
+        dealer_id: dealerId,
+        monthly_sales_target: defaultSettings.monthlySalesTarget,
+        max_labour_rate: defaultSettings.maxLabourRate,
+        max_per_claim_limit: defaultSettings.maxPerClaimLimit,
+        free_warranties_total: defaultSettings.freeWarrantiesTotal,
+        free_warranties_used: defaultSettings.freeWarrantiesUsed,
+        smart_contribution_mode: defaultSettings.smartContributionMode,
+      },
+    });
+    if (row) settingsDbIds[dealerId] = row.id;
+  }
+  return settingsMap[dealerId];
+}
 
 function getSettings(dealerId: string): DealerSettings {
   if (!settingsMap[dealerId]) {
-    settingsMap[dealerId] = {
-      monthlySalesTarget: 10,
-      maxLabourRate: 75,
-      maxPerClaimLimit: 2500,
-      freeWarrantiesTotal: 5,
-      freeWarrantiesUsed: 0,
-      smartContributionMode: "recommend",
-      lastRecommendationDate: null,
-      dismissedRecommendationUntil: null,
-    };
+    // Return defaults synchronously, trigger async load
+    settingsMap[dealerId] = { ...defaultSettings };
+    fetchSettings(dealerId).then(() => notify());
   }
   return settingsMap[dealerId];
+}
+
+async function saveSettings(dealerId: string) {
+  const s = settingsMap[dealerId];
+  if (!s) return;
+  const dbId = settingsDbIds[dealerId];
+  if (dbId) {
+    await dbCall({
+      table: "dealer_settings", action: "update", id: dbId,
+      updates: {
+        monthly_sales_target: s.monthlySalesTarget,
+        max_labour_rate: s.maxLabourRate,
+        max_per_claim_limit: s.maxPerClaimLimit,
+        free_warranties_total: s.freeWarrantiesTotal,
+        free_warranties_used: s.freeWarrantiesUsed,
+        smart_contribution_mode: s.smartContributionMode,
+        last_recommendation_date: s.lastRecommendationDate,
+        dismissed_recommendation_until: s.dismissedRecommendationUntil,
+      },
+    });
+  }
 }
 
 export function useDealerSettingsStore() {
@@ -59,15 +120,17 @@ export function useDealerSettingsStore() {
 
   return {
     getSettings,
-    updateSettings(dealerId: string, updates: Partial<DealerSettings>) {
+    async updateSettings(dealerId: string, updates: Partial<DealerSettings>) {
       settingsMap[dealerId] = { ...getSettings(dealerId), ...updates };
       notify();
+      await saveSettings(dealerId);
     },
-    useFreeWarranty(dealerId: string): boolean {
+    async useFreeWarranty(dealerId: string): Promise<boolean> {
       const s = getSettings(dealerId);
       if (s.freeWarrantiesUsed < s.freeWarrantiesTotal) {
         settingsMap[dealerId] = { ...s, freeWarrantiesUsed: s.freeWarrantiesUsed + 1 };
         notify();
+        await saveSettings(dealerId);
         return true;
       }
       return false;
@@ -80,14 +143,12 @@ export function useDealerSettingsStore() {
       const s = getSettings(dealerId);
       return Math.max(0, s.freeWarrantiesTotal - s.freeWarrantiesUsed);
     },
-    // Sync free warranty usage with actual warranty count
     syncFreeWarrantyCount(dealerId: string, totalWarrantyCount: number) {
       const s = getSettings(dealerId);
       const correctUsed = Math.min(totalWarrantyCount, s.freeWarrantiesTotal);
       if (s.freeWarrantiesUsed !== correctUsed) {
         settingsMap[dealerId] = { ...s, freeWarrantiesUsed: correctUsed };
-        saveSettingsMap();
-        // Don't trigger notify here to avoid render loops — caller re-renders anyway
+        saveSettings(dealerId);
       }
     },
   };

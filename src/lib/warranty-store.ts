@@ -1,82 +1,112 @@
 import { useState, useEffect, useCallback } from "react";
-import { Warranty, Claim, CustomerRequest, demoWarranties, demoClaims, demoRequests, demoAuditLog, AuditLog } from "@/data/demo-data";
+import { Warranty, Claim, CustomerRequest, AuditLog } from "@/data/demo-data";
 import { pushNotification } from "@/lib/notification-store";
+import { supabase } from "@/integrations/supabase/client";
 
-// --- localStorage persistence helpers ---
-const STORAGE_KEY = "wv_warranty_store";
-
-function loadPersistedState() {
+// --- DB helpers ---
+async function dbCall(body: Record<string, unknown>) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      return {
-        addedWarranties: parsed.addedWarranties || [],
-        addedClaims: parsed.addedClaims || [],
-        addedRequests: parsed.addedRequests || [],
-        addedAuditLog: parsed.addedAuditLog || [],
-        deletedWarrantyIds: parsed.deletedWarrantyIds || [],
-        claimStatusUpdates: parsed.claimStatusUpdates || {},
-        requestStatusUpdates: parsed.requestStatusUpdates || {},
-      };
-    }
-  } catch {}
+    const { data } = await supabase.functions.invoke("admin-data", { body });
+    return data?.data || null;
+  } catch (err) {
+    console.error("DB call failed:", err);
+    return null;
+  }
+}
+
+// --- Map DB rows to app types ---
+function rowToWarranty(r: any): Warranty {
   return {
-    addedWarranties: [] as Warranty[],
-    addedClaims: [] as Claim[],
-    addedRequests: [] as CustomerRequest[],
-    addedAuditLog: [] as AuditLog[],
-    deletedWarrantyIds: [] as string[],
-    claimStatusUpdates: {} as Record<string, { status: Claim["status"]; timeline: Claim["timeline"] }>,
-    requestStatusUpdates: {} as Record<string, CustomerRequest["status"]>,
+    id: r.id,
+    customerId: r.customer_id || "",
+    customerName: r.customer_name,
+    customerEmail: r.customer_email,
+    dealerId: r.dealer_id,
+    dealerName: r.dealer_name,
+    vehicleReg: r.vehicle_reg,
+    vehicleMake: r.vehicle_make,
+    vehicleModel: r.vehicle_model,
+    vehicleYear: parseInt(r.vehicle_year) || 0,
+    vehicleColour: "",
+    mileage: r.vehicle_mileage || 0,
+    duration: r.duration_months,
+    startDate: r.start_date,
+    endDate: r.end_date,
+    cost: parseFloat(r.cost) || 0,
+    status: r.status,
+    notes: r.notes || "",
+    createdAt: r.created_at,
+    coverTemplateId: r.cover_template_id,
+    paymentStatus: r.is_free ? "free" : "paid",
   };
 }
 
-function persistState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
-  } catch {}
+function rowToClaim(r: any): Claim {
+  return {
+    id: r.id,
+    warrantyId: r.warranty_id || "",
+    customerId: r.customer_id,
+    customerName: r.customer_name,
+    dealerId: r.dealer_id,
+    vehicleReg: r.vehicle_reg,
+    description: r.description || r.issue_title || "",
+    status: r.status === "submitted" ? "pending" : r.status,
+    amount: r.decision_amount ? parseFloat(r.decision_amount) : undefined,
+    photos: [],
+    timeline: Array.isArray(r.timeline) ? r.timeline : [],
+    createdAt: r.created_at,
+  };
 }
 
-let persisted = loadPersistedState();
-
-// Merge demo + persisted data
-function getMergedWarranties(): Warranty[] {
-  const base = demoWarranties.filter(w => !persisted.deletedWarrantyIds.includes(w.id));
-  return [...persisted.addedWarranties, ...base];
+function rowToRequest(r: any): CustomerRequest {
+  return {
+    id: r.id,
+    customerId: r.customer_id,
+    customerName: r.customer_name,
+    warrantyId: r.warranty_id || "",
+    dealerId: r.dealer_id,
+    type: r.type,
+    description: r.description,
+    status: r.status,
+    createdAt: r.created_at,
+  };
 }
 
-function getMergedClaims(): Claim[] {
-  const base = demoClaims.map(c => {
-    const update = persisted.claimStatusUpdates[c.id];
-    if (update) return { ...c, status: update.status, timeline: update.timeline };
-    return c;
-  });
-  return [...persisted.addedClaims, ...base];
+function rowToAudit(r: any): AuditLog {
+  return {
+    id: r.id,
+    dealerId: r.dealer_id || "",
+    userId: r.user_id || "",
+    action: r.action,
+    details: r.details || "",
+    timestamp: r.created_at,
+  };
 }
 
-function getMergedRequests(): CustomerRequest[] {
-  const base = demoRequests.map(r => {
-    const status = persisted.requestStatusUpdates[r.id];
-    if (status) return { ...r, status };
-    return r;
-  });
-  return [...persisted.addedRequests, ...base];
-}
-
-function getMergedAuditLog(): AuditLog[] {
-  return [...persisted.addedAuditLog, ...demoAuditLog];
-}
-
-let warranties = getMergedWarranties();
-let claims = getMergedClaims();
-let requests = getMergedRequests();
-let auditLog = getMergedAuditLog();
+// --- Global state ---
+let warranties: Warranty[] = [];
+let claims: Claim[] = [];
+let requests: CustomerRequest[] = [];
+let auditLog: AuditLog[] = [];
 let listeners: (() => void)[] = [];
+let loaded = false;
 const notifiedExpiries = new Set<string>();
 
-function notify() {
-  listeners.forEach(l => l());
+function notify() { listeners.forEach(l => l()); }
+
+async function loadAll() {
+  const [wRows, cRows, rRows, aRows] = await Promise.all([
+    dbCall({ table: "warranties", action: "select" }),
+    dbCall({ table: "claims", action: "select" }),
+    dbCall({ table: "customer_requests", action: "select" }),
+    dbCall({ table: "audit_log", action: "select" }),
+  ]);
+  warranties = (wRows || []).map(rowToWarranty);
+  claims = (cRows || []).map(rowToClaim);
+  requests = (rRows || []).map(rowToRequest);
+  auditLog = (aRows || []).map(rowToAudit);
+  loaded = true;
+  notify();
 }
 
 function checkExpiringWarranties(dealerId: string) {
@@ -112,6 +142,7 @@ export function useWarrantyStore() {
   useEffect(() => {
     const listener = () => setTick(t => t + 1);
     listeners.push(listener);
+    if (!loaded) loadAll();
     return () => { listeners = listeners.filter(l => l !== listener); };
   }, []);
 
@@ -122,78 +153,106 @@ export function useWarrantyStore() {
     auditLog,
     ensureExpiryCheck,
 
-    addWarranty(w: Warranty) {
-      persisted.addedWarranties = [w, ...persisted.addedWarranties];
-      persisted.addedAuditLog = [{ id: `al-${Date.now()}`, dealerId: w.dealerId, userId: "", action: "warranty_created", details: `Created warranty for ${w.customerName}`, timestamp: new Date().toISOString() }, ...persisted.addedAuditLog];
-      persistState();
-      // Rebuild merged data
-      warranties = getMergedWarranties();
-      auditLog = getMergedAuditLog();
+    async addWarranty(w: Warranty) {
+      const row = await dbCall({
+        table: "warranties", action: "insert",
+        updates: {
+          reference: `WRN-${Date.now()}`,
+          customer_id: w.customerId || null,
+          customer_name: w.customerName,
+          customer_email: w.customerEmail || "",
+          dealer_id: w.dealerId,
+          dealer_name: w.dealerName,
+          vehicle_reg: w.vehicleReg,
+          vehicle_make: w.vehicleMake,
+          vehicle_model: w.vehicleModel,
+          vehicle_year: String(w.vehicleYear),
+          vehicle_mileage: w.mileage,
+          duration_months: w.duration,
+          start_date: w.startDate,
+          end_date: w.endDate,
+          cost: w.cost,
+          status: w.status || "active",
+          notes: w.notes,
+          is_free: w.paymentStatus === "free",
+          cover_template_id: w.coverTemplateId || null,
+          cover_template_name: "",
+        },
+      });
+      await dbCall({
+        table: "audit_log", action: "insert",
+        updates: { dealer_id: w.dealerId, user_id: "", action: "warranty_created", details: `Created warranty for ${w.customerName}` },
+      });
+      await loadAll();
       checkExpiringWarranties(w.dealerId);
-      notify();
     },
 
-    deleteWarranty(id: string) {
+    async deleteWarranty(id: string) {
       const w = warranties.find(w => w.id === id);
-      // If it's a persisted added warranty, remove from added list
-      persisted.addedWarranties = persisted.addedWarranties.filter(aw => aw.id !== id);
-      // If it's a demo warranty, add to deleted list
-      if (demoWarranties.find(dw => dw.id === id)) {
-        persisted.deletedWarrantyIds = [...persisted.deletedWarrantyIds, id];
-      }
+      await dbCall({ table: "warranties", action: "delete", id });
       if (w) {
-        persisted.addedAuditLog = [{ id: `al-${Date.now()}`, dealerId: w.dealerId, userId: "", action: "warranty_deleted", details: `Deleted warranty for ${w.customerName}`, timestamp: new Date().toISOString() }, ...persisted.addedAuditLog];
+        await dbCall({
+          table: "audit_log", action: "insert",
+          updates: { dealer_id: w.dealerId, user_id: "", action: "warranty_deleted", details: `Deleted warranty for ${w.customerName}` },
+        });
       }
-      persistState();
-      warranties = getMergedWarranties();
-      auditLog = getMergedAuditLog();
-      notify();
+      await loadAll();
     },
 
-    updateClaimStatus(claimId: string, status: Claim["status"], by: string) {
+    async updateClaimStatus(claimId: string, status: Claim["status"], by: string) {
       const existing = claims.find(c => c.id === claimId);
       if (existing) {
         const newTimeline = [...existing.timeline, { date: new Date().toISOString().split("T")[0], action: `Claim ${status.replace("_", " ")}`, by }];
-        // Check if it's a demo claim or added claim
-        const addedIdx = persisted.addedClaims.findIndex(c => c.id === claimId);
-        if (addedIdx >= 0) {
-          persisted.addedClaims[addedIdx] = { ...persisted.addedClaims[addedIdx], status, timeline: newTimeline };
-        } else {
-          persisted.claimStatusUpdates[claimId] = { status, timeline: newTimeline };
-        }
-        persistState();
-        claims = getMergedClaims();
-        notify();
+        await dbCall({ table: "claims", action: "update", id: claimId, updates: { status, timeline: newTimeline } });
+        await loadAll();
       }
     },
 
-    addClaim(claim: Claim) {
-      persisted.addedClaims = [claim, ...persisted.addedClaims];
-      persistState();
-      claims = getMergedClaims();
-      notify();
+    async addClaim(claim: Claim) {
+      await dbCall({
+        table: "claims", action: "insert",
+        updates: {
+          reference: `CLM-${Date.now()}`,
+          warranty_id: claim.warrantyId || null,
+          customer_id: claim.customerId,
+          customer_name: claim.customerName,
+          customer_email: "",
+          dealer_id: claim.dealerId,
+          dealer_name: "",
+          vehicle_reg: claim.vehicleReg,
+          vehicle_make: "",
+          vehicle_model: "",
+          issue_title: claim.description?.substring(0, 50) || "Claim",
+          description: claim.description,
+          status: claim.status || "submitted",
+          timeline: claim.timeline || [],
+        },
+      });
+      await loadAll();
     },
 
-    updateRequestStatus(requestId: string, status: CustomerRequest["status"]) {
-      const addedIdx = persisted.addedRequests.findIndex(r => r.id === requestId);
-      if (addedIdx >= 0) {
-        persisted.addedRequests[addedIdx] = { ...persisted.addedRequests[addedIdx], status };
-      } else {
-        persisted.requestStatusUpdates[requestId] = status;
-      }
-      persistState();
-      requests = getMergedRequests();
-      notify();
+    async updateRequestStatus(requestId: string, status: CustomerRequest["status"]) {
+      await dbCall({ table: "customer_requests", action: "update", id: requestId, updates: { status } });
+      await loadAll();
     },
 
-    addRequest(req: CustomerRequest) {
-      persisted.addedRequests = [req, ...persisted.addedRequests];
-      persistState();
-      requests = getMergedRequests();
-      notify();
+    async addRequest(req: CustomerRequest) {
+      await dbCall({
+        table: "customer_requests", action: "insert",
+        updates: {
+          customer_id: req.customerId,
+          customer_name: req.customerName,
+          customer_email: "",
+          dealer_id: req.dealerId,
+          type: req.type,
+          description: req.description,
+          status: req.status || "pending",
+          warranty_id: req.warrantyId || null,
+        },
+      });
+      await loadAll();
     },
 
-    // Get warranty count for a dealer (for free warranty tracking)
     getDealerWarrantyCount(dealerId: string): number {
       return warranties.filter(w => w.dealerId === dealerId).length;
     },

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface WarrantyLine {
   id: string;
@@ -19,6 +20,37 @@ export interface WarrantyLine {
   updatedAt: string;
 }
 
+async function dbCall(body: Record<string, unknown>) {
+  try {
+    const { data } = await supabase.functions.invoke("admin-data", { body });
+    return data?.data || null;
+  } catch (err) {
+    console.error("WarrantyLine DB call failed:", err);
+    return null;
+  }
+}
+
+function rowToLine(r: any): WarrantyLine {
+  return {
+    id: r.id,
+    dealerId: r.dealer_id,
+    status: r.status,
+    phoneNumber: r.phone_number || null,
+    greetingMessage: r.greeting_message || "",
+    forwardingNumber: r.forwarding_number || "",
+    ivrEnabled: r.ivr_enabled ?? true,
+    option1Label: r.option1_label || "New Claim",
+    option2Label: r.option2_label || "Existing Claim",
+    option3Label: r.option3_label || "",
+    holdMusicType: r.hold_music_type || "default",
+    voicemailEnabled: r.voicemail_enabled ?? false,
+    voicemailEmail: r.voicemail_email || "",
+    businessName: r.business_name || "",
+    createdAt: r.created_at,
+    updatedAt: r.updated_at,
+  };
+}
+
 function generatePhoneNumber(): string {
   const mid = String(Math.floor(Math.random() * 900) + 100);
   const end = String(Math.floor(Math.random() * 9000) + 1000);
@@ -27,20 +59,31 @@ function generatePhoneNumber(): string {
 
 let warrantyLines: Record<string, WarrantyLine> = {};
 let listeners: (() => void)[] = [];
+let loaded = false;
 
-function notify() {
-  listeners.forEach((l) => l());
+function notify() { listeners.forEach(l => l()); }
+
+async function loadLines() {
+  const rows = await dbCall({ table: "warranty_lines", action: "select" });
+  if (rows) {
+    warrantyLines = {};
+    for (const r of rows) {
+      const line = rowToLine(r);
+      warrantyLines[line.dealerId] = line;
+    }
+    loaded = true;
+    notify();
+  }
 }
 
 export function useWarrantyLineStore() {
   const [, setTick] = useState(0);
 
   useEffect(() => {
-    const listener = () => setTick((t) => t + 1);
+    const listener = () => setTick(t => t + 1);
     listeners.push(listener);
-    return () => {
-      listeners = listeners.filter((l) => l !== listener);
-    };
+    if (!loaded) loadLines();
+    return () => { listeners = listeners.filter(l => l !== listener); };
   }, []);
 
   return {
@@ -48,78 +91,79 @@ export function useWarrantyLineStore() {
       return warrantyLines[dealerId] || null;
     },
 
-    activateLine(dealerId: string, config: Partial<WarrantyLine>) {
+    async activateLine(dealerId: string, config: Partial<WarrantyLine>) {
       const now = new Date().toISOString();
-      warrantyLines[dealerId] = {
-        id: `wl-${Date.now()}`,
-        dealerId,
-        status: "setup_in_progress",
-        phoneNumber: null,
-        greetingMessage: config.greetingMessage || "",
-        forwardingNumber: config.forwardingNumber || "",
-        ivrEnabled: config.ivrEnabled ?? true,
-        option1Label: config.option1Label || "New Claim",
-        option2Label: config.option2Label || "Existing Claim",
-        option3Label: config.option3Label || "",
-        holdMusicType: config.holdMusicType || "default",
-        voicemailEnabled: config.voicemailEnabled ?? false,
-        voicemailEmail: config.voicemailEmail || "",
-        businessName: config.businessName || "",
-        createdAt: now,
-        updatedAt: now,
-      };
-      notify();
+      const row = await dbCall({
+        table: "warranty_lines", action: "insert",
+        updates: {
+          dealer_id: dealerId,
+          status: "setup_in_progress",
+          greeting_message: config.greetingMessage || "",
+          forwarding_number: config.forwardingNumber || "",
+          ivr_enabled: config.ivrEnabled ?? true,
+          option1_label: config.option1Label || "New Claim",
+          option2_label: config.option2Label || "Existing Claim",
+          option3_label: config.option3Label || "",
+          hold_music_type: config.holdMusicType || "default",
+          voicemail_enabled: config.voicemailEnabled ?? false,
+          voicemail_email: config.voicemailEmail || "",
+          business_name: config.businessName || "",
+        },
+      });
+      await loadLines();
 
       // Simulate provisioning
-      setTimeout(() => {
-        if (warrantyLines[dealerId]) {
-          warrantyLines[dealerId] = {
-            ...warrantyLines[dealerId],
-            status: "active",
-            phoneNumber: generatePhoneNumber(),
-            updatedAt: new Date().toISOString(),
-          };
-          notify();
-        }
-      }, 3000);
-    },
-
-    updateLine(dealerId: string, updates: Partial<WarrantyLine>) {
-      if (warrantyLines[dealerId]) {
-        warrantyLines[dealerId] = {
-          ...warrantyLines[dealerId],
-          ...updates,
-          updatedAt: new Date().toISOString(),
-        };
-        notify();
+      if (row) {
+        setTimeout(async () => {
+          await dbCall({
+            table: "warranty_lines", action: "update", id: row.id,
+            updates: { status: "active", phone_number: generatePhoneNumber() },
+          });
+          await loadLines();
+        }, 3000);
       }
     },
 
-    pauseLine(dealerId: string) {
-      if (warrantyLines[dealerId]) {
-        warrantyLines[dealerId] = {
-          ...warrantyLines[dealerId],
-          status: "paused",
-          updatedAt: new Date().toISOString(),
-        };
-        notify();
+    async updateLine(dealerId: string, updates: Partial<WarrantyLine>) {
+      const line = warrantyLines[dealerId];
+      if (!line) return;
+      const dbUpdates: Record<string, unknown> = {};
+      if (updates.greetingMessage !== undefined) dbUpdates.greeting_message = updates.greetingMessage;
+      if (updates.forwardingNumber !== undefined) dbUpdates.forwarding_number = updates.forwardingNumber;
+      if (updates.ivrEnabled !== undefined) dbUpdates.ivr_enabled = updates.ivrEnabled;
+      if (updates.option1Label !== undefined) dbUpdates.option1_label = updates.option1Label;
+      if (updates.option2Label !== undefined) dbUpdates.option2_label = updates.option2Label;
+      if (updates.option3Label !== undefined) dbUpdates.option3_label = updates.option3Label;
+      if (updates.holdMusicType !== undefined) dbUpdates.hold_music_type = updates.holdMusicType;
+      if (updates.voicemailEnabled !== undefined) dbUpdates.voicemail_enabled = updates.voicemailEnabled;
+      if (updates.voicemailEmail !== undefined) dbUpdates.voicemail_email = updates.voicemailEmail;
+      if (updates.businessName !== undefined) dbUpdates.business_name = updates.businessName;
+      if (updates.status !== undefined) dbUpdates.status = updates.status;
+      if (Object.keys(dbUpdates).length > 0) {
+        await dbCall({ table: "warranty_lines", action: "update", id: line.id, updates: dbUpdates });
+        await loadLines();
       }
     },
 
-    resumeLine(dealerId: string) {
-      if (warrantyLines[dealerId]) {
-        warrantyLines[dealerId] = {
-          ...warrantyLines[dealerId],
-          status: "active",
-          updatedAt: new Date().toISOString(),
-        };
-        notify();
-      }
+    async pauseLine(dealerId: string) {
+      const line = warrantyLines[dealerId];
+      if (!line) return;
+      await dbCall({ table: "warranty_lines", action: "update", id: line.id, updates: { status: "paused" } });
+      await loadLines();
     },
 
-    cancelLine(dealerId: string) {
-      delete warrantyLines[dealerId];
-      notify();
+    async resumeLine(dealerId: string) {
+      const line = warrantyLines[dealerId];
+      if (!line) return;
+      await dbCall({ table: "warranty_lines", action: "update", id: line.id, updates: { status: "active" } });
+      await loadLines();
+    },
+
+    async cancelLine(dealerId: string) {
+      const line = warrantyLines[dealerId];
+      if (!line) return;
+      await dbCall({ table: "warranty_lines", action: "delete", id: line.id });
+      await loadLines();
     },
   };
 }

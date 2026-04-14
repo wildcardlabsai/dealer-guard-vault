@@ -17,7 +17,12 @@ Deno.serve(async (req) => {
 
     const { table, action, id, updates, filters } = await req.json();
 
-    const allowedTables = ["enquiries", "signup_requests", "warranties", "claims", "customer_requests", "audit_log", "customers", "dealers"];
+    const allowedTables = [
+      "enquiries", "signup_requests", "warranties", "claims",
+      "customer_requests", "audit_log", "customers", "dealers",
+      "support_tickets", "cover_templates", "dispute_cases",
+      "dealer_settings", "warranty_lines", "notifications",
+    ];
     if (!allowedTables.includes(table)) {
       return new Response(JSON.stringify({ error: "Invalid table" }), {
         status: 400,
@@ -30,6 +35,7 @@ Deno.serve(async (req) => {
       if (filters?.dealer_id) query = query.eq("dealer_id", filters.dealer_id);
       if (filters?.customer_email) query = query.ilike("customer_email", filters.customer_email);
       if (filters?.status) query = query.eq("status", filters.status);
+      if (filters?.user_id) query = query.eq("user_id", filters.user_id);
       const { data, error } = await query.order("created_at", { ascending: false }).limit(500);
       if (error) throw error;
       return new Response(JSON.stringify({ data }), {
@@ -49,6 +55,22 @@ Deno.serve(async (req) => {
       const { data, error } = await supabase.from(table).update(updates).eq("id", id).select().single();
       if (error) throw error;
       return new Response(JSON.stringify({ data }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "upsert") {
+      const { data, error } = await supabase.from(table).upsert(updates, { onConflict: filters?.onConflict || "id" }).select().single();
+      if (error) throw error;
+      return new Response(JSON.stringify({ data }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "delete" && id) {
+      const { error } = await supabase.from(table).delete().eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
