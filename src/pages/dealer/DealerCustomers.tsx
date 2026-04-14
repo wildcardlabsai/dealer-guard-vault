@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Search, Mail, Loader2, UserPlus, Clock } from "lucide-react";
+import { Search, Mail, Loader2, UserPlus, Clock, Send } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +27,7 @@ export default function DealerCustomers() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteName, setInviteName] = useState("");
   const [inviting, setInviting] = useState(false);
+  const [resendingId, setResendingId] = useState<string | null>(null);
   const [timelineCustomer, setTimelineCustomer] = useState<string | null>(null);
 
   const getTimeline = (customerId: string) => {
@@ -115,6 +116,35 @@ export default function DealerCustomers() {
     }
   };
 
+  const handleResendWelcome = async (customer: typeof demoCustomers[0]) => {
+    setResendingId(customer.id);
+    const toastId = toast.loading(`Resending welcome email to ${customer.email}...`);
+    try {
+      const { data, error } = await supabase.functions.invoke("invite-customer", {
+        body: {
+          email: customer.email,
+          customerName: customer.name,
+          dealerName,
+        },
+      });
+      if (error) throw error;
+      if (data?.success) {
+        toast.success(
+          data.isNewAccount
+            ? `New account created and welcome email sent to ${customer.name}`
+            : `Welcome email resent to ${customer.name} with existing login details`,
+          { id: toastId }
+        );
+      } else {
+        throw new Error(data?.error || "Unknown error");
+      }
+    } catch (err: any) {
+      toast.error(`Failed to resend: ${err.message || "Unknown error"}`, { id: toastId });
+    } finally {
+      setResendingId(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -151,11 +181,15 @@ export default function DealerCustomers() {
               <p className="text-sm text-muted-foreground">{c.phone}</p>
               <p className="text-xs text-muted-foreground mt-2">{c.address}, {c.city}, {c.postcode}</p>
               <p className="text-xs text-muted-foreground mt-1">Joined: {new Date(c.createdAt).toLocaleDateString("en-GB")}</p>
-              <div className="flex gap-2 mt-3">
-                <Button variant="outline" size="sm" className="flex-1" onClick={() => handleInviteExisting(c)}>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <Button variant="outline" size="sm" onClick={() => handleResendWelcome(c)} disabled={resendingId === c.id}>
+                  {resendingId === c.id ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Send className="w-3.5 h-3.5 mr-1.5" />}
+                  Resend Welcome
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleInviteExisting(c)}>
                   <Mail className="w-3.5 h-3.5 mr-1.5" /> Invite
                 </Button>
-                <Button variant="outline" size="sm" className="flex-1" onClick={() => setTimelineCustomer(c.id)}>
+                <Button variant="outline" size="sm" onClick={() => setTimelineCustomer(c.id)}>
                   <Clock className="w-3.5 h-3.5 mr-1.5" /> Timeline
                 </Button>
               </div>
