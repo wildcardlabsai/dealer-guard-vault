@@ -24,12 +24,24 @@ const statusColors: Record<string, string> = {
   cancelled: "bg-muted text-muted-foreground border-border",
 };
 
+type SortOption = "newest" | "oldest" | "expiry-asc" | "expiry-desc" | "name-az" | "name-za";
+
+const sortLabels: Record<SortOption, string> = {
+  "newest": "Newest First",
+  "oldest": "Oldest First",
+  "expiry-asc": "Expiry (Soonest)",
+  "expiry-desc": "Expiry (Latest)",
+  "name-az": "Name A–Z",
+  "name-za": "Name Z–A",
+};
+
 export default function DealerWarranties() {
   const { user } = useAuth();
   const dealerId = user?.dealerId || "d-1";
   const store = useWarrantyStore();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [emailDialogId, setEmailDialogId] = useState<string | null>(null);
   const [emailMode, setEmailMode] = useState<"default" | "custom">("default");
@@ -43,7 +55,18 @@ export default function DealerWarranties() {
       w.customerName.toLowerCase().includes(search.toLowerCase()) ||
       w.vehicleReg.toLowerCase().includes(search.toLowerCase()) ||
       w.vehicleMake.toLowerCase().includes(search.toLowerCase())
-    );
+    )
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "newest": return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+        case "oldest": return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+        case "expiry-asc": return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+        case "expiry-desc": return new Date(b.endDate).getTime() - new Date(a.endDate).getTime();
+        case "name-az": return a.customerName.localeCompare(b.customerName);
+        case "name-za": return b.customerName.localeCompare(a.customerName);
+        default: return 0;
+      }
+    });
 
   const selected = warranties.find(w => w.id === selectedId);
   const emailTarget = warranties.find(w => w.id === emailDialogId);
@@ -99,13 +122,26 @@ export default function DealerWarranties() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search by name, reg or make..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {["all", "active", "expired", "cancelled"].map(s => (
             <Button key={s} variant={statusFilter === s ? "default" : "outline"} size="sm" onClick={() => setStatusFilter(s)} className="capitalize">
               {s}
             </Button>
           ))}
         </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-muted-foreground">Sort by:</span>
+        <select
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value as SortOption)}
+          className="text-sm bg-secondary/50 border border-border/50 rounded-md px-3 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50"
+        >
+          {Object.entries(sortLabels).map(([key, label]) => (
+            <option key={key} value={key}>{label}</option>
+          ))}
+        </select>
       </div>
 
       <div className="glass-card rounded-xl overflow-hidden">
@@ -116,7 +152,8 @@ export default function DealerWarranties() {
                 <th className="text-left p-4 font-medium text-muted-foreground">Customer</th>
                 <th className="text-left p-4 font-medium text-muted-foreground">Vehicle</th>
                 <th className="text-left p-4 font-medium text-muted-foreground hidden lg:table-cell">Reg</th>
-                <th className="text-left p-4 font-medium text-muted-foreground hidden md:table-cell">Duration</th>
+                <th className="text-left p-4 font-medium text-muted-foreground hidden md:table-cell">Start Date</th>
+                <th className="text-left p-4 font-medium text-muted-foreground hidden md:table-cell">Expiry Date</th>
                 <th className="text-left p-4 font-medium text-muted-foreground">Cost</th>
                 <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
                 <th className="text-left p-4 font-medium text-muted-foreground">Actions</th>
@@ -128,7 +165,8 @@ export default function DealerWarranties() {
                   <td className="p-4 font-medium">{w.customerName}</td>
                   <td className="p-4 text-muted-foreground">{w.vehicleMake} {w.vehicleModel}</td>
                   <td className="p-4 hidden lg:table-cell"><code className="text-xs bg-secondary/50 px-2 py-1 rounded">{w.vehicleReg}</code></td>
-                  <td className="p-4 text-muted-foreground hidden md:table-cell">{w.duration} months</td>
+                  <td className="p-4 text-muted-foreground hidden md:table-cell">{new Date(w.startDate).toLocaleDateString("en-GB")}</td>
+                  <td className="p-4 text-muted-foreground hidden md:table-cell">{new Date(w.endDate).toLocaleDateString("en-GB")}</td>
                   <td className="p-4 font-medium">£{w.cost}</td>
                   <td className="p-4">
                     <Badge variant="outline" className={`capitalize ${statusColors[w.status]}`}>{w.status}</Badge>
