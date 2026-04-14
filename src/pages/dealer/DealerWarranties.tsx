@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
 import { openCertificate, generateCertificateHTML } from "@/lib/generate-certificate";
 import { sendCertificateEmail } from "@/lib/email-service";
