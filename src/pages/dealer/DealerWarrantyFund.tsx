@@ -116,7 +116,71 @@ function generateInsights(
   return insights;
 }
 
-// ─── UI Components ──────────────────────────────────────────────────
+// ─── Smart Contribution Recommendation Engine ──────────────────────
+const SAFETY_MARGIN_LOW = 0.20;
+const SAFETY_MARGIN_HIGH = 0.35;
+const CONTRIB_FLOOR = 80;
+const CONTRIB_CAP = 180;
+const MIN_WARRANTIES_FOR_REC = 10;
+const CHANGE_THRESHOLD_ABS = 10;
+const CHANGE_THRESHOLD_PCT = 0.08;
+const COOLDOWN_DAYS = 14;
+
+interface ContribRecommendation {
+  suggested: number;
+  current: number;
+  diff: number;
+  reason: string;
+  impactScoreBefore: number;
+  impactScoreAfter: number;
+  projected3MonthBuffer: number;
+  exposureImpact: string;
+}
+
+function calcRecommendedContribution(avgClaimCost: number, claimRate: number): number {
+  const base = avgClaimCost * claimRate;
+  const withMargin = base * (1 + (SAFETY_MARGIN_LOW + SAFETY_MARGIN_HIGH) / 2);
+  return Math.round(Math.min(CONTRIB_CAP, Math.max(CONTRIB_FLOOR, withMargin)));
+}
+
+function isChangeSignificant(current: number, suggested: number): boolean {
+  const absDiff = Math.abs(suggested - current);
+  const pctDiff = current > 0 ? absDiff / current : 1;
+  return absDiff >= CHANGE_THRESHOLD_ABS || pctDiff >= CHANGE_THRESHOLD_PCT;
+}
+
+function shouldShowRecommendation(
+  lastDate: string | null,
+  dismissedUntil: string | null,
+  healthStatus: string,
+): boolean {
+  const now = new Date();
+  if (dismissedUntil && new Date(dismissedUntil) > now) return false;
+  if (healthStatus === "watch" || healthStatus === "risk") return true;
+  if (!lastDate) return true;
+  const daysSince = (now.getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24);
+  return daysSince >= COOLDOWN_DAYS;
+}
+
+function generateRecommendationReason(
+  current: number,
+  suggested: number,
+  claimRate: number,
+  avgClaimCost: number,
+  buffer: number,
+  exposure: number,
+): string {
+  if (suggested > current) {
+    if (claimRate > 0.25) return "Your claim rate is above your previous trend — increasing your contribution helps absorb future claims.";
+    if (avgClaimCost > 400) return "Your average claim cost has increased — a higher contribution keeps your buffer healthy.";
+    if (buffer < exposure * 0.2) return "Your fund buffer is getting tight — this change would strengthen your safety net.";
+    return "Based on your claim patterns, a small increase would improve your fund's resilience.";
+  }
+  if (buffer > exposure * 1.5) return "Your fund has a strong surplus — you could reduce contributions while staying safe.";
+  return "Based on your current data, a slight adjustment could optimise your fund efficiency.";
+}
+
+
 
 function StatCard({ icon: Icon, label, value, sub, color }: { icon: any; label: string; value: string; sub?: string; color?: string }) {
   return (
