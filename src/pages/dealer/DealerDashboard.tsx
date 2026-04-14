@@ -18,7 +18,6 @@ import {
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
 import { calcHealthScore, calcExposure, getEffectiveMetrics, getScoreStatus, getScoreRingColor } from "@/lib/fund-health";
-import { toast } from "sonner";
 
 function SectionHeader({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
