@@ -73,6 +73,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             const active = location.pathname === item.path;
             const showBadge = item.path === "/admin/signup-requests" && pendingCount > 0;
             const showSupportBadge = item.path === "/admin/support" && openTickets > 0;
+            const showEnquiryBadge = item.path === "/admin/enquiries" && enquiryCount > 0;
             return (
               <Link key={item.path} to={item.path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
@@ -85,6 +86,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 )}
                 {showSupportBadge && (
                   <span className="bg-amber-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">{openTickets}</span>
+                )}
+                {showEnquiryBadge && (
+                  <span className="bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">{enquiryCount}</span>
                 )}
               </Link>
             );
@@ -103,6 +107,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
       <div className="flex-1 flex flex-col min-w-0">
         <header className="md:hidden h-14 border-b border-border/50 flex items-center px-4 gap-3 bg-card/40">
+          <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setMobileNav(!mobileNav)}>
+            {mobileNav ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
           <img src={logo} alt="WarrantyVault" className="h-5" />
           <span className="text-[10px] uppercase tracking-widest text-amber-400 font-semibold">Admin</span>
           <div className="flex-1" />
@@ -117,6 +124,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="w-4 h-4" /></Button>
         </header>
+        {/* Mobile nav drawer */}
+        {mobileNav && (
+          <div className="md:hidden border-b border-border/50 bg-card/60 backdrop-blur-sm px-2 py-2 space-y-1 animate-fade-in">
+            {navItems.map(item => {
+              const active = location.pathname === item.path;
+              return (
+                <Link key={item.path} to={item.path} onClick={() => setMobileNav(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+                    active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  }`}>
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
         <div className="hidden md:flex items-center justify-end px-6 py-2 border-b border-border/30">
           <div className="relative" ref={notifRef}>
             <Button variant="ghost" size="icon" className="relative h-9 w-9" onClick={() => setShowNotifs(!showNotifs)}>
