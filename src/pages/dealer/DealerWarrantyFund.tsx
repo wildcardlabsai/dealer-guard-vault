@@ -16,7 +16,7 @@ import {
   Sparkles, Loader2, DollarSign, BarChart3, Target, ArrowUpRight, ArrowDownRight,
   Info, Zap, CheckCircle2, Clock, X, Eye, ChevronDown, ChevronUp, Settings2,
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend, Area, AreaChart, ReferenceLine } from "recharts";
 import { toast } from "sonner";
 
 // ─── Fund Health Score Engine ───────────────────────────────────────
