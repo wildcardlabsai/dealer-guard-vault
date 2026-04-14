@@ -19,59 +19,7 @@ import {
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend, Area, AreaChart, ReferenceLine } from "recharts";
 import { toast } from "sonner";
 
-// ─── Fund Health Score Engine ───────────────────────────────────────
-const DEFAULT_CLAIM_RATE = 0.15;
-const DEFAULT_AVG_CLAIM_COST = 450;
-const RECOMMENDED_MIN = 100;
-const RECOMMENDED_MAX = 150;
-
-function getEffectiveMetrics(warrantyCount: number, rawClaimRate: number, rawAvgClaimCost: number) {
-  const useFallback = warrantyCount < 5;
-  return {
-    claimRate: useFallback ? DEFAULT_CLAIM_RATE : rawClaimRate,
-    avgClaimCost: useFallback ? DEFAULT_AVG_CLAIM_COST : rawAvgClaimCost,
-    usingFallback: useFallback,
-  };
-}
-
-function calcExposure(activeWarranties: number, claimRate: number, avgClaimCost: number) {
-  return activeWarranties * claimRate * avgClaimCost;
-}
-
-function calcHealthScore(
-  buffer: number,
-  exposure: number,
-  contributionPerWarranty: number,
-  claimRate: number,
-  warrantyCount: number,
-) {
-  // 1. Buffer Strength (40%)
-  const bufferRatio = exposure > 0 ? buffer / exposure : (buffer >= 0 ? 1 : -1);
-  const bufferPts = bufferRatio > 0.5 ? 40 : bufferRatio >= 0.2 ? 25 : bufferRatio >= 0 ? 10 : 0;
-
-  // 2. Contribution Level (25%)
-  const contribPts = contributionPerWarranty >= RECOMMENDED_MIN ? 25
-    : contributionPerWarranty >= 75 ? 15 : 5;
-
-  // 3. Claim Rate Health (20%)
-  const cr = claimRate * 100;
-  const claimPts = cr < 15 ? 20 : cr <= 25 ? 15 : cr <= 35 ? 8 : 0;
-
-  // 4. Data Confidence (15%)
-  const dataPts = warrantyCount > 20 ? 15 : warrantyCount >= 10 ? 10 : 5;
-
-  return {
-    total: bufferPts + contribPts + claimPts + dataPts,
-    breakdown: { bufferPts, contribPts, claimPts, dataPts },
-  };
-}
-
-function getScoreStatus(score: number) {
-  if (score >= 80) return { label: "Healthy", key: "healthy" as const, color: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30", icon: ShieldCheck };
-  if (score >= 60) return { label: "Stable", key: "stable" as const, color: "bg-primary/20 text-primary border-primary/30", icon: ShieldCheck };
-  if (score >= 40) return { label: "Watch", key: "watch" as const, color: "bg-amber-500/20 text-amber-400 border-amber-500/30", icon: AlertTriangle };
-  return { label: "Risk", key: "risk" as const, color: "bg-destructive/20 text-destructive border-destructive/30", icon: AlertTriangle };
-}
+import { getEffectiveMetrics, calcExposure, calcHealthScore, getScoreStatus, RECOMMENDED_MIN, RECOMMENDED_MAX, DEFAULT_CLAIM_RATE, DEFAULT_AVG_CLAIM_COST } from "@/lib/fund-health";
 
 function generateInsights(
   buffer: number,
