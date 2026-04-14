@@ -37,7 +37,6 @@ export default function SignupPage() {
     }
 
     addRequest({
-      id: `sr-${Date.now()}`,
       dealershipName: form.dealershipName,
       contactName: form.contactName,
       email: form.email,
@@ -48,8 +47,6 @@ export default function SignupPage() {
       fcaNumber: form.fcaNumber,
       estimatedVolume: form.estimatedVolume,
       message: form.message,
-      status: "pending",
-      createdAt: new Date().toISOString(),
     });
 
     setSubmitted(true);
