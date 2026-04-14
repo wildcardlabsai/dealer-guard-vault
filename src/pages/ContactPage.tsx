@@ -29,8 +29,8 @@ export default function ContactPage() {
     }
     setSending(true);
 
-    // Store locally for admin panel
-    const enquiry = addEnquiry({
+    // Store in database
+    const enquiry = await addEnquiry({
       name: form.name,
       email: form.email,
       phone: form.phone || undefined,
