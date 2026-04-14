@@ -20,7 +20,10 @@ export default function CustomerClaimSubmit() {
   const warrantyStore = useWarrantyStore();
   const claimStore = useClaimStore();
   const coverStore = useCoverStore();
-  const warranties = warrantyStore.warranties.filter(w => w.customerId === user?.id && w.status === "active");
+  const userEmail = user?.email?.toLowerCase();
+  const warranties = warrantyStore.warranties.filter(w =>
+    (w.customerId === user?.id || (userEmail && w.customerEmail?.toLowerCase() === userEmail)) && w.status === "active"
+  );
 
   const [step, setStep] = useState(1);
   const [selectedWarrantyId, setSelectedWarrantyId] = useState(warranties[0]?.id || "");

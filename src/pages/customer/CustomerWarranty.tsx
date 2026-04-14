@@ -7,7 +7,11 @@ import { openCertificate, printCertificate, downloadCertificate } from "@/lib/ge
 export default function CustomerWarranty() {
   const { user } = useAuth();
   const store = useWarrantyStore();
-  const warranties = store.warranties.filter(w => w.customerId === user?.id && w.status === "active");
+  const userEmail = user?.email?.toLowerCase();
+  const warranties = store.warranties.filter(w =>
+    w.customerId === user?.id ||
+    (userEmail && w.customerEmail?.toLowerCase() === userEmail)
+  ).filter(w => w.status === "active");
 
   return (
     <div className="space-y-6">
