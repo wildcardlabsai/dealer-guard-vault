@@ -1,7 +1,7 @@
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useCoverStore } from "@/lib/cover-store";
 import { useAuth } from "@/contexts/AuthContext";
-import { Shield, Car, Calendar, AlertTriangle, Download, CheckCircle2, Circle, Clock, FileText } from "lucide-react";
+import { Shield, Car, Calendar, AlertTriangle, Download, CheckCircle2, Circle, Clock, FileText, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -268,6 +268,20 @@ export default function CustomerDashboard() {
           )}
         </div>
       )}
+
+      {/* Knowledge Base Quick Link */}
+      <div className="glass-card rounded-xl p-5 flex items-center gap-4">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <BookOpen className="w-5 h-5 text-primary" />
+        </div>
+        <div className="flex-1">
+          <p className="font-medium text-sm">Need help?</p>
+          <p className="text-xs text-muted-foreground">Browse guides on claims, warranties, and more.</p>
+        </div>
+        <Button size="sm" variant="outline" asChild>
+          <Link to="/knowledge-base">Knowledge Base</Link>
+        </Button>
+      </div>
 
       {warranties.length > 1 && (
         <div>
