@@ -4,13 +4,15 @@ import { lookupVehicle, lookupPostcode, lookupMOTHistory, type DVLAVehicle, type
 import { supabase } from "@/integrations/supabase/client";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useCoverStore } from "@/lib/cover-store";
+import { useDealerSettingsStore } from "@/lib/dealer-settings-store";
 import { useAuth } from "@/contexts/AuthContext";
+import { demoCustomers } from "@/data/demo-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle } from "lucide-react";
+import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AddWarranty() {
@@ -19,6 +21,7 @@ export default function AddWarranty() {
   const { user } = useAuth();
   const store = useWarrantyStore();
   const coverStore = useCoverStore();
+  const dealerSettingsStore = useDealerSettingsStore();
   const dealerId = user?.dealerId || "d-1";
   const templates = coverStore.templates.filter(t => t.dealerId === dealerId || t.dealerId === "system");
   const passedState = location.state as { reg?: string; vehicle?: DVLAVehicle } | null;
@@ -31,9 +34,32 @@ export default function AddWarranty() {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(false);
   const [paying, setPaying] = useState(false);
+  const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
   const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
 
-  // Auto-trigger lookup if navigated with reg from dashboard
+  // Existing customers for this dealer
+  const existingCustomers = demoCustomers.filter(c => c.dealerId === dealerId);
+  // Also include customers from warranties added by this dealer (not in demo data)
+  const warrantyCustomers = store.warranties
+    .filter(w => w.dealerId === dealerId && w.customerEmail)
+    .reduce((acc, w) => {
+      if (!acc.find(c => c.email === w.customerEmail) && !existingCustomers.find(c => c.email === w.customerEmail)) {
+        acc.push({ id: w.customerId, name: w.customerName, email: w.customerEmail!, phone: "", dealerId });
+      }
+      return acc;
+    }, [] as { id: string; name: string; email: string; phone: string; dealerId: string }[]);
+  const allCustomers = [...existingCustomers, ...warrantyCustomers];
+
+  // Sync free warranty count with actual data
+  const dealerWarrantyCount = store.warranties.filter(w => w.dealerId === dealerId).length;
+  useEffect(() => {
+    dealerSettingsStore.syncFreeWarrantyCount(dealerId, dealerWarrantyCount);
+  }, [dealerWarrantyCount, dealerId]);
+
+  const isFreeWarranty = dealerSettingsStore.hasFreeWarranties(dealerId);
+  const freeRemaining = dealerSettingsStore.freeWarrantiesRemaining(dealerId);
+
   useEffect(() => {
     if (passedState?.reg && !vehicle) {
       handleVehicleLookup();
@@ -44,7 +70,6 @@ export default function AddWarranty() {
   const handleVehicleLookup = async () => {
     if (!reg.trim()) return;
     setLoading(true);
-    // Fetch DVLA and DVSA data in parallel
     const [dvlaResult, dvsaResult] = await Promise.all([
       lookupVehicle(reg),
       lookupMOTHistory(reg),
@@ -53,7 +78,6 @@ export default function AddWarranty() {
     setDvsaData(dvsaResult);
     setLoading(false);
     if (dvlaResult) {
-      // Pre-fill mileage from latest MOT if available
       if (dvsaResult?.motTests?.[0]?.odometerValue) {
         setForm(f => ({ ...f, mileage: dvsaResult.motTests[0].odometerValue }));
       }
@@ -72,6 +96,19 @@ export default function AddWarranty() {
     setLoading(false);
   };
 
+  const handleSelectExistingCustomer = (customerId: string) => {
+    setSelectedCustomerId(customerId);
+    const customer = allCustomers.find(c => c.id === customerId);
+    if (customer) {
+      setForm(f => ({
+        ...f,
+        customerName: customer.name,
+        email: customer.email,
+        phone: customer.phone || f.phone,
+      }));
+    }
+  };
+
   const handlePayAndCreate = async () => {
     if (!vehicle || !form.customerName || !form.cost) {
       toast.error("Please fill in all required fields");
@@ -79,10 +116,7 @@ export default function AddWarranty() {
     }
     setPaying(true);
     
-    // Only simulate payment processing for paid warranties
-    const dealerCount = store.warranties.filter(w => w.dealerId === dealerId).length;
-    const isFree = dealerCount < 5;
-    if (!isFree) {
+    if (!isFreeWarranty) {
       await new Promise(r => setTimeout(r, 2000));
     } else {
       await new Promise(r => setTimeout(r, 800));
@@ -91,9 +125,11 @@ export default function AddWarranty() {
     const startDate = new Date().toISOString().split("T")[0];
     const endDate = new Date(Date.now() + parseInt(form.duration) * 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
 
+    const customerId = selectedCustomerId || `cust-${Date.now()}`;
+
     store.addWarranty({
       id: `w-${Date.now()}`,
-      customerId: `cust-${Date.now()}`,
+      customerId,
       customerName: form.customerName,
       customerEmail: form.email || undefined,
       dealerId,
@@ -112,13 +148,17 @@ export default function AddWarranty() {
       notes: form.notes,
       createdAt: startDate,
       coverTemplateId: form.coverTemplateId || undefined,
-      paymentStatus: isFree ? "free" : "paid",
+      paymentStatus: isFreeWarranty ? "free" : "paid",
     });
 
+    // Track free warranty usage
+    if (isFreeWarranty) {
+      dealerSettingsStore.useFreeWarranty(dealerId);
+    }
+
     setPaying(false);
-    toast.success(isFree ? "Free warranty created successfully!" : "Payment successful! Warranty created.");
+    toast.success(isFreeWarranty ? "Free warranty created successfully!" : "Payment successful! Warranty created.");
     
-    // Create customer account and send warranty email with credentials
     if (form.email) {
       const dealerName = dealerId === "d-1" ? "Prestige Motors" : "City Autos";
       supabase.functions.invoke("invite-customer", {
@@ -147,9 +187,6 @@ export default function AddWarranty() {
   };
 
   const selectedTemplate = templates.find(t => t.id === form.coverTemplateId);
-  const dealerWarrantyCount = store.warranties.filter(w => w.dealerId === dealerId).length;
-  const isFreeWarranty = dealerWarrantyCount < 5;
-  const freeRemaining = Math.max(0, 5 - dealerWarrantyCount);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -260,48 +297,130 @@ export default function AddWarranty() {
       {step === 2 && (
         <div className="glass-card rounded-xl p-6 space-y-4">
           <h2 className="font-semibold font-display">Customer Details</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Full Name *</Label>
-              <Input placeholder="John Smith" value={form.customerName} onChange={e => setForm({ ...form, customerName: e.target.value })} />
+
+          {/* New or Existing Customer Toggle */}
+          {!customerType && (
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setCustomerType("new")}
+                className="flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-primary/5 transition-all"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <UserPlus className="w-6 h-6 text-primary" />
+                </div>
+                <div className="text-center">
+                  <p className="font-medium text-sm">New Customer</p>
+                  <p className="text-xs text-muted-foreground">Enter new customer details</p>
+                </div>
+              </button>
+              <button
+                onClick={() => setCustomerType("existing")}
+                className="flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-primary/5 transition-all"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Users className="w-6 h-6 text-primary" />
+                </div>
+                <div className="text-center">
+                  <p className="font-medium text-sm">Existing Customer</p>
+                  <p className="text-xs text-muted-foreground">Select from your customers</p>
+                </div>
+              </button>
             </div>
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input placeholder="john@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-            </div>
-            <div className="space-y-2">
-              <Label>Phone</Label>
-              <Input placeholder="07700 900000" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
-            </div>
-            <div className="space-y-2">
-              <Label>Postcode</Label>
-              <div className="flex gap-2">
-                <Input placeholder="B1 1QT" value={postcode} onChange={e => setPostcode(e.target.value)} />
-                <Button variant="outline" onClick={handlePostcodeLookup} disabled={loading}>
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Find"}
+          )}
+
+          {/* Existing Customer Selector */}
+          {customerType === "existing" && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Select Customer</Label>
+                <Button variant="ghost" size="sm" onClick={() => { setCustomerType(null); setSelectedCustomerId(""); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}>
+                  Change
                 </Button>
               </div>
-            </div>
-          </div>
-          {addresses.length > 0 && (
-            <div className="space-y-2">
-              <Label>Select Address</Label>
-              <Select onValueChange={v => setSelectedAddress(addresses[parseInt(v)])}>
-                <SelectTrigger><SelectValue placeholder="Choose address..." /></SelectTrigger>
+              <Select value={selectedCustomerId} onValueChange={handleSelectExistingCustomer}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a customer..." />
+                </SelectTrigger>
                 <SelectContent>
-                  {addresses.map((a, i) => (
-                    <SelectItem key={i} value={i.toString()}>{a.line1}, {a.city}, {a.postcode}</SelectItem>
+                  {allCustomers.map(c => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name} — {c.email}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {selectedAddress && (
-                <p className="text-sm text-muted-foreground">{selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ""}, {selectedAddress.city}, {selectedAddress.postcode}</p>
+              {selectedCustomerId && (
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm space-y-1">
+                  <p className="font-medium text-primary">Selected: {form.customerName}</p>
+                  <p className="text-muted-foreground">{form.email}</p>
+                </div>
               )}
             </div>
           )}
+
+          {/* New Customer Form */}
+          {customerType === "new" && (
+            <>
+              <div className="flex items-center justify-between">
+                <Label className="text-xs text-muted-foreground">New customer details</Label>
+                <Button variant="ghost" size="sm" onClick={() => { setCustomerType(null); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}>
+                  Change
+                </Button>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Full Name *</Label>
+                  <Input placeholder="John Smith" value={form.customerName} onChange={e => setForm({ ...form, customerName: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Email *</Label>
+                  <Input placeholder="john@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Phone</Label>
+                  <Input placeholder="07700 900000" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Postcode</Label>
+                  <div className="flex gap-2">
+                    <Input placeholder="B1 1QT" value={postcode} onChange={e => setPostcode(e.target.value)} />
+                    <Button variant="outline" onClick={handlePostcodeLookup} disabled={loading}>
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Find"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              {addresses.length > 0 && (
+                <div className="space-y-2">
+                  <Label>Select Address</Label>
+                  <Select onValueChange={v => setSelectedAddress(addresses[parseInt(v)])}>
+                    <SelectTrigger><SelectValue placeholder="Choose address..." /></SelectTrigger>
+                    <SelectContent>
+                      {addresses.map((a, i) => (
+                        <SelectItem key={i} value={i.toString()}>{a.line1}, {a.city}, {a.postcode}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {selectedAddress && (
+                    <p className="text-sm text-muted-foreground">{selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ""}, {selectedAddress.city}, {selectedAddress.postcode}</p>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+
           <div className="flex justify-between pt-2">
             <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-            <Button onClick={() => { if (!form.customerName) { toast.error("Customer name is required"); return; } setStep(3); }}>Continue</Button>
+            <Button
+              disabled={!customerType || !form.customerName}
+              onClick={() => {
+                if (!form.customerName) { toast.error("Customer name is required"); return; }
+                if (customerType === "new" && !form.email) { toast.error("Email is required for new customers"); return; }
+                setStep(3);
+              }}
+            >
+              Continue
+            </Button>
           </div>
         </div>
       )}

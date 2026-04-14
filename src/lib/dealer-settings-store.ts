@@ -13,9 +13,25 @@ export interface DealerSettings {
   dismissedRecommendationUntil: string | null;
 }
 
-const settingsMap: Record<string, DealerSettings> = {};
+const STORAGE_KEY = "wv_dealer_settings";
+
+function loadSettingsMap(): Record<string, DealerSettings> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return {};
+}
+
+function saveSettingsMap() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(settingsMap));
+  } catch {}
+}
+
+const settingsMap: Record<string, DealerSettings> = loadSettingsMap();
 const listeners: Array<() => void> = [];
-const notify = () => listeners.forEach(l => l());
+const notify = () => { saveSettingsMap(); listeners.forEach(l => l()); };
 
 function getSettings(dealerId: string): DealerSettings {
   if (!settingsMap[dealerId]) {
@@ -63,6 +79,16 @@ export function useDealerSettingsStore() {
     freeWarrantiesRemaining(dealerId: string): number {
       const s = getSettings(dealerId);
       return Math.max(0, s.freeWarrantiesTotal - s.freeWarrantiesUsed);
+    },
+    // Sync free warranty usage with actual warranty count
+    syncFreeWarrantyCount(dealerId: string, totalWarrantyCount: number) {
+      const s = getSettings(dealerId);
+      const correctUsed = Math.min(totalWarrantyCount, s.freeWarrantiesTotal);
+      if (s.freeWarrantiesUsed !== correctUsed) {
+        settingsMap[dealerId] = { ...s, freeWarrantiesUsed: correctUsed };
+        saveSettingsMap();
+        // Don't trigger notify here to avoid render loops — caller re-renders anyway
+      }
     },
   };
 }

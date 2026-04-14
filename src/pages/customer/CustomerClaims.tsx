@@ -22,8 +22,16 @@ export default function CustomerClaims() {
   const { user } = useAuth();
   const store = useWarrantyStore();
   const warrantyLineStore = useWarrantyLineStore();
-  const claims = store.claims.filter(c => c.customerId === user?.id);
-  const warranties = store.warranties.filter(w => w.customerId === user?.id && w.status === "active");
+  const userEmail = user?.email?.toLowerCase();
+  const allUserWarranties = store.warranties.filter(w =>
+    w.customerId === user?.id ||
+    (userEmail && w.customerEmail?.toLowerCase() === userEmail)
+  );
+  const claims = store.claims.filter(c =>
+    c.customerId === user?.id ||
+    allUserWarranties.some(w => w.id === c.warrantyId)
+  );
+  const warranties = allUserWarranties.filter(w => w.status === "active");
   const dealerId = warranties[0]?.dealerId;
   const warrantyLine = dealerId ? warrantyLineStore.getLine(dealerId) : null;
   const [showNew, setShowNew] = useState(false);

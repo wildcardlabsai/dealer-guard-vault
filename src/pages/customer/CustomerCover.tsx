@@ -18,7 +18,10 @@ export default function CustomerCover() {
   const store = useWarrantyStore();
   const coverStore = useCoverStore();
   const warrantyLineStore = useWarrantyLineStore();
-  const warranties = store.warranties.filter(w => w.customerId === user?.id && w.status === "active");
+  const userEmail = user?.email?.toLowerCase();
+  const warranties = store.warranties.filter(w =>
+    (w.customerId === user?.id || (userEmail && w.customerEmail?.toLowerCase() === userEmail)) && w.status === "active"
+  );
   const warranty = warranties[0];
   const template = warranty ? coverStore.getTemplateForWarranty(warranty.id) : undefined;
   const warrantyLine = warranty ? warrantyLineStore.getLine(warranty.dealerId) : null;

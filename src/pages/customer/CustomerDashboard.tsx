@@ -73,8 +73,16 @@ export default function CustomerDashboard() {
   const { user } = useAuth();
   const store = useWarrantyStore();
   const coverStore = useCoverStore();
-  const warranties = store.warranties.filter(w => w.customerId === user?.id);
-  const claims = store.claims.filter(c => c.customerId === user?.id);
+  // Match warranties by customerId OR by email (for Supabase-authenticated users)
+  const userEmail = user?.email?.toLowerCase();
+  const warranties = store.warranties.filter(w =>
+    w.customerId === user?.id ||
+    (userEmail && w.customerEmail?.toLowerCase() === userEmail)
+  );
+  const claims = store.claims.filter(c =>
+    c.customerId === user?.id ||
+    (userEmail && warranties.some(w => w.id === c.warrantyId))
+  );
   const activeWarranty = warranties.find(w => w.status === "active");
 
   let daysRemaining = 0;
