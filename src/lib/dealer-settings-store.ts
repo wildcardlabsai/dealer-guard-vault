@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 
-interface DealerSettings {
+export type SmartContributionMode = "off" | "recommend" | "auto";
+
+export interface DealerSettings {
   monthlySalesTarget: number;
   maxLabourRate: number;
   maxPerClaimLimit: number;
   freeWarrantiesTotal: number;
   freeWarrantiesUsed: number;
+  smartContributionMode: SmartContributionMode;
+  lastRecommendationDate: string | null;
+  dismissedRecommendationUntil: string | null;
 }
 
 const settingsMap: Record<string, DealerSettings> = {};
@@ -20,6 +25,9 @@ function getSettings(dealerId: string): DealerSettings {
       maxPerClaimLimit: 2500,
       freeWarrantiesTotal: 5,
       freeWarrantiesUsed: 0,
+      smartContributionMode: "recommend",
+      lastRecommendationDate: null,
+      dismissedRecommendationUntil: null,
     };
   }
   return settingsMap[dealerId];
