@@ -27,6 +27,7 @@ export default function DealerCustomers() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteName, setInviteName] = useState("");
   const [inviting, setInviting] = useState(false);
+  const [resendingId, setResendingId] = useState<string | null>(null);
   const [timelineCustomer, setTimelineCustomer] = useState<string | null>(null);
 
   const getTimeline = (customerId: string) => {
