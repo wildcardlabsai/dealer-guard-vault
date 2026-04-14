@@ -324,10 +324,35 @@ export default function DealerWarrantyFund() {
     };
   }, [dealerWarranties.length, dealerSettings, scoreStatus.key, avgClaimCost, claimRate, contributionPerWarranty, buffer, exposure, healthScore.total]);
 
+  // Projection chart data (3 months)
+  const projectionData = useMemo(() => {
+    const monthlyNewWarranties = Math.max(1, Math.round(dealerWarranties.length / 6));
+    const monthlyClaimsCost = monthlyNewWarranties * claimRate * avgClaimCost;
+    const currentContrib = Math.round(contributionPerWarranty) || 100;
+    const suggestedContrib = recommendation?.suggested || currentContrib;
+    const months = ["Now", "Month 1", "Month 2", "Month 3"];
+    let currentPath = balance;
+    let adjustedPath = balance;
+    return months.map((month, i) => {
+      if (i > 0) {
+        currentPath += (currentContrib * monthlyNewWarranties) - monthlyClaimsCost;
+        adjustedPath += (suggestedContrib * monthlyNewWarranties) - monthlyClaimsCost;
+      }
+      return {
+        month,
+        Current: Math.round(currentPath),
+        Adjusted: Math.round(adjustedPath),
+      };
+    });
+  }, [balance, contributionPerWarranty, recommendation, dealerWarranties.length, claimRate, avgClaimCost]);
+
+  const [recApplied, setRecApplied] = useState(false);
+
   const handleApplyRecommendation = () => {
     if (!recommendation) return;
     dealerSettingsStore.updateSettings(dealerId, { lastRecommendationDate: new Date().toISOString() });
     setSliderValue([recommendation.suggested]);
+    setRecApplied(true);
     toast.success(`Contribution updated to £${recommendation.suggested} per warranty`);
   };
 
