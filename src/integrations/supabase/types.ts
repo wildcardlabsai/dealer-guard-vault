@@ -163,6 +163,39 @@ export type Database = {
           },
         ]
       }
+      cover_templates: {
+        Row: {
+          conditional_items: Json
+          covered_items: Json
+          created_at: string
+          dealer_id: string
+          excluded_items: Json
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          conditional_items?: Json
+          covered_items?: Json
+          created_at?: string
+          dealer_id: string
+          excluded_items?: Json
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          conditional_items?: Json
+          covered_items?: Json
+          created_at?: string
+          dealer_id?: string
+          excluded_items?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       customer_requests: {
         Row: {
           created_at: string
@@ -247,6 +280,51 @@ export type Database = {
         }
         Relationships: []
       }
+      dealer_settings: {
+        Row: {
+          created_at: string
+          dealer_id: string
+          dismissed_recommendation_until: string | null
+          free_warranties_total: number
+          free_warranties_used: number
+          id: string
+          last_recommendation_date: string | null
+          max_labour_rate: number
+          max_per_claim_limit: number
+          monthly_sales_target: number
+          smart_contribution_mode: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dealer_id: string
+          dismissed_recommendation_until?: string | null
+          free_warranties_total?: number
+          free_warranties_used?: number
+          id?: string
+          last_recommendation_date?: string | null
+          max_labour_rate?: number
+          max_per_claim_limit?: number
+          monthly_sales_target?: number
+          smart_contribution_mode?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dealer_id?: string
+          dismissed_recommendation_until?: string | null
+          free_warranties_total?: number
+          free_warranties_used?: number
+          id?: string
+          last_recommendation_date?: string | null
+          max_labour_rate?: number
+          max_per_claim_limit?: number
+          monthly_sales_target?: number
+          smart_contribution_mode?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       dealers: {
         Row: {
           address: string | null
@@ -301,6 +379,123 @@ export type Database = {
         }
         Relationships: []
       }
+      dispute_cases: {
+        Row: {
+          ai_approach: string | null
+          ai_position: string | null
+          ai_risk_level: string | null
+          ai_summary: string | null
+          ai_tone_recommendation: string | null
+          complaint_type: string
+          cra_explanation: string | null
+          cra_window: string | null
+          created_at: string
+          customer_name: string
+          customer_summary: string
+          dealer_id: string
+          drivable: string
+          edited_response: string | null
+          escalation_flags: Json | null
+          id: string
+          issue_classification: string | null
+          issue_date: string
+          linked_claim_id: string | null
+          mileage_at_sale: number
+          mileage_now: number
+          notes: string | null
+          outcome: string | null
+          repairs_authorised: string
+          response_score: Json | null
+          responses: Json | null
+          risk_alerts: Json | null
+          sale_date: string
+          selected_response: string | null
+          status: string
+          strategy_do_nots: Json | null
+          strategy_key_risks: Json | null
+          strategy_suggested_stance: string | null
+          updated_at: string
+          vehicle_reg: string
+          warranty_status: string
+        }
+        Insert: {
+          ai_approach?: string | null
+          ai_position?: string | null
+          ai_risk_level?: string | null
+          ai_summary?: string | null
+          ai_tone_recommendation?: string | null
+          complaint_type: string
+          cra_explanation?: string | null
+          cra_window?: string | null
+          created_at?: string
+          customer_name?: string
+          customer_summary?: string
+          dealer_id: string
+          drivable?: string
+          edited_response?: string | null
+          escalation_flags?: Json | null
+          id?: string
+          issue_classification?: string | null
+          issue_date: string
+          linked_claim_id?: string | null
+          mileage_at_sale?: number
+          mileage_now?: number
+          notes?: string | null
+          outcome?: string | null
+          repairs_authorised?: string
+          response_score?: Json | null
+          responses?: Json | null
+          risk_alerts?: Json | null
+          sale_date: string
+          selected_response?: string | null
+          status?: string
+          strategy_do_nots?: Json | null
+          strategy_key_risks?: Json | null
+          strategy_suggested_stance?: string | null
+          updated_at?: string
+          vehicle_reg?: string
+          warranty_status?: string
+        }
+        Update: {
+          ai_approach?: string | null
+          ai_position?: string | null
+          ai_risk_level?: string | null
+          ai_summary?: string | null
+          ai_tone_recommendation?: string | null
+          complaint_type?: string
+          cra_explanation?: string | null
+          cra_window?: string | null
+          created_at?: string
+          customer_name?: string
+          customer_summary?: string
+          dealer_id?: string
+          drivable?: string
+          edited_response?: string | null
+          escalation_flags?: Json | null
+          id?: string
+          issue_classification?: string | null
+          issue_date?: string
+          linked_claim_id?: string | null
+          mileage_at_sale?: number
+          mileage_now?: number
+          notes?: string | null
+          outcome?: string | null
+          repairs_authorised?: string
+          response_score?: Json | null
+          responses?: Json | null
+          risk_alerts?: Json | null
+          sale_date?: string
+          selected_response?: string | null
+          status?: string
+          strategy_do_nots?: Json | null
+          strategy_key_risks?: Json | null
+          strategy_suggested_stance?: string | null
+          updated_at?: string
+          vehicle_reg?: string
+          warranty_status?: string
+        }
+        Relationships: []
+      }
       enquiries: {
         Row: {
           created_at: string
@@ -331,6 +526,39 @@ export type Database = {
           phone?: string | null
           read?: boolean
           subject?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          link: string | null
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message: string
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -421,6 +649,42 @@ export type Database = {
         }
         Relationships: []
       }
+      support_tickets: {
+        Row: {
+          created_at: string
+          dealer_id: string
+          dealer_name: string
+          id: string
+          messages: Json
+          priority: string
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dealer_id: string
+          dealer_name: string
+          id?: string
+          messages?: Json
+          priority?: string
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dealer_id?: string
+          dealer_name?: string
+          id?: string
+          messages?: Json
+          priority?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       warranties: {
         Row: {
           cost: number
@@ -506,6 +770,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      warranty_lines: {
+        Row: {
+          business_name: string
+          created_at: string
+          dealer_id: string
+          forwarding_number: string
+          greeting_message: string
+          hold_music_type: string
+          id: string
+          ivr_enabled: boolean
+          option1_label: string
+          option2_label: string
+          option3_label: string
+          phone_number: string | null
+          status: string
+          updated_at: string
+          voicemail_email: string
+          voicemail_enabled: boolean
+        }
+        Insert: {
+          business_name?: string
+          created_at?: string
+          dealer_id: string
+          forwarding_number?: string
+          greeting_message?: string
+          hold_music_type?: string
+          id?: string
+          ivr_enabled?: boolean
+          option1_label?: string
+          option2_label?: string
+          option3_label?: string
+          phone_number?: string | null
+          status?: string
+          updated_at?: string
+          voicemail_email?: string
+          voicemail_enabled?: boolean
+        }
+        Update: {
+          business_name?: string
+          created_at?: string
+          dealer_id?: string
+          forwarding_number?: string
+          greeting_message?: string
+          hold_music_type?: string
+          id?: string
+          ivr_enabled?: boolean
+          option1_label?: string
+          option2_label?: string
+          option3_label?: string
+          phone_number?: string | null
+          status?: string
+          updated_at?: string
+          voicemail_email?: string
+          voicemail_enabled?: boolean
+        }
+        Relationships: []
       }
     }
     Views: {
