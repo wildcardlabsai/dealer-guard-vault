@@ -1,10 +1,7 @@
 import { Warranty } from "@/data/demo-data";
-import { demoCoverTemplates, warrantyTemplateMap } from "@/data/cover-templates";
+import { CoverTemplate } from "@/data/cover-templates";
 
-export function generateCertificateHTML(warranty: Warranty): string {
-  const templateId = warranty.coverTemplateId || warrantyTemplateMap[warranty.id];
-  const template = templateId ? demoCoverTemplates.find(t => t.id === templateId) : null;
-
+export function generateCertificateHTML(warranty: Warranty, template?: CoverTemplate): string {
   const coveredHtml = template
     ? template.coveredItems.slice(0, 8).map(i => `<li>${i.name}</li>`).join("")
     : "";
@@ -95,7 +92,7 @@ export function generateCertificateHTML(warranty: Warranty): string {
 
   <div class="claim-box">
     <h3>How to Make a Claim</h3>
-    <p>1. Log into your customer portal at warrantyvault.com<br/>
+    <p>1. Log into your customer portal at warrantyvault.co.uk<br/>
     2. Start a new claim and upload supporting evidence<br/>
     3. Wait for your dealership to review before authorising repairs<br/>
     <strong>Please do not authorise repairs before contacting your dealership.</strong></p>
@@ -111,8 +108,8 @@ export function generateCertificateHTML(warranty: Warranty): string {
 </html>`;
 }
 
-export function openCertificate(warranty: Warranty) {
-  const html = generateCertificateHTML(warranty);
+export function openCertificate(warranty: Warranty, template?: CoverTemplate) {
+  const html = generateCertificateHTML(warranty, template);
   const win = window.open("", "_blank");
   if (win) {
     win.document.write(html);
@@ -120,8 +117,8 @@ export function openCertificate(warranty: Warranty) {
   }
 }
 
-export function printCertificate(warranty: Warranty) {
-  const html = generateCertificateHTML(warranty);
+export function printCertificate(warranty: Warranty, template?: CoverTemplate) {
+  const html = generateCertificateHTML(warranty, template);
   const win = window.open("", "_blank");
   if (win) {
     win.document.write(html);
@@ -130,8 +127,8 @@ export function printCertificate(warranty: Warranty) {
   }
 }
 
-export function downloadCertificate(warranty: Warranty) {
-  const html = generateCertificateHTML(warranty);
+export function downloadCertificate(warranty: Warranty, template?: CoverTemplate) {
+  const html = generateCertificateHTML(warranty, template);
   const blob = new Blob([html], { type: "text/html" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
