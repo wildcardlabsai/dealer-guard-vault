@@ -145,7 +145,12 @@ export default function AdminDealers() {
           <h1 className="text-2xl font-bold font-display">Dealers</h1>
           <p className="text-sm text-muted-foreground">{dealers.length} registered dealers</p>
         </div>
-        <Button size="sm" onClick={() => setShowCreate(true)}><Plus className="w-4 h-4 mr-1" /> Create Dealer</Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={fetchDealers} disabled={loading}>
+            <RefreshCw className={`w-4 h-4 mr-1 ${loading ? "animate-spin" : ""}`} /> Refresh
+          </Button>
+          <Button size="sm" onClick={() => setShowCreate(true)}><Plus className="w-4 h-4 mr-1" /> Create Dealer</Button>
+        </div>
       </div>
 
       <div className="glass-card rounded-xl overflow-hidden">
