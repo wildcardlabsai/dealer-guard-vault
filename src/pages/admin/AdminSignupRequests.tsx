@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { sendDealerApprovalEmail, sendDealerRejectionEmail } from "@/lib/email-service";
 import { useSignupStore, SignupRequest } from "@/lib/signup-store";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,14 +30,25 @@ export default function AdminSignupRequests() {
   const filtered = store.signupRequests.filter(r => filter === "all" || r.status === filter);
   const pendingCount = store.signupRequests.filter(r => r.status === "pending").length;
 
-  const handleApprove = (id: string) => {
-    const req = store.signupRequests.find(r => r.id === id);
-    store.approveRequest(id);
-    toast.success("Dealer approved — login credentials sent via email");
-    if (req) {
-      sendDealerApprovalEmail(req.email, req.dealershipName, "Welcome2025!");
+  const handleApprove = async (id: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("approve-dealer", {
+        body: { signupRequestId: id },
+      });
+      if (error || !data?.success) {
+        toast.error(data?.error || "Failed to approve dealer");
+        return;
+      }
+      // Send welcome email with the real generated password
+      sendDealerApprovalEmail(data.email, data.dealerName, data.password);
+      toast.success("Dealer approved — login credentials sent via email");
+      // Refresh the list
+      store.approveRequest(id);
+      setSelectedId(null);
+    } catch (err) {
+      toast.error("Failed to approve dealer");
+      console.error(err);
     }
-    setSelectedId(null);
   };
 
   const handleReject = () => {
