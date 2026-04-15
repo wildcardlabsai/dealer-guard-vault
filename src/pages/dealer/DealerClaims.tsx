@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, XCircle, MessageSquare, Clock } from "lucide-react";
+import { CheckCircle2, XCircle, MessageSquare, Clock, ClipboardList } from "lucide-react";
 import { toast } from "sonner";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
