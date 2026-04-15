@@ -104,6 +104,7 @@ export default function AdminDealers() {
       } : d));
       toast.success("Dealer details updated");
       setEditDealer(null);
+      fetchDealers();
     } catch (err: any) {
       toast.error("Failed to update dealer: " + (err.message || "Unknown error"));
     } finally {
