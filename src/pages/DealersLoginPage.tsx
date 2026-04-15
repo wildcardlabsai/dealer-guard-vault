@@ -32,15 +32,7 @@ export default function DealersLoginPage() {
     setLoading(true);
     const success = await login(email, password);
     setLoading(false);
-    if (success) {
-      const { demoUsers } = await import("@/data/demo-data");
-      const found = demoUsers.find(u => u.email === email);
-      if (found?.role === "dealer") {
-        navigate("/dealer");
-      } else {
-        setError("This portal is for dealers only. Please use the correct login.");
-      }
-    } else {
+    if (!success) {
       setError("Invalid email or password.");
     }
   };

@@ -28,14 +28,7 @@ export default function LoginPage() {
     setLoading(true);
     const success = await login(email, password);
     setLoading(false);
-    if (success) {
-      // Check demo users first for role-based redirect
-      const { demoUsers } = await import("@/data/demo-data");
-      const demoUser = demoUsers.find(u => u.email === email);
-      if (demoUser?.role === "admin") navigate("/admin");
-      else if (demoUser?.role === "dealer") navigate("/dealer");
-      else navigate("/customer");
-    } else {
+    if (!success) {
       setError("Invalid email or password.");
     }
   };
