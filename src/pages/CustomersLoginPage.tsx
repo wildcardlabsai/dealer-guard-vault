@@ -32,12 +32,7 @@ export default function CustomersLoginPage() {
     setLoading(true);
     const success = await login(email, password);
     setLoading(false);
-    if (success) {
-      // After login, check the user from context — supports both demo and real users
-      // Small delay to let state settle
-      await new Promise(r => setTimeout(r, 100));
-      navigate("/customer");
-    } else {
+    if (!success) {
       setError("Invalid email or password.");
     }
   };
