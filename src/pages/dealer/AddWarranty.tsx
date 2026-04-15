@@ -211,6 +211,48 @@ export default function AddWarranty() {
 
   const selectedTemplate = templates.find(t => t.id === form.coverTemplateId);
 
+  if (createdWarranty) {
+    return (
+      <div className="max-w-lg mx-auto text-center py-12 space-y-6 animate-fade-in">
+        <div className="w-20 h-20 rounded-full bg-primary/15 flex items-center justify-center mx-auto">
+          <CheckCircle2 className="w-10 h-10 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold font-display mb-2">
+            {createdWarranty.isFree ? "Free Warranty Created!" : "Payment Successful!"}
+          </h1>
+          <p className="text-muted-foreground">Warranty has been issued and is now active.</p>
+        </div>
+        <div className="glass-card rounded-xl p-5 text-left space-y-3">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Vehicle</span>
+            <span className="font-medium">{createdWarranty.vehicleReg} — {createdWarranty.vehicleMake} {createdWarranty.vehicleModel}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Customer</span>
+            <span className="font-medium">{createdWarranty.customerName}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Period</span>
+            <span className="font-medium">{new Date(createdWarranty.startDate).toLocaleDateString("en-GB")} — {new Date(createdWarranty.endDate).toLocaleDateString("en-GB")}</span>
+          </div>
+          {createdWarranty.email && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Portal Invite</span>
+              <span className="font-medium text-primary">Sent to {createdWarranty.email}</span>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button onClick={() => navigate("/dealer/warranties")} variant="outline">View All Warranties</Button>
+          <Button onClick={() => { setCreatedWarranty(null); setStep(1); setVehicle(null); setDvsaData(null); setForm({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" }); setCustomerType(null); setSelectedCustomerId(""); setReg(""); }}>
+            <Plus className="w-4 h-4 mr-2" /> Add Another Warranty
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
