@@ -83,7 +83,8 @@ export default function AdminSignupRequests() {
       toast.success("Signup request updated");
       setEditId(null);
       // Refresh the store
-      store.fetchRequests?.();
+      // Trigger re-fetch by updating the request locally
+      window.location.reload();
     } catch (err: any) {
       toast.error("Failed to update: " + (err.message || "Unknown error"));
     } finally {
