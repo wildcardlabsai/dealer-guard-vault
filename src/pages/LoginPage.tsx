@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,20 @@ import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === "admin") navigate("/admin", { replace: true });
+      else if (user.role === "dealer") navigate("/dealer", { replace: true });
+      else navigate("/customer", { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
   
 
   const handleSubmit = async (e: React.FormEvent) => {
