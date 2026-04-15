@@ -1,11 +1,12 @@
 import { useWarrantyStore } from "@/lib/warranty-store";
+import EmptyState from "@/components/EmptyState";
 import { useWarrantyLineStore } from "@/lib/warranty-line-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, XCircle, MessageSquare, Clock } from "lucide-react";
+import { CheckCircle2, XCircle, MessageSquare, Clock, ClipboardList } from "lucide-react";
 import { toast } from "sonner";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
@@ -120,7 +121,7 @@ export default function DealerClaims() {
           );
         })}
         {claims.length === 0 && (
-          <div className="glass-card rounded-xl p-8 text-center text-muted-foreground">No claims yet</div>
+          <EmptyState icon={ClipboardList} title="No Claims Yet" description="When customers submit warranty claims, they'll appear here for review and action." />
         )}
       </div>
     </div>

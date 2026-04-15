@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Pencil, Loader2, RefreshCw } from "lucide-react";
+import { Plus, Pencil, Loader2, RefreshCw, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Dealer } from "@/data/demo-data";
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 
 export default function AdminDealers() {
+  const navigate = useNavigate();
   const [showCreate, setShowCreate] = useState(false);
   const [dealers, setDealers] = useState<Dealer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -157,9 +159,14 @@ export default function AdminDealers() {
                   </td>
                   <td className="p-4 text-muted-foreground hidden md:table-cell">{new Date(d.createdAt).toLocaleDateString("en-GB")}</td>
                   <td className="p-4">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDealer(d)} title="Edit">
-                      <Pencil className="w-4 h-4" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(`/admin/dealers/${d.id}`)} title="View Profile">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDealer(d)} title="Edit">
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}

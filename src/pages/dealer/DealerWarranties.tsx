@@ -1,4 +1,5 @@
 import { useState } from "react";
+import EmptyState from "@/components/EmptyState";
 import { useNavigate } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
@@ -262,6 +263,11 @@ export default function DealerWarranties() {
                 </tr>
                 );
               })}
+              {warranties.length === 0 && (
+                <tr><td colSpan={8} className="p-0">
+                  <EmptyState icon={FileText} title="No Warranties Found" description="Issue your first warranty to get started. Your first 5 are free!" actionLabel="Add Warranty" actionPath="/dealer/warranties/new" />
+                </td></tr>
+              )}
             </tbody>
           </table>
         </div>
