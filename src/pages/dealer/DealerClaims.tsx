@@ -1,4 +1,5 @@
 import { useWarrantyStore } from "@/lib/warranty-store";
+import EmptyState from "@/components/EmptyState";
 import { useWarrantyLineStore } from "@/lib/warranty-line-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
