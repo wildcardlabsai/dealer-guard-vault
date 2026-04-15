@@ -174,7 +174,6 @@ export default function AddWarranty() {
     }
 
     setPaying(false);
-    toast.success(isFreeWarranty ? "Free warranty created successfully!" : "Payment successful! Warranty created.");
     
     if (form.email) {
       supabase.functions.invoke("invite-customer", {
@@ -191,15 +190,19 @@ export default function AddWarranty() {
       }).then(({ data, error }) => {
         if (error || !data?.success) {
           console.error("Customer invite error:", error || data?.error);
-          toast.error("Warranty created but failed to send customer invite email");
-        } else if (data.isNewAccount) {
-          toast.success(`Customer portal account created for ${form.email}`);
-        } else {
-          toast.info(`Warranty notification sent to ${form.email}`);
         }
       });
     }
-    navigate("/dealer/warranties");
+    setCreatedWarranty({
+      customerName: form.customerName,
+      email: form.email,
+      vehicleReg: vehicle.registration,
+      vehicleMake: vehicle.make,
+      vehicleModel: vehicle.model,
+      startDate,
+      endDate,
+      isFree: isFreeWarranty,
+    });
   };
 
   const selectedTemplate = templates.find(t => t.id === form.coverTemplateId);
