@@ -74,7 +74,7 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
     try { return localStorage.getItem("wv-simple-mode") === "true"; } catch { return false; }
   });
   const notifStore = useNotificationStore();
-  const userId = user?.id || "dealer-1";
+  const userId = user?.id || "";
   const unreadCount = notifStore.unreadCount(userId);
   const notifications = notifStore.getNotifications(userId);
   const [showNotifs, setShowNotifs] = useState(false);

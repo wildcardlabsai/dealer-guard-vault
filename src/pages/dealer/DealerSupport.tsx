@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, ArrowLeft, Send, MessageSquare, Clock, CheckCircle2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { demoDealers } from "@/data/demo-data";
+
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   open: { label: "Open", color: "bg-amber-500/10 text-amber-400 border-amber-500/20", icon: Clock },
@@ -27,8 +27,8 @@ const priorityConfig: Record<string, { label: string; color: string }> = {
 export default function DealerSupport() {
   const { user } = useAuth();
   const store = useSupportStore();
-  const dealerId = user?.dealerId || "d-1";
-  const dealer = demoDealers.find(d => d.id === dealerId);
+  const dealerId = user?.dealerId || "";
+  const dealerName = user?.dealerName || user?.name || "Dealer";
   const tickets = store.getTicketsForDealer(dealerId);
   const [view, setView] = useState<"list" | "new" | "detail">("list");
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
@@ -44,7 +44,7 @@ export default function DealerSupport() {
     store.addTicket({
       id: `st-${Date.now()}`,
       dealerId,
-      dealerName: dealer?.name || "Dealer",
+      dealerName,
       subject: form.subject,
       status: "open",
       priority: form.priority,
@@ -54,9 +54,9 @@ export default function DealerSupport() {
     });
     toast.success("Support ticket submitted");
     // Send confirmation email
-    if (dealer?.email) {
+    if (user?.email) {
       import("@/lib/email-service").then(m => m.sendSupportTicketEmail(
-        dealer.email, dealer.name, form.subject, `st-${Date.now()}`
+        user.email, dealerName, form.subject, `st-${Date.now()}`
       ));
     }
     setForm({ subject: "", message: "", priority: "medium" });

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWarrantyLineStore } from "@/lib/warranty-line-store";
 import { useDealerSettingsStore } from "@/lib/dealer-settings-store";
-import { demoDealers } from "@/data/demo-data";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,23 +14,32 @@ export default function DealerSettings() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const warrantyLineStore = useWarrantyLineStore();
-  const dealerId = user?.dealerId || "d-1";
+  const dealerId = user?.dealerId || "";
   const warrantyLine = warrantyLineStore.getLine(dealerId);
   const dealerSettingsStore = useDealerSettingsStore();
   const dealerSettings = dealerSettingsStore.getSettings(dealerId);
-  const dealer = demoDealers.find(d => d.id === dealerId);
   const [salesTarget, setSalesTarget] = useState(dealerSettings.monthlySalesTarget);
   const [maxLabourRate, setMaxLabourRate] = useState(dealerSettings.maxLabourRate);
   const [maxPerClaimLimit, setMaxPerClaimLimit] = useState(dealerSettings.maxPerClaimLimit);
   const [form, setForm] = useState({
-    name: dealer?.name || "",
-    email: dealer?.email || "",
-    phone: dealer?.phone || "",
-    fcaNumber: dealer?.fcaNumber || "",
-    address: dealer?.address || "",
-    city: dealer?.city || "",
-    postcode: dealer?.postcode || "",
+    name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "",
   });
+
+  useEffect(() => {
+    if (!dealerId) return;
+    supabase.functions.invoke("admin-data", {
+      body: { table: "dealers", action: "select", filters: { dealer_code: dealerId } },
+    }).then(({ data }) => {
+      const d = data?.data?.[0];
+      if (d) {
+        setForm({
+          name: d.name || "", email: d.email || "", phone: d.phone || "",
+          fcaNumber: d.fca_number || "", address: d.address || "",
+          city: d.city || "", postcode: d.postcode || "",
+        });
+      }
+    });
+  }, [dealerId]);
 
   return (
     <div className="max-w-2xl space-y-6">

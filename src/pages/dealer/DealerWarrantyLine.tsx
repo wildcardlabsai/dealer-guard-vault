@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWarrantyLineStore, type WarrantyLine } from "@/lib/warranty-line-store";
-import { demoDealers } from "@/data/demo-data";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,23 +27,23 @@ function StatusBadge({ status }: { status: WarrantyLine["status"] }) {
 
 export default function DealerWarrantyLine() {
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "d-1";
-  const dealer = demoDealers.find(d => d.id === dealerId);
+  const dealerId = user?.dealerId || "";
+  const dealerName = user?.dealerName || user?.name || "Dealer";
   const store = useWarrantyLineStore();
   const line = store.getLine(dealerId);
 
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
-    businessName: dealer?.name || "",
-    greetingMessage: `Thank you for calling ${dealer?.name || "our"} warranty department. Your call is important to us.`,
-    forwardingNumber: dealer?.phone || "",
+    businessName: dealerName,
+    greetingMessage: `Thank you for calling ${dealerName} warranty department. Your call is important to us.`,
+    forwardingNumber: "",
     ivrEnabled: true,
     option1Label: "New Claim",
     option2Label: "Existing Claim",
     option3Label: "",
     holdMusicType: "default" as WarrantyLine["holdMusicType"],
     voicemailEnabled: false,
-    voicemailEmail: dealer?.email || "",
+    voicemailEmail: user?.email || "",
   });
 
   useEffect(() => {
