@@ -29,8 +29,10 @@ export default function AdminDashboard() {
   const supportStore = useSupportStore();
   const store = useWarrantyStore();
   const [dealers, setDealers] = useState<Dealer[]>([]);
+  const [loadingDealers, setLoadingDealers] = useState(true);
 
   const fetchDealers = useCallback(async () => {
+    setLoadingDealers(true);
     try {
       const { data, error } = await supabase.functions.invoke("admin-data", {
         body: { table: "dealers", action: "select" },
@@ -52,9 +54,12 @@ export default function AdminDashboard() {
         })));
       }
     } catch { /* ignore */ }
+    setLoadingDealers(false);
   }, []);
 
   useEffect(() => { fetchDealers(); }, [fetchDealers]);
+
+  if (loadingDealers) return <DashboardSkeleton statCards={6} />;
 
   const totalDealers = dealers.length;
   const totalWarranties = store.warranties.length;
