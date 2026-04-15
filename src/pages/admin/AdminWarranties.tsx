@@ -33,7 +33,7 @@ export default function AdminWarranties() {
                 <tr key={w.id} className="border-b border-border/30 hover:bg-secondary/20 transition-colors">
                   <td className="p-4 font-medium">{w.customerName}</td>
                   <td className="p-4 text-muted-foreground hidden md:table-cell">{w.dealerName}</td>
-                  <td className="p-4 text-muted-foreground">{w.vehicleMake} {w.vehicleModel}</td>
+                  <td className="p-4 text-muted-foreground">{w.vehicleMake} {w.vehicleMake !== w.vehicleModel ? w.vehicleModel : ""}</td>
                   <td className="p-4 hidden lg:table-cell"><code className="text-xs bg-secondary/50 px-2 py-1 rounded">{w.vehicleReg}</code></td>
                   <td className="p-4 font-medium">£{w.cost}</td>
                   <td className="p-4"><Badge variant="outline" className={`capitalize ${statusColors[w.status]}`}>{w.status}</Badge></td>

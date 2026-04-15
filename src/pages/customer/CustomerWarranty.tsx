@@ -19,7 +19,7 @@ export default function CustomerWarranty() {
       {warranties.map(w => (
         <div key={w.id} className="glass-card rounded-xl p-6 space-y-4">
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
-            <div><span className="text-muted-foreground">Vehicle:</span> <span className="font-medium">{w.vehicleYear} {w.vehicleMake} {w.vehicleModel}</span></div>
+            <div><span className="text-muted-foreground">Vehicle:</span> <span className="font-medium">{w.vehicleYear} {w.vehicleMake} {w.vehicleMake !== w.vehicleModel ? w.vehicleModel : ""}</span></div>
             <div><span className="text-muted-foreground">Registration:</span> <span className="font-mono font-medium">{w.vehicleReg}</span></div>
             <div><span className="text-muted-foreground">Colour:</span> <span className="font-medium">{w.vehicleColour}</span></div>
             <div><span className="text-muted-foreground">Mileage:</span> <span className="font-medium">{w.mileage.toLocaleString()} miles</span></div>

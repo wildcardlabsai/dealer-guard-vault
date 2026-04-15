@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { User, UserRole, demoUsers } from "@/data/demo-data";
 import { supabase } from "@/integrations/supabase/client";
 
+const DEMO_USER_KEY = "wv-demo-user";
+
 const demoPasswords: Record<string, string> = {
   "admin@warrantyvault.com": "admin123",
   "dealer@prestige-motors.co.uk": "dealer123",
@@ -11,6 +13,7 @@ const demoPasswords: Record<string, string> = {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isReady: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
@@ -23,7 +26,7 @@ function buildUserFromSupabase(supaUser: { id: string; email?: string; user_meta
   return {
     id: supaUser.id,
     email: supaUser.email || "",
-    name: meta.name || supaUser.email?.split("@")[0] || "Customer",
+    name: meta.name || meta.full_name || supaUser.email?.split("@")[0] || "Customer",
     role,
     dealerId: meta.dealerId,
   };
@@ -31,14 +34,31 @@ function buildUserFromSupabase(supaUser: { id: string; email?: string; user_meta
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isReady, setIsReady] = useState(false);
 
-  // On mount, check for existing Supabase session
+  // On mount, restore session
   useEffect(() => {
+    // 1. Check for persisted demo user
+    const savedDemo = localStorage.getItem(DEMO_USER_KEY);
+    if (savedDemo) {
+      try {
+        const parsed = JSON.parse(savedDemo);
+        if (parsed && parsed.email && demoPasswords[parsed.email]) {
+          setUser(parsed);
+          setIsReady(true);
+          return;
+        }
+      } catch {
+        localStorage.removeItem(DEMO_USER_KEY);
+      }
+    }
+
+    // 2. Check for real Supabase session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user && !user) {
-        // Only restore if not already logged in as demo user
+      if (session?.user) {
         setUser(buildUserFromSupabase(session.user));
       }
+      setIsReady(true);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -47,6 +67,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Don't overwrite a demo user session
           if (prev && demoPasswords[prev.email]) return prev;
           return buildUserFromSupabase(session.user);
+        });
+      } else {
+        // Only clear if not a demo user
+        setUser(prev => {
+          if (prev && demoPasswords[prev.email]) return prev;
+          return null;
         });
       }
     });
@@ -60,13 +86,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (found && demoPasswords[email] === password) {
       await new Promise(r => setTimeout(r, 500));
       setUser(found);
+      localStorage.setItem(DEMO_USER_KEY, JSON.stringify(found));
       return true;
     }
 
-    // 2. Try Supabase Auth for real accounts (e.g. invited customers)
+    // 2. Try Supabase Auth for real accounts
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (!error && data.user) {
+        localStorage.removeItem(DEMO_USER_KEY);
         setUser(buildUserFromSupabase(data.user));
         return true;
       }
@@ -78,12 +106,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
+    localStorage.removeItem(DEMO_USER_KEY);
     supabase.auth.signOut().catch(() => {});
     setUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isReady, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
