@@ -38,6 +38,10 @@ export default function AddWarranty() {
   const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
   const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
+  const [createdWarranty, setCreatedWarranty] = useState<{
+    customerName: string; email: string; vehicleReg: string; vehicleMake: string;
+    vehicleModel: string; startDate: string; endDate: string; isFree: boolean;
+  } | null>(null);
 
   // Fetch customers from DB
   useEffect(() => {
