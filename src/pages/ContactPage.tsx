@@ -38,13 +38,7 @@ export default function ContactPage() {
       message: form.message,
     });
 
-    // Push notification for admin
-    pushNotification("admin-1", {
-      type: "general",
-      title: "New Contact Enquiry",
-      message: `${form.name} submitted an enquiry: "${form.subject}"`,
-      link: "/admin/enquiries",
-    });
+    // Notification handled via enquiries page — admin views from DB
 
     // Send email via edge function
     try {
