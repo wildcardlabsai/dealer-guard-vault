@@ -121,7 +121,7 @@ export default function DealerClaims() {
           );
         })}
         {claims.length === 0 && (
-          <div className="glass-card rounded-xl p-8 text-center text-muted-foreground">No claims yet</div>
+          <EmptyState icon={ClipboardList} title="No Claims Yet" description="When customers submit warranty claims, they'll appear here for review and action." />
         )}
       </div>
     </div>
