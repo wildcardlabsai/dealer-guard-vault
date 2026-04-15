@@ -60,6 +60,7 @@ import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminClaims from "@/pages/admin/AdminClaims";
 import AdminSupport from "@/pages/admin/AdminSupport";
 import AdminEnquiries from "@/pages/admin/AdminEnquiries";
+import AdminDealerProfile from "@/pages/admin/AdminDealerProfile";
 import ContactPage from "@/pages/ContactPage";
 
 const queryClient = new QueryClient();
@@ -135,6 +136,7 @@ function AppRoutes() {
       {/* Admin Routes */}
       <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/dealers" element={<ProtectedRoute role="admin"><AdminLayout><AdminDealers /></AdminLayout></ProtectedRoute>} />
+      <Route path="/admin/dealers/:id" element={<ProtectedRoute role="admin"><AdminLayout><AdminDealerProfile /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/signup-requests" element={<ProtectedRoute role="admin"><AdminLayout><AdminSignupRequests /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/warranties" element={<ProtectedRoute role="admin"><AdminLayout><AdminWarranties /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/claims" element={<ProtectedRoute role="admin"><AdminLayout><AdminClaims /></AdminLayout></ProtectedRoute>} />
