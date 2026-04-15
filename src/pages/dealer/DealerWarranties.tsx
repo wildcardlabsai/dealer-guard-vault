@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { Plus, Search, Eye, Trash2, FileText, Download, Printer, Mail, Loader2, RefreshCw } from "lucide-react";
+import { Plus, Search, Eye, Trash2, FileText, Download, Printer, Mail, Loader2, RefreshCw, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { printCertificate, downloadCertificate } from "@/lib/generate-certificate";
 import {
@@ -48,6 +48,61 @@ export default function DealerWarranties() {
   const [emailMode, setEmailMode] = useState<"default" | "custom">("default");
   const [customEmail, setCustomEmail] = useState("");
   const [sending, setSending] = useState(false);
+
+  // Edit warranty state
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    customerName: "", customerEmail: "", vehicleReg: "", vehicleMake: "", vehicleModel: "",
+    vehicleYear: "", mileage: "", duration: "", startDate: "", endDate: "", cost: "", notes: "", status: "",
+  });
+  const [editSaving, setEditSaving] = useState(false);
+
+  const openEditWarranty = (w: any) => {
+    setEditId(w.id);
+    setEditForm({
+      customerName: w.customerName,
+      customerEmail: w.customerEmail || "",
+      vehicleReg: w.vehicleReg,
+      vehicleMake: w.vehicleMake,
+      vehicleModel: w.vehicleModel,
+      vehicleYear: String(w.vehicleYear || ""),
+      mileage: String(w.mileage || ""),
+      duration: String(w.duration || ""),
+      startDate: w.startDate?.split("T")[0] || "",
+      endDate: w.endDate?.split("T")[0] || "",
+      cost: String(w.cost || ""),
+      notes: w.notes || "",
+      status: w.status,
+    });
+  };
+
+  const handleSaveWarranty = async () => {
+    if (!editId) return;
+    setEditSaving(true);
+    try {
+      await store.updateWarranty(editId, {
+        customerName: editForm.customerName,
+        customerEmail: editForm.customerEmail,
+        vehicleReg: editForm.vehicleReg,
+        vehicleMake: editForm.vehicleMake,
+        vehicleModel: editForm.vehicleModel,
+        vehicleYear: parseInt(editForm.vehicleYear) || 0,
+        mileage: parseInt(editForm.mileage) || 0,
+        duration: parseInt(editForm.duration) || 3,
+        startDate: editForm.startDate,
+        endDate: editForm.endDate,
+        cost: parseFloat(editForm.cost) || 0,
+        notes: editForm.notes,
+        status: editForm.status as any,
+      });
+      toast.success("Warranty updated");
+      setEditId(null);
+    } catch {
+      toast.error("Failed to update warranty");
+    } finally {
+      setEditSaving(false);
+    }
+  };
 
   const warranties = store.warranties
     .filter(w => w.dealerId === dealerId)
@@ -182,6 +237,9 @@ export default function DealerWarranties() {
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSelectedId(w.id)} title="View">
                         <Eye className="w-4 h-4" />
                       </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditWarranty(w)} title="Edit">
+                        <Pencil className="w-4 h-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openCertificate(w)} title="Certificate">
                         <FileText className="w-4 h-4" />
                       </Button>
@@ -205,6 +263,93 @@ export default function DealerWarranties() {
           </table>
         </div>
       </div>
+
+      {/* Edit Warranty Dialog */}
+      <Dialog open={!!editId} onOpenChange={() => setEditId(null)}>
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display">Edit Warranty</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Customer Name</Label>
+                <Input value={editForm.customerName} onChange={e => setEditForm(f => ({ ...f, customerName: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Customer Email</Label>
+                <Input type="email" value={editForm.customerEmail} onChange={e => setEditForm(f => ({ ...f, customerEmail: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label>Registration</Label>
+                <Input value={editForm.vehicleReg} onChange={e => setEditForm(f => ({ ...f, vehicleReg: e.target.value.toUpperCase() }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Make</Label>
+                <Input value={editForm.vehicleMake} onChange={e => setEditForm(f => ({ ...f, vehicleMake: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Model</Label>
+                <Input value={editForm.vehicleModel} onChange={e => setEditForm(f => ({ ...f, vehicleModel: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label>Year</Label>
+                <Input value={editForm.vehicleYear} onChange={e => setEditForm(f => ({ ...f, vehicleYear: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Mileage</Label>
+                <Input value={editForm.mileage} onChange={e => setEditForm(f => ({ ...f, mileage: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Duration (months)</Label>
+                <Input value={editForm.duration} onChange={e => setEditForm(f => ({ ...f, duration: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Start Date</Label>
+                <Input type="date" value={editForm.startDate} onChange={e => setEditForm(f => ({ ...f, startDate: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Expiry Date</Label>
+                <Input type="date" value={editForm.endDate} onChange={e => setEditForm(f => ({ ...f, endDate: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Cost (£)</Label>
+                <Input value={editForm.cost} onChange={e => setEditForm(f => ({ ...f, cost: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <select
+                  value={editForm.status}
+                  onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))}
+                  className="w-full text-sm bg-secondary/50 border border-border/50 rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50"
+                >
+                  <option value="active">Active</option>
+                  <option value="expired">Expired</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Notes</Label>
+              <Input value={editForm.notes} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditId(null)}>Cancel</Button>
+            <Button onClick={handleSaveWarranty} disabled={editSaving}>
+              {editSaving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</> : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* View Warranty Dialog */}
       <Dialog open={!!selected} onOpenChange={() => setSelectedId(null)}>
@@ -262,12 +407,8 @@ export default function DealerWarranties() {
                     <RadioGroupItem value="default" id="email-default" />
                     <Label htmlFor="email-default" className="text-sm cursor-pointer">
                       Send to customer's email on file
-                      {emailTarget.customerEmail && (
-                        <span className="text-muted-foreground ml-1">({emailTarget.customerEmail})</span>
-                      )}
-                      {!emailTarget.customerEmail && (
-                        <span className="text-muted-foreground ml-1">(no email on file)</span>
-                      )}
+                      {emailTarget.customerEmail && <span className="text-muted-foreground ml-1">({emailTarget.customerEmail})</span>}
+                      {!emailTarget.customerEmail && <span className="text-muted-foreground ml-1">(no email on file)</span>}
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -279,23 +420,14 @@ export default function DealerWarranties() {
                 {emailMode === "custom" && (
                   <div className="space-y-2">
                     <Label>Email Address</Label>
-                    <Input
-                      type="email"
-                      placeholder="customer@example.com"
-                      value={customEmail}
-                      onChange={e => setCustomEmail(e.target.value)}
-                    />
+                    <Input type="email" placeholder="customer@example.com" value={customEmail} onChange={e => setCustomEmail(e.target.value)} />
                   </div>
                 )}
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => { setEmailDialogId(null); setCustomEmail(""); }}>Cancel</Button>
                 <Button onClick={handleSendCertificate} disabled={sending}>
-                  {sending ? (
-                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...</>
-                  ) : (
-                    <><Mail className="w-4 h-4 mr-2" /> Send Certificate</>
-                  )}
+                  {sending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...</> : <><Mail className="w-4 h-4 mr-2" /> Send Certificate</>}
                 </Button>
               </DialogFooter>
             </>
