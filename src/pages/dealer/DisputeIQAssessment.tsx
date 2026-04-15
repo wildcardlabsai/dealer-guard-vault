@@ -65,7 +65,7 @@ export default function DisputeIQAssessment() {
   const { id } = useParams();
   const location = useLocation();
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "d-1";
+  const dealerId = user?.dealerId || "";
   const store = useDisputeIQStore();
 
   const isNew = id === "new";

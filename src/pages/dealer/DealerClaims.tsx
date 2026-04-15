@@ -18,7 +18,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
 
 export default function DealerClaims() {
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "d-1";
+  const dealerId = user?.dealerId || "";
   const store = useWarrantyStore();
   const warrantyLineStore = useWarrantyLineStore();
   const warrantyLine = warrantyLineStore.getLine(dealerId);

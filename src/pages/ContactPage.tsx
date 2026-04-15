@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { addEnquiry } from "@/lib/enquiry-store";
-import { pushNotification } from "@/lib/notification-store";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
 import PublicNav from "@/components/PublicNav";
@@ -38,13 +37,7 @@ export default function ContactPage() {
       message: form.message,
     });
 
-    // Push notification for admin
-    pushNotification("admin-1", {
-      type: "general",
-      title: "New Contact Enquiry",
-      message: `${form.name} submitted an enquiry: "${form.subject}"`,
-      link: "/admin/enquiries",
-    });
+    // Notification handled via enquiries page — admin views from DB
 
     // Send email via edge function
     try {
