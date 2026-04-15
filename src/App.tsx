@@ -65,7 +65,10 @@ import ContactPage from "@/pages/ContactPage";
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role: string }) {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isReady } = useAuth();
+  if (!isReady) {
+    return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
+  }
   if (!isAuthenticated) {
     if (role === "customer") return <Navigate to="/customers" replace />;
     if (role === "dealer") return <Navigate to="/dealers" replace />;
