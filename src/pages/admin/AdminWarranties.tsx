@@ -1,4 +1,4 @@
-import { demoWarranties } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { Badge } from "@/components/ui/badge";
 
 const statusColors: Record<string, string> = {
@@ -8,11 +8,14 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AdminWarranties() {
+  const store = useWarrantyStore();
+  const warranties = store.warranties;
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold font-display">All Warranties</h1>
-        <p className="text-sm text-muted-foreground">{demoWarranties.length} warranties across all dealers</p>
+        <p className="text-sm text-muted-foreground">{warranties.length} warranties across all dealers</p>
       </div>
 
       <div className="glass-card rounded-xl overflow-hidden">
@@ -29,7 +32,7 @@ export default function AdminWarranties() {
               </tr>
             </thead>
             <tbody>
-              {demoWarranties.map(w => (
+              {warranties.map(w => (
                 <tr key={w.id} className="border-b border-border/30 hover:bg-secondary/20 transition-colors">
                   <td className="p-4 font-medium">{w.customerName}</td>
                   <td className="p-4 text-muted-foreground hidden md:table-cell">{w.dealerName}</td>
@@ -39,6 +42,9 @@ export default function AdminWarranties() {
                   <td className="p-4"><Badge variant="outline" className={`capitalize ${statusColors[w.status]}`}>{w.status}</Badge></td>
                 </tr>
               ))}
+              {warranties.length === 0 && (
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No warranties yet</td></tr>
+              )}
             </tbody>
           </table>
         </div>

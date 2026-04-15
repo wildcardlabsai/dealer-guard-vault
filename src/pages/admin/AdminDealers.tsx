@@ -1,19 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
-import { demoDealers } from "@/data/demo-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Eye, Pencil, Loader2, RefreshCw } from "lucide-react";
+import { Plus, Pencil, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import type { Dealer } from "@/data/demo-data";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 
 export default function AdminDealers() {
   const [showCreate, setShowCreate] = useState(false);
-  const [dealers, setDealers] = useState(demoDealers);
+  const [dealers, setDealers] = useState<Dealer[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchDealers = useCallback(async () => {
@@ -37,13 +37,9 @@ export default function AdminDealers() {
         warrantyCount: 0,
         monthlyFee: 0,
       }));
-      // Merge: DB dealers first, then demo dealers not already in DB
-      const dbEmails = new Set(dbDealers.map((d: any) => d.email.toLowerCase()));
-      const merged = [...dbDealers, ...demoDealers.filter(d => !dbEmails.has(d.email.toLowerCase()))];
-      setDealers(merged);
+      setDealers(dbDealers);
     } catch {
-      // Fallback to demo data
-      setDealers(demoDealers);
+      setDealers([]);
     } finally {
       setLoading(false);
     }
@@ -54,8 +50,7 @@ export default function AdminDealers() {
     name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "", password: "",
   });
 
-  // Edit dealer state
-  const [editDealer, setEditDealer] = useState<typeof demoDealers[0] | null>(null);
+  const [editDealer, setEditDealer] = useState<Dealer | null>(null);
   const [editForm, setEditForm] = useState({
     name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "", status: "",
   });
@@ -63,7 +58,7 @@ export default function AdminDealers() {
 
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
 
-  const openEditDealer = (d: typeof demoDealers[0]) => {
+  const openEditDealer = (d: Dealer) => {
     setEditDealer(d);
     setEditForm({
       name: d.name, email: d.email, phone: d.phone, fcaNumber: d.fcaNumber,
@@ -96,12 +91,6 @@ export default function AdminDealers() {
         },
       });
       if (error) throw error;
-      // Update local state
-      setDealers(prev => prev.map(d => d.id === editDealer.id ? {
-        ...d, name: editForm.name, email: editForm.email, phone: editForm.phone,
-        fcaNumber: editForm.fcaNumber, address: editForm.address, city: editForm.city,
-        postcode: editForm.postcode, status: editForm.status as any,
-      } : d));
       toast.success("Dealer details updated");
       setEditDealer(null);
       fetchDealers();
@@ -117,25 +106,11 @@ export default function AdminDealers() {
       toast.error("Name, email and password are required");
       return;
     }
-    const newDealer = {
-      id: `d-${Date.now()}`,
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      fcaNumber: form.fcaNumber,
-      address: form.address,
-      city: form.city,
-      postcode: form.postcode,
-      createdAt: new Date().toISOString(),
-      status: "active" as const,
-      warrantyCount: 0,
-      monthlyFee: 0,
-    };
-    setDealers(prev => [newDealer, ...prev]);
     toast.success(`Dealer "${form.name}" created. Login credentials sent to ${form.email}`);
     import("@/lib/email-service").then(m => m.sendDealerCreatedEmail(form.email, form.name, form.password));
     setShowCreate(false);
     setForm({ name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "", password: "" });
+    fetchDealers();
   };
 
   return (
@@ -161,7 +136,6 @@ export default function AdminDealers() {
                 <th className="text-left p-4 font-medium text-muted-foreground">Dealer</th>
                 <th className="text-left p-4 font-medium text-muted-foreground hidden md:table-cell">Location</th>
                 <th className="text-left p-4 font-medium text-muted-foreground hidden lg:table-cell">FCA</th>
-                <th className="text-left p-4 font-medium text-muted-foreground">Warranties</th>
                 <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
                 <th className="text-left p-4 font-medium text-muted-foreground hidden md:table-cell">Joined</th>
                 <th className="text-left p-4 font-medium text-muted-foreground">Actions</th>
@@ -176,7 +150,6 @@ export default function AdminDealers() {
                   </td>
                   <td className="p-4 text-muted-foreground hidden md:table-cell">{d.city}</td>
                   <td className="p-4 text-muted-foreground hidden lg:table-cell"><code className="text-xs bg-secondary/50 px-2 py-1 rounded">{d.fcaNumber}</code></td>
-                  <td className="p-4 font-medium">{d.warrantyCount}</td>
                   <td className="p-4">
                     <Badge variant="outline" className={`capitalize ${d.status === "active" ? "bg-primary/10 text-primary border-primary/20" : d.status === "trial" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : "bg-destructive/10 text-destructive border-destructive/20"}`}>
                       {d.status}
@@ -190,6 +163,9 @@ export default function AdminDealers() {
                   </td>
                 </tr>
               ))}
+              {dealers.length === 0 && !loading && (
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No dealers registered yet</td></tr>
+              )}
             </tbody>
           </table>
         </div>

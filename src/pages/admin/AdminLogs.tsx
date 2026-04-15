@@ -1,4 +1,4 @@
-import { demoAuditLog } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 const actionTypes = ["all", "warranty", "claim", "customer", "dealer", "system"];
 
 export default function AdminLogs() {
+  const store = useWarrantyStore();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
-  const filtered = demoAuditLog.filter(log => {
+  const filtered = store.auditLog.filter(log => {
     const matchesSearch = search === "" ||
       log.action.toLowerCase().includes(search.toLowerCase()) ||
       log.details.toLowerCase().includes(search.toLowerCase());

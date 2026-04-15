@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { demoDealers, demoWarranties, demoClaims, demoAuditLog } from "@/data/demo-data";
+import { useWarrantyStore } from "@/lib/warranty-store";
 import { useSignupStore } from "@/lib/signup-store";
 import { useSupportStore } from "@/lib/support-store";
 import { Building2, FileText, TrendingUp, ClipboardList, Users, DollarSign, AlertCircle, Activity, Trophy } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Badge } from "@/components/ui/badge";
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Dealer } from "@/data/demo-data";
 
 function StatCard({ icon: Icon, label, value, sub }: { icon: any; label: string; value: string | number; sub?: string }) {
   return (
@@ -23,52 +26,79 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const signupStore = useSignupStore();
   const supportStore = useSupportStore();
+  const store = useWarrantyStore();
+  const [dealers, setDealers] = useState<Dealer[]>([]);
 
-  const totalDealers = demoDealers.length;
-  const totalWarranties = demoWarranties.length;
-  const totalClaims = demoClaims.length;
-  const activeDealers = demoDealers.filter(d => d.status === "active").length;
+  const fetchDealers = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-data", {
+        body: { table: "dealers", action: "select" },
+      });
+      if (!error && data?.data) {
+        setDealers((data.data as any[]).map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          email: d.email,
+          phone: d.phone || "",
+          fcaNumber: d.fca_number || "",
+          address: d.address || "",
+          city: d.city || "",
+          postcode: d.postcode || "",
+          createdAt: d.joined_at || d.created_at,
+          status: d.status as "active" | "suspended" | "trial",
+          warrantyCount: 0,
+          monthlyFee: 0,
+        })));
+      }
+    } catch { /* ignore */ }
+  }, []);
 
-  // Pay-per-use model: £15 per warranty, no subscriptions
+  useEffect(() => { fetchDealers(); }, [fetchDealers]);
+
+  const totalDealers = dealers.length;
+  const totalWarranties = store.warranties.length;
+  const totalClaims = store.claims.length;
+  const activeDealers = dealers.filter(d => d.status === "active").length;
+
   const warrantyRevenue = totalWarranties * 15;
   const totalRevenue = warrantyRevenue;
 
-  // Pending actions
   const pendingSignups = signupStore.signupRequests.filter(r => r.status === "pending").length;
   const openTickets = supportStore.tickets.filter(t => t.status === "open" || t.status === "in_progress").length;
-  const pendingClaims = demoClaims.filter(c => c.status === "pending").length;
+  const pendingClaims = store.claims.filter(c => c.status === "pending").length;
   const totalPending = pendingSignups + openTickets + pendingClaims;
 
-  const trialDealers = demoDealers.filter(d => d.status === "trial").length;
-  const suspendedDealers = demoDealers.filter(d => d.status === "suspended").length;
+  const trialDealers = dealers.filter(d => d.status === "trial").length;
+  const suspendedDealers = dealers.filter(d => d.status === "suspended").length;
   const churnRate = totalDealers > 0 ? Math.round((suspendedDealers / totalDealers) * 100) : 0;
 
   // Dealer leaderboard
-  const dealerWarrantyCounts = demoDealers.map(d => ({
+  const dealerWarrantyCounts = dealers.map(d => ({
     name: d.name,
-    count: demoWarranties.filter(w => w.dealerId === d.id).length,
+    count: store.warranties.filter(w => w.dealerId === (d as any).id || w.dealerId === (d as any).dealer_code).length,
   })).sort((a, b) => b.count - a.count).slice(0, 5);
   const maxWarrantyCount = Math.max(...dealerWarrantyCounts.map(d => d.count), 1);
 
   // Claims breakdown
   const claimStatuses = [
-    { name: "Pending", value: demoClaims.filter(c => c.status === "pending").length, color: "hsl(45, 93%, 47%)" },
-    { name: "Under Review", value: demoClaims.filter(c => c.status === "under_review").length, color: "hsl(210, 80%, 55%)" },
-    { name: "Approved", value: demoClaims.filter(c => c.status === "approved").length, color: "hsl(172, 66%, 40%)" },
-    { name: "Rejected", value: demoClaims.filter(c => c.status === "rejected").length, color: "hsl(0, 72%, 51%)" },
+    { name: "Pending", value: store.claims.filter(c => c.status === "pending").length, color: "hsl(45, 93%, 47%)" },
+    { name: "Under Review", value: store.claims.filter(c => c.status === "under_review").length, color: "hsl(210, 80%, 55%)" },
+    { name: "Approved", value: store.claims.filter(c => c.status === "approved").length, color: "hsl(172, 66%, 40%)" },
+    { name: "Rejected", value: store.claims.filter(c => c.status === "rejected").length, color: "hsl(0, 72%, 51%)" },
   ].filter(s => s.value > 0);
 
-  const recentLogs = demoAuditLog.slice(0, 5);
+  const recentLogs = store.auditLog.slice(0, 5);
 
-  // Revenue trend — pay-per-use only
-  const monthlyData = [
-    { month: "Oct", fees: 45 },
-    { month: "Nov", fees: 60 },
-    { month: "Dec", fees: 75 },
-    { month: "Jan", fees: 90 },
-    { month: "Feb", fees: 105 },
-    { month: "Mar", fees: 90 },
-  ];
+  // Revenue trend from real warranty data
+  const monthlyData = (() => {
+    const months: Record<string, number> = {};
+    store.warranties.forEach(w => {
+      const d = new Date(w.createdAt);
+      const key = d.toLocaleDateString("en-GB", { month: "short", year: "2-digit" });
+      months[key] = (months[key] || 0) + 15;
+    });
+    return Object.entries(months).map(([month, fees]) => ({ month, fees })).slice(-6);
+  })();
 
   return (
     <div className="space-y-6">
@@ -118,37 +148,47 @@ export default function AdminDashboard() {
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 glass-card rounded-xl p-6">
           <h3 className="font-semibold font-display mb-4">Revenue Trend (Pay-Per-Use)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={monthlyData}>
-              <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={v => `£${v}`} />
-              <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
-              <Line type="monotone" dataKey="fees" stroke="hsl(172, 66%, 40%)" strokeWidth={2} dot={false} name="Warranty Fees" />
-            </LineChart>
-          </ResponsiveContainer>
+          {monthlyData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={monthlyData}>
+                <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={v => `£${v}`} />
+                <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
+                <Line type="monotone" dataKey="fees" stroke="hsl(172, 66%, 40%)" strokeWidth={2} dot={false} name="Warranty Fees" />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-[300px] text-muted-foreground text-sm">No warranty data yet</div>
+          )}
         </div>
 
         <div className="glass-card rounded-xl p-6">
           <h3 className="font-semibold font-display mb-4">Claims Breakdown</h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <PieChart>
-              <Pie data={claimStatuses} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={3}>
-                {claimStatuses.map((entry, i) => (
-                  <Cell key={i} fill={entry.color} />
+          {claimStatuses.length > 0 ? (
+            <>
+              <ResponsiveContainer width="100%" height={180}>
+                <PieChart>
+                  <Pie data={claimStatuses} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={3}>
+                    {claimStatuses.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="space-y-2 mt-2">
+                {claimStatuses.map(s => (
+                  <div key={s.name} className="flex items-center gap-2 text-sm">
+                    <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: s.color }} />
+                    <span className="text-muted-foreground flex-1">{s.name}</span>
+                    <span className="font-medium tabular-nums">{s.value}</span>
+                  </div>
                 ))}
-              </Pie>
-              <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="space-y-2 mt-2">
-            {claimStatuses.map(s => (
-              <div key={s.name} className="flex items-center gap-2 text-sm">
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: s.color }} />
-                <span className="text-muted-foreground flex-1">{s.name}</span>
-                <span className="font-medium tabular-nums">{s.value}</span>
               </div>
-            ))}
-          </div>
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-[180px] text-muted-foreground text-sm">No claims yet</div>
+          )}
         </div>
       </div>
 
@@ -159,6 +199,7 @@ export default function AdminDashboard() {
             <h3 className="font-semibold font-display">Dealer Leaderboard</h3>
           </div>
           <div className="space-y-3">
+            {dealerWarrantyCounts.length === 0 && <p className="text-sm text-muted-foreground">No dealer data yet</p>}
             {dealerWarrantyCounts.map((d, i) => (
               <div key={d.name} className="flex items-center gap-3">
                 <span className="text-sm font-bold text-muted-foreground w-5 tabular-nums">{i + 1}</span>
@@ -180,6 +221,7 @@ export default function AdminDashboard() {
             <h3 className="font-semibold font-display">Platform Activity</h3>
           </div>
           <div className="space-y-3">
+            {recentLogs.length === 0 && <p className="text-sm text-muted-foreground">No activity recorded yet</p>}
             {recentLogs.map(entry => (
               <div key={entry.id} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/20">
                 <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
@@ -189,8 +231,6 @@ export default function AdminDashboard() {
                     {new Date(entry.timestamp).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                     {" · "}
                     {new Date(entry.timestamp).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
-                    {" · "}
-                    {demoDealers.find(d => d.id === entry.dealerId)?.name || "Unknown"}
                   </p>
                 </div>
               </div>
