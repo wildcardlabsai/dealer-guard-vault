@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle2, XCircle, Eye, Clock } from "lucide-react";
+import { CheckCircle2, XCircle, Eye, Pencil, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
@@ -26,9 +26,70 @@ export default function AdminSignupRequests() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [filter, setFilter] = useState<string>("all");
 
+  // Edit signup request state
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    dealershipName: "", contactName: "", email: "", phone: "", address: "", city: "", postcode: "", fcaNumber: "", estimatedVolume: "", message: "",
+  });
+  const [editSaving, setEditSaving] = useState(false);
+
   const selected = store.signupRequests.find(r => r.id === selectedId);
   const filtered = store.signupRequests.filter(r => filter === "all" || r.status === filter);
   const pendingCount = store.signupRequests.filter(r => r.status === "pending").length;
+
+  const openEdit = (r: SignupRequest) => {
+    setEditId(r.id);
+    setEditForm({
+      dealershipName: r.dealershipName,
+      contactName: r.contactName,
+      email: r.email,
+      phone: r.phone || "",
+      address: r.address || "",
+      city: r.city || "",
+      postcode: r.postcode || "",
+      fcaNumber: r.fcaNumber || "",
+      estimatedVolume: r.estimatedVolume || "",
+      message: r.message || "",
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editId || !editForm.dealershipName || !editForm.email) {
+      toast.error("Dealership name and email are required");
+      return;
+    }
+    setEditSaving(true);
+    try {
+      const { error } = await supabase.functions.invoke("admin-data", {
+        body: {
+          table: "signup_requests",
+          action: "update",
+          id: editId,
+          updates: {
+            dealership_name: editForm.dealershipName,
+            contact_name: editForm.contactName,
+            email: editForm.email,
+            phone: editForm.phone || null,
+            address: editForm.address || null,
+            city: editForm.city || null,
+            postcode: editForm.postcode || null,
+            fca_number: editForm.fcaNumber || null,
+            estimated_volume: editForm.estimatedVolume || null,
+            message: editForm.message || null,
+          },
+        },
+      });
+      if (error) throw error;
+      toast.success("Signup request updated");
+      setEditId(null);
+      // Refresh the store
+      store.fetchRequests?.();
+    } catch (err: any) {
+      toast.error("Failed to update: " + (err.message || "Unknown error"));
+    } finally {
+      setEditSaving(false);
+    }
+  };
 
   const handleApprove = async (id: string) => {
     try {
@@ -39,10 +100,8 @@ export default function AdminSignupRequests() {
         toast.error(data?.error || "Failed to approve dealer");
         return;
       }
-      // Send welcome email with the real generated password
       sendDealerApprovalEmail(data.email, data.dealerName, data.password);
       toast.success("Dealer approved — login credentials sent via email");
-      // Refresh the list
       store.approveRequest(id);
       setSelectedId(null);
     } catch (err) {
@@ -118,6 +177,9 @@ export default function AdminSignupRequests() {
                       </Button>
                       {r.status === "pending" && (
                         <>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(r)} title="Edit">
+                            <Pencil className="w-4 h-4" />
+                          </Button>
                           <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:text-primary" onClick={() => handleApprove(r.id)} title="Approve">
                             <CheckCircle2 className="w-4 h-4" />
                           </Button>
@@ -137,6 +199,72 @@ export default function AdminSignupRequests() {
           </table>
         </div>
       </div>
+
+      {/* Edit Signup Request Dialog */}
+      <Dialog open={!!editId} onOpenChange={() => setEditId(null)}>
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display">Edit Signup Request</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">Amend any incorrect details before approving this application.</p>
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Dealership Name *</Label>
+                <Input value={editForm.dealershipName} onChange={e => setEditForm(f => ({ ...f, dealershipName: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Contact Name *</Label>
+                <Input value={editForm.contactName} onChange={e => setEditForm(f => ({ ...f, contactName: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Email *</Label>
+                <Input type="email" value={editForm.email} onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Phone</Label>
+                <Input value={editForm.phone} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Address</Label>
+              <Input value={editForm.address} onChange={e => setEditForm(f => ({ ...f, address: e.target.value }))} />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>City</Label>
+                <Input value={editForm.city} onChange={e => setEditForm(f => ({ ...f, city: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Postcode</Label>
+                <Input value={editForm.postcode} onChange={e => setEditForm(f => ({ ...f, postcode: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>FCA Number</Label>
+                <Input value={editForm.fcaNumber} onChange={e => setEditForm(f => ({ ...f, fcaNumber: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Estimated Volume</Label>
+                <Input value={editForm.estimatedVolume} onChange={e => setEditForm(f => ({ ...f, estimatedVolume: e.target.value }))} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Message</Label>
+              <Textarea value={editForm.message} onChange={e => setEditForm(f => ({ ...f, message: e.target.value }))} className="min-h-[60px]" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditId(null)}>Cancel</Button>
+            <Button onClick={handleSaveEdit} disabled={editSaving}>
+              {editSaving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</> : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* View Request Dialog */}
       <Dialog open={!!selected} onOpenChange={() => setSelectedId(null)}>
@@ -160,6 +288,9 @@ export default function AdminSignupRequests() {
               </div>
               {selected.status === "pending" && (
                 <DialogFooter className="gap-2">
+                  <Button variant="outline" size="sm" onClick={() => { openEdit(selected); setSelectedId(null); }}>
+                    <Pencil className="w-4 h-4 mr-1" /> Edit Details
+                  </Button>
                   <Button variant="outline" size="sm" onClick={() => { setRejectId(selected.id); setSelectedId(null); }}>
                     <XCircle className="w-4 h-4 mr-1" /> Reject
                   </Button>

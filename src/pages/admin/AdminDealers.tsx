@@ -4,8 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Eye } from "lucide-react";
+import { Plus, Eye, Pencil, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
@@ -17,7 +18,62 @@ export default function AdminDealers() {
     name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "", password: "",
   });
 
+  // Edit dealer state
+  const [editDealer, setEditDealer] = useState<typeof demoDealers[0] | null>(null);
+  const [editForm, setEditForm] = useState({
+    name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "", status: "",
+  });
+  const [editSaving, setEditSaving] = useState(false);
+
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
+
+  const openEditDealer = (d: typeof demoDealers[0]) => {
+    setEditDealer(d);
+    setEditForm({
+      name: d.name, email: d.email, phone: d.phone, fcaNumber: d.fcaNumber,
+      address: d.address, city: d.city, postcode: d.postcode, status: d.status,
+    });
+  };
+
+  const handleSaveDealer = async () => {
+    if (!editDealer || !editForm.name || !editForm.email) {
+      toast.error("Name and email are required");
+      return;
+    }
+    setEditSaving(true);
+    try {
+      const { error } = await supabase.functions.invoke("admin-data", {
+        body: {
+          table: "dealers",
+          action: "update",
+          id: editDealer.id,
+          updates: {
+            name: editForm.name,
+            email: editForm.email,
+            phone: editForm.phone || null,
+            fca_number: editForm.fcaNumber || null,
+            address: editForm.address || null,
+            city: editForm.city || null,
+            postcode: editForm.postcode || null,
+            status: editForm.status,
+          },
+        },
+      });
+      if (error) throw error;
+      // Update local state
+      setDealers(prev => prev.map(d => d.id === editDealer.id ? {
+        ...d, name: editForm.name, email: editForm.email, phone: editForm.phone,
+        fcaNumber: editForm.fcaNumber, address: editForm.address, city: editForm.city,
+        postcode: editForm.postcode, status: editForm.status as any,
+      } : d));
+      toast.success("Dealer details updated");
+      setEditDealer(null);
+    } catch (err: any) {
+      toast.error("Failed to update dealer: " + (err.message || "Unknown error"));
+    } finally {
+      setEditSaving(false);
+    }
+  };
 
   const handleCreate = () => {
     if (!form.name || !form.email || !form.password) {
@@ -40,7 +96,6 @@ export default function AdminDealers() {
     };
     setDealers(prev => [newDealer, ...prev]);
     toast.success(`Dealer "${form.name}" created. Login credentials sent to ${form.email}`);
-    // Send real email
     import("@/lib/email-service").then(m => m.sendDealerCreatedEmail(form.email, form.name, form.password));
     setShowCreate(false);
     setForm({ name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "", password: "" });
@@ -67,6 +122,7 @@ export default function AdminDealers() {
                 <th className="text-left p-4 font-medium text-muted-foreground">Warranties</th>
                 <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
                 <th className="text-left p-4 font-medium text-muted-foreground hidden md:table-cell">Joined</th>
+                <th className="text-left p-4 font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -85,12 +141,80 @@ export default function AdminDealers() {
                     </Badge>
                   </td>
                   <td className="p-4 text-muted-foreground hidden md:table-cell">{new Date(d.createdAt).toLocaleDateString("en-GB")}</td>
+                  <td className="p-4">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDealer(d)} title="Edit">
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Edit Dealer Dialog */}
+      <Dialog open={!!editDealer} onOpenChange={() => setEditDealer(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="font-display">Edit Dealer</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Dealership Name *</Label>
+                <Input value={editForm.name} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Email *</Label>
+                <Input type="email" value={editForm.email} onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Phone</Label>
+                <Input value={editForm.phone} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>FCA Number</Label>
+                <Input value={editForm.fcaNumber} onChange={e => setEditForm(f => ({ ...f, fcaNumber: e.target.value }))} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Address</Label>
+              <Input value={editForm.address} onChange={e => setEditForm(f => ({ ...f, address: e.target.value }))} />
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label>City</Label>
+                <Input value={editForm.city} onChange={e => setEditForm(f => ({ ...f, city: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Postcode</Label>
+                <Input value={editForm.postcode} onChange={e => setEditForm(f => ({ ...f, postcode: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <select
+                  value={editForm.status}
+                  onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))}
+                  className="w-full text-sm bg-secondary/50 border border-border/50 rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50"
+                >
+                  <option value="active">Active</option>
+                  <option value="suspended">Suspended</option>
+                  <option value="trial">Trial</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDealer(null)}>Cancel</Button>
+            <Button onClick={handleSaveDealer} disabled={editSaving}>
+              {editSaving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</> : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Create Dealer Dialog */}
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
