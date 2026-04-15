@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { addEnquiry } from "@/lib/enquiry-store";
-import { pushNotification } from "@/lib/notification-store";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
 import PublicNav from "@/components/PublicNav";
