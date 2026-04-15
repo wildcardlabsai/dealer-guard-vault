@@ -187,6 +187,33 @@ export function useWarrantyStore() {
       checkExpiringWarranties(w.dealerId);
     },
 
+    async updateWarranty(id: string, updates: Partial<Warranty>) {
+      const existing = warranties.find(w => w.id === id);
+      if (!existing) return;
+      const dbUpdates: Record<string, unknown> = {};
+      if (updates.customerName !== undefined) dbUpdates.customer_name = updates.customerName;
+      if (updates.customerEmail !== undefined) dbUpdates.customer_email = updates.customerEmail;
+      if (updates.vehicleReg !== undefined) dbUpdates.vehicle_reg = updates.vehicleReg;
+      if (updates.vehicleMake !== undefined) dbUpdates.vehicle_make = updates.vehicleMake;
+      if (updates.vehicleModel !== undefined) dbUpdates.vehicle_model = updates.vehicleModel;
+      if (updates.vehicleYear !== undefined) dbUpdates.vehicle_year = String(updates.vehicleYear);
+      if (updates.mileage !== undefined) dbUpdates.vehicle_mileage = updates.mileage;
+      if (updates.duration !== undefined) dbUpdates.duration_months = updates.duration;
+      if (updates.startDate !== undefined) dbUpdates.start_date = updates.startDate;
+      if (updates.endDate !== undefined) dbUpdates.end_date = updates.endDate;
+      if (updates.cost !== undefined) dbUpdates.cost = updates.cost;
+      if (updates.status !== undefined) dbUpdates.status = updates.status;
+      if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
+      if (Object.keys(dbUpdates).length > 0) {
+        await dbCall({ table: "warranties", action: "update", id, updates: dbUpdates });
+        await dbCall({
+          table: "audit_log", action: "insert",
+          updates: { dealer_id: existing.dealerId, user_id: "", action: "warranty_updated", details: `Updated warranty for ${existing.customerName}` },
+        });
+        await loadAll();
+      }
+    },
+
     async deleteWarranty(id: string) {
       const w = warranties.find(w => w.id === id);
       await dbCall({ table: "warranties", action: "delete", id });
