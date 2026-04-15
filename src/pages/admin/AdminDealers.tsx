@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { demoDealers } from "@/data/demo-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Eye, Pencil, Loader2 } from "lucide-react";
+import { Plus, Eye, Pencil, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -14,6 +14,42 @@ import {
 export default function AdminDealers() {
   const [showCreate, setShowCreate] = useState(false);
   const [dealers, setDealers] = useState(demoDealers);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDealers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-data", {
+        body: { table: "dealers", action: "select" },
+      });
+      if (error) throw error;
+      const dbDealers = (data?.data || []).map((d: any) => ({
+        id: d.id,
+        name: d.name,
+        email: d.email,
+        phone: d.phone || "",
+        fcaNumber: d.fca_number || "",
+        address: d.address || "",
+        city: d.city || "",
+        postcode: d.postcode || "",
+        createdAt: d.joined_at || d.created_at,
+        status: d.status as "active" | "suspended" | "trial",
+        warrantyCount: 0,
+        monthlyFee: 0,
+      }));
+      // Merge: DB dealers first, then demo dealers not already in DB
+      const dbEmails = new Set(dbDealers.map((d: any) => d.email.toLowerCase()));
+      const merged = [...dbDealers, ...demoDealers.filter(d => !dbEmails.has(d.email.toLowerCase()))];
+      setDealers(merged);
+    } catch {
+      // Fallback to demo data
+      setDealers(demoDealers);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchDealers(); }, [fetchDealers]);
   const [form, setForm] = useState({
     name: "", email: "", phone: "", fcaNumber: "", address: "", city: "", postcode: "", password: "",
   });
@@ -68,6 +104,7 @@ export default function AdminDealers() {
       } : d));
       toast.success("Dealer details updated");
       setEditDealer(null);
+      fetchDealers();
     } catch (err: any) {
       toast.error("Failed to update dealer: " + (err.message || "Unknown error"));
     } finally {
@@ -108,7 +145,12 @@ export default function AdminDealers() {
           <h1 className="text-2xl font-bold font-display">Dealers</h1>
           <p className="text-sm text-muted-foreground">{dealers.length} registered dealers</p>
         </div>
-        <Button size="sm" onClick={() => setShowCreate(true)}><Plus className="w-4 h-4 mr-1" /> Create Dealer</Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={fetchDealers} disabled={loading}>
+            <RefreshCw className={`w-4 h-4 mr-1 ${loading ? "animate-spin" : ""}`} /> Refresh
+          </Button>
+          <Button size="sm" onClick={() => setShowCreate(true)}><Plus className="w-4 h-4 mr-1" /> Create Dealer</Button>
+        </div>
       </div>
 
       <div className="glass-card rounded-xl overflow-hidden">
