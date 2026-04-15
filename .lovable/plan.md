@@ -1,100 +1,67 @@
 
 
-# Launch Readiness Plan: Remove All Demo Data, Go Production-Only
+# Launch Readiness Audit — Remaining Items
 
-## Summary
+After a thorough audit, the system is **mostly production-ready** but has several leftover demo artifacts that need cleaning up before launch.
 
-The codebase is heavily dependent on hardcoded demo data (`demo-data.ts`) across **12+ files**. Every admin page, the auth system, dealer pages, and customer pages reference static demo arrays. This plan removes all demo dependencies and makes everything database-driven.
+## Issues Found
 
-## What Needs to Change
+### 1. Nine dealer pages still have `|| "d-1"` fallback IDs
+These files use `user?.dealerId || "d-1"` which means if the auth user somehow lacks a dealerId, they'd see another dealer's data:
+- `DealerRequests.tsx`, `DealerWarranties.tsx`, `DealerDocuments.tsx`, `DealerCoverTemplates.tsx`, `DealerClaims.tsx`, `DealerClaimAssist.tsx`, `DealerDisputeIQ.tsx`, `DisputeIQAssessment.tsx`, `DealerWarrantyFund.tsx`
 
-### 1. Auth System — Remove Demo Credentials
-**File:** `src/contexts/AuthContext.tsx`
-- Remove `demoUsers`, `demoPasswords`, `DEMO_USER_KEY`, and all localStorage demo-user logic
-- Login should ONLY use `supabase.auth.signInWithPassword`
-- Session restore should ONLY use `supabase.auth.getSession` and `onAuthStateChange`
-- The `buildUserFromSupabase` function already works correctly for real users
-- **Requires:** A real admin account in Supabase Auth (currently none exists — only `imfunnzi@gmail.com` as dealer and `mattoftaylor@gmail.com` as customer)
+**Fix:** Replace `|| "d-1"` with `|| ""` in all nine files. Empty string means they'll see nothing instead of another dealer's data.
 
-### 2. Create Admin Account
-- Run the `approve-dealer` pattern but for an admin: create a Supabase Auth user with `role: "admin"` in metadata via a one-time edge function invocation or migration
-- This is critical — without it, no one can access the admin dashboard
+### 2. Notification store seeds fake demo notifications
+`src/lib/notification-store.ts` has a `seedNotifications()` function that creates hardcoded fake notifications ("AutoCare Solutions", "Prestige Motors", "AB12 CDE") when no DB notifications exist. It also checks for `admin-1` and `cust-1` IDs.
 
-### 3. Admin Dashboard — Fetch Real Data
-**File:** `src/pages/admin/AdminDashboard.tsx`
-- Replace `demoDealers`, `demoWarranties`, `demoClaims`, `demoAuditLog` with data from `useWarrantyStore()` and database queries via the `admin-data` Edge Function
-- Revenue calculations should use real warranty counts × £15
-- Dealer leaderboard, claims breakdown, activity logs — all from DB
-- Monthly revenue trend should aggregate from real `warranties.created_at` dates
+**Fix:** Remove the entire `seedNotifications` function. If no notifications exist in DB, show empty — that's correct for a new system.
 
-### 4. Admin Warranties Page — Fetch Real Data
-**File:** `src/pages/admin/AdminWarranties.tsx`
-- Replace `demoWarranties` with data from `useWarrantyStore()` (which already fetches from DB)
+### 3. ContactPage pushes notification to hardcoded `"admin-1"` 
+`src/pages/ContactPage.tsx` line 42: `pushNotification("admin-1", ...)` — this won't reach the real admin whose ID is a UUID.
 
-### 5. Admin Revenue Page — Fetch Real Data
-**File:** `src/pages/admin/AdminRevenue.tsx`
-- Replace `demoDealers`, `demoWarranties` with real DB data
-- Calculate actual revenue from real warranty records
+**Fix:** Push to the real admin user ID, or better, store the enquiry in DB and let the admin see it via the enquiries page (which already works).
 
-### 6. Admin Logs Page — Fetch Real Data
-**File:** `src/pages/admin/AdminLogs.tsx`
-- Replace `demoAuditLog` with data from `useWarrantyStore()` which already loads audit_log from DB
+### 4. Certificate generator uses demo cover templates
+`src/lib/generate-certificate.ts` imports `demoCoverTemplates` from the static file instead of fetching from the database. Certificates won't show real cover template data.
 
-### 7. Admin Dealers Page — Remove Demo Fallback
-**File:** `src/pages/admin/AdminDealers.tsx`
-- Remove `demoDealers` import and merge logic
-- Only show dealers from the database
-- Remove demo fallback in catch block
+**Fix:** Accept an optional `CoverTemplate` parameter so the caller passes the real template from the cover store.
 
-### 8. Dealer Pages — Remove Hardcoded Fallbacks
-Multiple files use `|| "d-1"` as fallback dealer ID and `dealerId === "d-1" ? "Prestige Motors" : "City Autos"` for dealer names:
-- `DealerDashboard.tsx`, `DealerSettings.tsx`, `DealerSupport.tsx`, `DealerWarrantyLine.tsx`, `AddWarranty.tsx`, `DealerCustomers.tsx`, and others
-- Replace with: use `user.dealerId` (no fallback) and fetch dealer name from the `dealers` table or user metadata
+### 5. Cover templates file still has hardcoded demo arrays
+`src/data/cover-templates.ts` exports `demoCoverTemplates` (4 templates with `d-1`/`d-2` dealerIds) and `warrantyTemplateMap`. These are only used by `generate-certificate.ts` now.
 
-### 9. Dealer Customers Page — Fetch from DB
-**File:** `src/pages/dealer/DealerCustomers.tsx`
-- Replace `demoCustomers` with customers fetched from the `customers` table via `admin-data` Edge Function
-- Currently shows only hardcoded demo customers
+**Fix:** Keep the type exports, remove the demo arrays. Certificate generation will use the real template passed in.
 
-### 10. Customer Layout — Remove Hardcoded ID
-**File:** `src/components/layouts/CustomerLayout.tsx`
-- Replace `user?.id || "customer-1"` with just `user?.id`
+### 6. Claim data file has demo claim records
+`src/data/claim-data.ts` has ~5 hardcoded demo claims with "John Smith", "Prestige Motors" etc. But these are only type/config exports now — the actual demo claim objects aren't imported elsewhere. The types and config maps (`claimStatusConfig`, `claimPriorityConfig`, etc.) ARE used.
 
-### 11. Type Exports — Keep Interfaces, Remove Demo Arrays
-**File:** `src/data/demo-data.ts`
-- Keep all TypeScript interfaces (`User`, `Dealer`, `Customer`, `Warranty`, `Claim`, etc.)
-- Remove all exported demo data arrays (`demoUsers`, `demoDealers`, `demoCustomers`, `demoWarranties`, `demoClaims`, `demoRequests`, `demoAuditLog`)
-- Or: move interfaces to a dedicated `types.ts` file and delete `demo-data.ts`
+**Fix:** Remove the demo claim array (`demoClaims` or similar) but keep all types and config objects.
 
-### 12. Warranty Store — Already DB-Driven
-**File:** `src/lib/warranty-store.ts`
-- Only imports types from `demo-data.ts` — no demo data dependency. Just needs the import path updated if types move.
+### 7. Certificate text says "warrantyvault.com" instead of ".co.uk"
+Line 98 of `generate-certificate.ts` says "Log into your customer portal at warrantyvault.com" — should be `.co.uk`.
 
-### 13. Other Files Using Demo Data
-- `src/lib/generate-certificate.ts` — imports `Warranty` type only (fine)
-- `src/pages/dealer/DealerSupport.tsx` — uses `demoDealers` for dealer name lookup
+**Fix:** Update to `warrantyvault.co.uk`.
 
-## Technical Details
+## What's Already Good
+- Auth system — fully Supabase-only, no demo logic
+- Admin dashboard, dealers, warranties, revenue, logs — all DB-driven
+- Dealer dashboard, settings, support, warranty line — all DB-driven
+- Customer layout — no fallback IDs
+- Email service — correctly uses warrantyvault.co.uk
+- Edge functions — all production-ready
+- Signup/approval flow — working end-to-end
+- Admin account created and working
 
-### Files to modify (14 files):
-1. `src/contexts/AuthContext.tsx` — Remove demo auth
-2. `src/data/demo-data.ts` — Remove demo arrays, keep types
-3. `src/pages/admin/AdminDashboard.tsx` — All real data
-4. `src/pages/admin/AdminWarranties.tsx` — Use warranty store
-5. `src/pages/admin/AdminRevenue.tsx` — Use warranty store + dealers from DB
-6. `src/pages/admin/AdminLogs.tsx` — Use warranty store
-7. `src/pages/admin/AdminDealers.tsx` — Remove demo merge
-8. `src/pages/dealer/DealerDashboard.tsx` — Remove `|| "d-1"`
-9. `src/pages/dealer/DealerSettings.tsx` — Fetch dealer info from DB
-10. `src/pages/dealer/DealerSupport.tsx` — Fetch dealer name from DB
-11. `src/pages/dealer/DealerWarrantyLine.tsx` — Remove demo dealer lookup
-12. `src/pages/dealer/AddWarranty.tsx` — Fetch customers from DB
-13. `src/pages/dealer/DealerCustomers.tsx` — Fetch customers from DB
-14. `src/components/layouts/CustomerLayout.tsx` — Remove fallback ID
+## Summary of Changes
 
-### One-time setup needed:
-- Create an admin Supabase Auth account (you'll need to provide the email/password you want for your admin login)
+| # | File(s) | Change |
+|---|---------|--------|
+| 1 | 9 dealer pages | Remove `\|\| "d-1"` fallbacks |
+| 2 | `notification-store.ts` | Remove `seedNotifications()` and demo notification data |
+| 3 | `ContactPage.tsx` | Fix admin notification target |
+| 4 | `generate-certificate.ts` | Use real template from caller, fix URL |
+| 5 | `cover-templates.ts` | Remove demo arrays, keep types |
+| 6 | `claim-data.ts` | Remove demo claim objects, keep types/configs |
 
-### Pattern for dealer name resolution:
-Instead of hardcoded lookups, store dealer name in user metadata (already done during approval) and access via `user.name` / fetch from `dealers` table when needed.
+Total: ~15 files touched, mostly small surgical edits.
 
