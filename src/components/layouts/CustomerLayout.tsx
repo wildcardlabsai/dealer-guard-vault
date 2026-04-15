@@ -21,7 +21,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
   const location = useLocation();
   const navigate = useNavigate();
   const notifStore = useNotificationStore();
-  const userId = user?.id || "customer-1";
+  const userId = user?.id || "";
   const unreadCount = notifStore.unreadCount(userId);
   const notifications = notifStore.getNotifications(userId);
   const [showNotifs, setShowNotifs] = useState(false);

@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const supportStore = useSupportStore();
   const enquiryStore = useEnquiryStore();
   const notifStore = useNotificationStore();
-  const userId = user?.id || "admin-1";
+  const userId = user?.id || "";
   const unreadCount = notifStore.unreadCount(userId);
   const notifications = notifStore.getNotifications(userId);
   const [showNotifs, setShowNotifs] = useState(false);
@@ -124,7 +124,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="w-4 h-4" /></Button>
         </header>
-        {/* Mobile nav drawer */}
         {mobileNav && (
           <div className="md:hidden border-b border-border/50 bg-card/60 backdrop-blur-sm px-2 py-2 space-y-1 animate-fade-in">
             {navItems.map(item => {
