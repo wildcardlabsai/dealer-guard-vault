@@ -33,7 +33,7 @@ function KPICard({ icon: Icon, label, value, color }: { icon: any; label: string
 export default function DealerClaimAssist() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const dealerId = user?.dealerId || "d-1";
+  const dealerId = user?.dealerId || "";
   const claimStore = useClaimStore();
   const coverStore = useCoverStore();
   const allClaims = claimStore.getClaimsForDealer(dealerId);

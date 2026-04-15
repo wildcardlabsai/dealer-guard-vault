@@ -38,7 +38,7 @@ const sortLabels: Record<SortOption, string> = {
 export default function DealerWarranties() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "d-1";
+  const dealerId = user?.dealerId || "";
   const store = useWarrantyStore();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
