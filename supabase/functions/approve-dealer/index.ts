@@ -59,6 +59,7 @@ Deno.serve(async (req) => {
         name: reqData.contact_name,
         role: "dealer",
         dealerId: dealerCode,
+        dealerName: reqData.dealership_name,
         full_name: reqData.contact_name,
       },
     });

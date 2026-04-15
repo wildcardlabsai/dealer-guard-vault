@@ -6,7 +6,6 @@ import { useWarrantyStore } from "@/lib/warranty-store";
 import { useCoverStore } from "@/lib/cover-store";
 import { useDealerSettingsStore } from "@/lib/dealer-settings-store";
 import { useAuth } from "@/contexts/AuthContext";
-import { demoCustomers } from "@/data/demo-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,12 +21,14 @@ export default function AddWarranty() {
   const store = useWarrantyStore();
   const coverStore = useCoverStore();
   const dealerSettingsStore = useDealerSettingsStore();
-  const dealerId = user?.dealerId || "d-1";
+  const dealerId = user?.dealerId || "";
+  const dealerName = user?.dealerName || user?.name || "";
   const templates = coverStore.templates.filter(t => t.dealerId === dealerId || t.dealerId === "system");
   const passedState = location.state as { reg?: string; vehicle?: DVLAVehicle } | null;
   const [step, setStep] = useState(passedState?.vehicle ? 1 : 1);
   const [reg, setReg] = useState(passedState?.reg || "");
   const [postcode, setPostcode] = useState("");
+  const [dbCustomers, setDbCustomers] = useState<{ id: string; name: string; email: string; phone: string; dealerId: string }[]>([]);
   const [vehicle, setVehicle] = useState<DVLAVehicle | null>(null);
   const [dvsaData, setDvsaData] = useState<DVSAResult | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -38,18 +39,34 @@ export default function AddWarranty() {
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
   const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
 
-  // Existing customers for this dealer
-  const existingCustomers = demoCustomers.filter(c => c.dealerId === dealerId);
-  // Also include customers from warranties added by this dealer (not in demo data)
+  // Fetch customers from DB
+  useEffect(() => {
+    if (!dealerId) return;
+    supabase.functions.invoke("admin-data", {
+      body: { table: "customers", action: "select", filters: { dealer_id: dealerId } },
+    }).then(({ data, error }) => {
+      if (!error && data?.data) {
+        setDbCustomers((data.data as any[]).map((c: any) => ({
+          id: c.id,
+          name: c.full_name,
+          email: c.email,
+          phone: c.phone || "",
+          dealerId: c.dealer_id,
+        })));
+      }
+    });
+  }, [dealerId]);
+
+  // Also include customers from warranties added by this dealer (not yet in customers table)
   const warrantyCustomers = store.warranties
     .filter(w => w.dealerId === dealerId && w.customerEmail)
     .reduce((acc, w) => {
-      if (!acc.find(c => c.email === w.customerEmail) && !existingCustomers.find(c => c.email === w.customerEmail)) {
+      if (!acc.find(c => c.email === w.customerEmail) && !dbCustomers.find(c => c.email.toLowerCase() === w.customerEmail!.toLowerCase())) {
         acc.push({ id: w.customerId, name: w.customerName, email: w.customerEmail!, phone: "", dealerId });
       }
       return acc;
     }, [] as { id: string; name: string; email: string; phone: string; dealerId: string }[]);
-  const allCustomers = [...existingCustomers, ...warrantyCustomers];
+  const allCustomers = [...dbCustomers, ...warrantyCustomers];
 
   // Sync free warranty count with actual data
   const dealerWarrantyCount = store.warranties.filter(w => w.dealerId === dealerId).length;
@@ -133,7 +150,7 @@ export default function AddWarranty() {
       customerName: form.customerName,
       customerEmail: form.email || undefined,
       dealerId,
-      dealerName: dealerId === "d-1" ? "Prestige Motors" : "City Autos",
+      dealerName,
       vehicleReg: vehicle.registration,
       vehicleMake: vehicle.make,
       vehicleModel: vehicle.model,
@@ -160,7 +177,6 @@ export default function AddWarranty() {
     toast.success(isFreeWarranty ? "Free warranty created successfully!" : "Payment successful! Warranty created.");
     
     if (form.email) {
-      const dealerName = dealerId === "d-1" ? "Prestige Motors" : "City Autos";
       supabase.functions.invoke("invite-customer", {
         body: {
           email: form.email,

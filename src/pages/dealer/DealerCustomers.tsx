@@ -1,4 +1,3 @@
-import { demoCustomers, demoWarranties } from "@/data/demo-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useClaimStore } from "@/lib/claim-store";
@@ -8,20 +7,32 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Search, Mail, Loader2, UserPlus, Clock, Send, Pencil } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
 
+interface CustomerRecord {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postcode: string;
+  dealerId: string;
+  createdAt: string;
+}
+
 export default function DealerCustomers() {
   const { user } = useAuth();
   const { warranties } = useWarrantyStore();
   const claimStore = useClaimStore();
   const disputeStore = useDisputeIQStore();
-  const dealerId = user?.dealerId || "d-1";
-  const dealerName = dealerId === "d-1" ? "Prestige Motors" : "City Autos";
+  const dealerId = user?.dealerId || "";
+  const dealerName = user?.dealerName || user?.name || "";
   const [search, setSearch] = useState("");
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -29,13 +40,40 @@ export default function DealerCustomers() {
   const [inviting, setInviting] = useState(false);
   const [resendingId, setResendingId] = useState<string | null>(null);
   const [timelineCustomer, setTimelineCustomer] = useState<string | null>(null);
+  const [customers, setCustomers] = useState<CustomerRecord[]>([]);
+  const [loadingCustomers, setLoadingCustomers] = useState(true);
 
   // Edit customer state
-  const [editCustomer, setEditCustomer] = useState<typeof demoCustomers[0] | null>(null);
+  const [editCustomer, setEditCustomer] = useState<CustomerRecord | null>(null);
   const [editForm, setEditForm] = useState({ name: "", email: "", phone: "", address: "", city: "", postcode: "" });
   const [saving, setSaving] = useState(false);
 
-  const openEdit = (c: typeof demoCustomers[0]) => {
+  const fetchCustomers = useCallback(async () => {
+    if (!dealerId) return;
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-data", {
+        body: { table: "customers", action: "select", filters: { dealer_id: dealerId } },
+      });
+      if (!error && data?.data) {
+        setCustomers((data.data as any[]).map((c: any) => ({
+          id: c.id,
+          name: c.full_name,
+          email: c.email,
+          phone: c.phone || "",
+          address: c.address || "",
+          city: c.city || "",
+          postcode: c.postcode || "",
+          dealerId: c.dealer_id,
+          createdAt: c.created_at,
+        })));
+      }
+    } catch { /* ignore */ }
+    setLoadingCustomers(false);
+  }, [dealerId]);
+
+  useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
+
+  const openEdit = (c: CustomerRecord) => {
     setEditCustomer(c);
     setEditForm({ name: c.name, email: c.email, phone: c.phone, address: c.address, city: c.city, postcode: c.postcode });
   };
@@ -47,7 +85,7 @@ export default function DealerCustomers() {
     }
     setSaving(true);
     try {
-      const { data, error } = await supabase.functions.invoke("admin-data", {
+      const { error } = await supabase.functions.invoke("admin-data", {
         body: {
           table: "customers",
           action: "update",
@@ -65,6 +103,7 @@ export default function DealerCustomers() {
       if (error) throw error;
       toast.success("Customer details updated");
       setEditCustomer(null);
+      fetchCustomers();
     } catch (err: any) {
       toast.error("Failed to update customer: " + (err.message || "Unknown error"));
     } finally {
@@ -84,17 +123,17 @@ export default function DealerCustomers() {
         events.push({ date: m.timestamp, type: "message", detail: `Message from ${m.from}: "${m.message.slice(0, 60)}..."` });
       });
     });
-    disputeStore.getCasesForDealer(dealerId).filter(d => d.customerName === demoCustomers.find(c => c.id === customerId)?.name).forEach(d => {
+    const customerName = customers.find(c => c.id === customerId)?.name || "";
+    disputeStore.getCasesForDealer(dealerId).filter(d => d.customerName === customerName).forEach(d => {
       events.push({ date: d.createdAt, type: "dispute", detail: `DisputeIQ case opened — ${d.complaintType}` });
     });
     return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   };
 
   const timelineEvents = timelineCustomer ? getTimeline(timelineCustomer) : [];
-  const timelineCustomerName = demoCustomers.find(c => c.id === timelineCustomer)?.name || "";
+  const timelineCustomerName = customers.find(c => c.id === timelineCustomer)?.name || "";
 
-  const customers = demoCustomers
-    .filter(c => c.dealerId === dealerId)
+  const filteredCustomers = customers
     .filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.email.toLowerCase().includes(search.toLowerCase()));
 
   const handleInvite = async () => {
@@ -113,6 +152,7 @@ export default function DealerCustomers() {
         setInviteOpen(false);
         setInviteEmail("");
         setInviteName("");
+        fetchCustomers();
       } else {
         throw new Error(data?.error || "Unknown error");
       }
@@ -124,7 +164,7 @@ export default function DealerCustomers() {
     }
   };
 
-  const handleInviteExisting = async (customer: typeof demoCustomers[0]) => {
+  const handleInviteExisting = async (customer: CustomerRecord) => {
     const toastId = toast.loading(`Sending invite to ${customer.email}...`);
     try {
       const { data, error } = await supabase.functions.invoke("invite-customer", {
@@ -141,7 +181,7 @@ export default function DealerCustomers() {
     }
   };
 
-  const handleResendWelcome = async (customer: typeof demoCustomers[0]) => {
+  const handleResendWelcome = async (customer: CustomerRecord) => {
     setResendingId(customer.id);
     const toastId = toast.loading(`Resending welcome email to ${customer.email}...`);
     try {
@@ -166,7 +206,7 @@ export default function DealerCustomers() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold font-display">Customers</h1>
-          <p className="text-sm text-muted-foreground">{customers.length} customers</p>
+          <p className="text-sm text-muted-foreground">{filteredCustomers.length} customers</p>
         </div>
         <Button onClick={() => setInviteOpen(true)}>
           <UserPlus className="w-4 h-4 mr-2" /> Invite Customer
@@ -178,44 +218,54 @@ export default function DealerCustomers() {
         <Input placeholder="Search customers..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {customers.map(c => {
-          const custWarranties = demoWarranties.filter(w => w.customerId === c.id);
-          const active = custWarranties.filter(w => w.status === "active").length;
-          return (
-            <div key={c.id} className="glass-card rounded-xl p-5 hover:border-primary/30 transition-all">
-              <div className="flex items-start justify-between mb-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                  {c.name.split(" ").map(n => n[0]).join("")}
+      {loadingCustomers ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : filteredCustomers.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">
+          <p className="text-sm">No customers found. Customers are created automatically when you issue warranties.</p>
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredCustomers.map(c => {
+            const custWarranties = warranties.filter(w => w.customerId === c.id || w.customerEmail?.toLowerCase() === c.email.toLowerCase());
+            const active = custWarranties.filter(w => w.status === "active").length;
+            return (
+              <div key={c.id} className="glass-card rounded-xl p-5 hover:border-primary/30 transition-all">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                    {c.name.split(" ").map(n => n[0]).join("")}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {active > 0 && <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">{active} active</Badge>}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {active > 0 && <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">{active} active</Badge>}
+                <h3 className="font-medium">{c.name}</h3>
+                <p className="text-sm text-muted-foreground">{c.email}</p>
+                {c.phone && <p className="text-sm text-muted-foreground">{c.phone}</p>}
+                {c.address && <p className="text-xs text-muted-foreground mt-2">{c.address}{c.city ? `, ${c.city}` : ""}{c.postcode ? `, ${c.postcode}` : ""}</p>}
+                <p className="text-xs text-muted-foreground mt-1">Joined: {new Date(c.createdAt).toLocaleDateString("en-GB")}</p>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <Button variant="outline" size="sm" onClick={() => openEdit(c)}>
+                    <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleResendWelcome(c)} disabled={resendingId === c.id}>
+                    {resendingId === c.id ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Send className="w-3.5 h-3.5 mr-1.5" />}
+                    Resend Welcome
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleInviteExisting(c)}>
+                    <Mail className="w-3.5 h-3.5 mr-1.5" /> Invite
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setTimelineCustomer(c.id)}>
+                    <Clock className="w-3.5 h-3.5 mr-1.5" /> Timeline
+                  </Button>
                 </div>
               </div>
-              <h3 className="font-medium">{c.name}</h3>
-              <p className="text-sm text-muted-foreground">{c.email}</p>
-              <p className="text-sm text-muted-foreground">{c.phone}</p>
-              <p className="text-xs text-muted-foreground mt-2">{c.address}, {c.city}, {c.postcode}</p>
-              <p className="text-xs text-muted-foreground mt-1">Joined: {new Date(c.createdAt).toLocaleDateString("en-GB")}</p>
-              <div className="flex flex-wrap gap-2 mt-3">
-                <Button variant="outline" size="sm" onClick={() => openEdit(c)}>
-                  <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleResendWelcome(c)} disabled={resendingId === c.id}>
-                  {resendingId === c.id ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Send className="w-3.5 h-3.5 mr-1.5" />}
-                  Resend Welcome
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleInviteExisting(c)}>
-                  <Mail className="w-3.5 h-3.5 mr-1.5" /> Invite
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => setTimelineCustomer(c.id)}>
-                  <Clock className="w-3.5 h-3.5 mr-1.5" /> Timeline
-                </Button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Edit Customer Dialog */}
       <Dialog open={!!editCustomer} onOpenChange={() => setEditCustomer(null)}>
