@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotificationStore } from "@/lib/notification-store";
 import {
@@ -110,6 +111,7 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
 
   return (
     <SimpleModeContext.Provider value={{ simple: simpleMode, toggle: toggleSimple }}>
+      <SEOHead title="Dealer Dashboard | WarrantyVault" description="Manage your warranties, claims and customers." noindex />
       <div className="min-h-screen flex bg-[hsl(222_30%_6%)]">
         {/* Sidebar */}
         <aside className={`${collapsed ? "w-16" : "w-60"} flex-shrink-0 border-r border-white/[0.06] bg-[hsl(222_28%_8%)]/80 backdrop-blur-sm flex flex-col transition-all duration-300 hidden md:flex relative`}>

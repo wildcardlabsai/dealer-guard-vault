@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotificationStore } from "@/lib/notification-store";
 import { LayoutDashboard, Shield, FileText, MessageSquare, LogOut, BookOpen, Bell, Check, ClipboardList, LifeBuoy } from "lucide-react";
@@ -46,6 +47,8 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
   };
 
   return (
+    <>
+    <SEOHead title="Customer Portal | WarrantyVault" description="View your warranty, claims and coverage details." noindex />
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50">
