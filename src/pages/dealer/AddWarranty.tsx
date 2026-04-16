@@ -37,7 +37,7 @@ export default function AddWarranty() {
   const [paying, setPaying] = useState(false);
   const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
-  const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
+  const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", fundContribution: "", notes: "", coverTemplateId: "" });
   const [createdWarranty, setCreatedWarranty] = useState<{
     customerName: string; email: string; vehicleReg: string; vehicleMake: string;
     vehicleModel: string; startDate: string; endDate: string; isFree: boolean;
@@ -148,6 +148,29 @@ export default function AddWarranty() {
 
     const customerId = selectedCustomerId || `cust-${Date.now()}`;
 
+    // Create customer record in DB if new customer
+    if (customerType === "new" && form.email) {
+      try {
+        await supabase.functions.invoke("admin-data", {
+          body: {
+            table: "customers",
+            action: "insert",
+            updates: {
+              full_name: form.customerName,
+              email: form.email,
+              phone: form.phone || null,
+              dealer_id: dealerId,
+              address: selectedAddress?.line1 || null,
+              city: selectedAddress?.city || null,
+              postcode: selectedAddress?.postcode || postcode || null,
+            },
+          },
+        });
+      } catch (err) {
+        console.error("Failed to create customer record:", err);
+      }
+    }
+
     store.addWarranty({
       id: `w-${Date.now()}`,
       customerId,
@@ -166,7 +189,7 @@ export default function AddWarranty() {
       endDate,
       cost: parseInt(form.cost),
       status: "active",
-      notes: form.notes,
+      notes: form.notes + (form.fundContribution ? `\nFund contribution: £${form.fundContribution}` : ""),
       createdAt: startDate,
       coverTemplateId: form.coverTemplateId || undefined,
       paymentStatus: isFreeWarranty ? "free" : "paid",
@@ -245,7 +268,7 @@ export default function AddWarranty() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button onClick={() => navigate("/dealer/warranties")} variant="outline">View All Warranties</Button>
-          <Button onClick={() => { setCreatedWarranty(null); setStep(1); setVehicle(null); setDvsaData(null); setForm({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" }); setCustomerType(null); setSelectedCustomerId(""); setReg(""); }}>
+          <Button onClick={() => { setCreatedWarranty(null); setStep(1); setVehicle(null); setDvsaData(null); setForm({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", fundContribution: "", notes: "", coverTemplateId: "" }); setCustomerType(null); setSelectedCustomerId(""); setReg(""); }}>
             <Plus className="w-4 h-4 mr-2" /> Add Another Warranty
           </Button>
         </div>
@@ -543,8 +566,14 @@ export default function AddWarranty() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Cost (£) *</Label>
+              <Label>Warranty Selling Price (£) *</Label>
               <Input type="number" placeholder="599" value={form.cost} onChange={e => setForm({ ...form, cost: e.target.value })} />
+              <p className="text-xs text-muted-foreground">The price you charged the customer for this warranty</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Fund Contribution (£)</Label>
+              <Input type="number" placeholder="200" value={form.fundContribution} onChange={e => setForm({ ...form, fundContribution: e.target.value })} />
+              <p className="text-xs text-muted-foreground">Amount you're setting aside in the warranty fund for claims</p>
             </div>
           </div>
           <div className="space-y-2">
@@ -580,7 +609,8 @@ export default function AddWarranty() {
                 <p><span className="text-muted-foreground">Vehicle:</span> {vehicle.year} {vehicle.make} {vehicle.model} ({vehicle.registration})</p>
                 <p><span className="text-muted-foreground">Customer:</span> {form.customerName}</p>
                 <p><span className="text-muted-foreground">Duration:</span> {form.duration} months</p>
-                <p><span className="text-muted-foreground">Warranty Value:</span> £{form.cost}</p>
+                <p><span className="text-muted-foreground">Selling Price:</span> £{form.cost}</p>
+                {form.fundContribution && <p><span className="text-muted-foreground">Fund Contribution:</span> £{form.fundContribution}</p>}
                 {selectedTemplate && <p><span className="text-muted-foreground">Cover Level:</span> {selectedTemplate.levelName}</p>}
               </div>
             )}
