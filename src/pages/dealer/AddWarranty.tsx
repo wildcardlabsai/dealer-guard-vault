@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle, UserPlus, Users, Plus } from "lucide-react";
 import { toast } from "sonner";
+import ExistingCustomerSearch from "@/components/ExistingCustomerSearch";
 
 export default function AddWarranty() {
   const navigate = useNavigate();
