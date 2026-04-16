@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useClaimStore } from "@/lib/claim-store";
