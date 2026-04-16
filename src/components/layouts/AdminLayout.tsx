@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotificationStore } from "@/lib/notification-store";
 import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus, ClipboardList, Headphones, Bell, Check, Shield, LifeBuoy, MessageSquare, Menu, X } from "lucide-react";
@@ -62,6 +63,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
+    <>
+    <SEOHead title="Admin Dashboard | WarrantyVault" description="WarrantyVault admin dashboard." noindex />
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50">
@@ -154,6 +157,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
+    </>
   );
 }
 

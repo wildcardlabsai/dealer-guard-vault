@@ -23,7 +23,12 @@ export default function CustomerCover() {
     (w.customerId === user?.id || (userEmail && w.customerEmail?.toLowerCase() === userEmail)) && w.status === "active"
   );
   const warranty = warranties[0];
-  const template = warranty ? coverStore.getTemplateForWarranty(warranty.id) : undefined;
+  // Look up template by the warranty's coverTemplateId (stored on the warranty record), 
+  // falling back to the in-memory templateMap assignment
+  const template = warranty
+    ? (warranty.coverTemplateId ? coverStore.getTemplate(warranty.coverTemplateId) : undefined)
+      ?? coverStore.getTemplateForWarranty(warranty.id)
+    : undefined;
   const warrantyLine = warranty ? warrantyLineStore.getLine(warranty.dealerId) : null;
 
   const [searchQuery, setSearchQuery] = useState("");

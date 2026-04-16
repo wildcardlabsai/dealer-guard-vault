@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EmptyState from "@/components/EmptyState";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
@@ -38,10 +38,14 @@ const sortLabels: Record<SortOption, string> = {
 
 export default function DealerWarranties() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const dealerId = user?.dealerId || "";
   const store = useWarrantyStore();
-  const [search, setSearch] = useState("");
+
+  // Pre-fill search from customer link (e.g. ?customer=email)
+  const customerParam = new URLSearchParams(location.search).get("customer");
+  const [search, setSearch] = useState(customerParam || "");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [selectedId, setSelectedId] = useState<string | null>(null);

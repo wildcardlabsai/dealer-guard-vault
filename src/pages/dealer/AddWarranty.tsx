@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle, UserPlus, Users, Plus } from "lucide-react";
 import { toast } from "sonner";
+import ExistingCustomerSearch from "@/components/ExistingCustomerSearch";
 
 export default function AddWarranty() {
   const navigate = useNavigate();
@@ -329,7 +330,19 @@ export default function AddWarranty() {
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div><span className="text-muted-foreground">Make:</span> <span className="font-medium">{vehicle.make}</span></div>
-                <div><span className="text-muted-foreground">Model:</span> <span className="font-medium">{vehicle.model}</span></div>
+                <div>
+                  <span className="text-muted-foreground">Model:</span>{" "}
+                  {vehicle.model && vehicle.model !== "Unknown" ? (
+                    <span className="font-medium">{vehicle.model}</span>
+                  ) : (
+                    <Input
+                      placeholder="Enter model (e.g. Jogger)"
+                      className="inline-block h-7 w-40 text-sm mt-0.5"
+                      value={vehicle.model === "Unknown" ? "" : vehicle.model}
+                      onChange={e => setVehicle(v => v ? { ...v, model: e.target.value } : v)}
+                    />
+                  )}
+                </div>
                 <div><span className="text-muted-foreground">Year:</span> <span className="font-medium">{vehicle.year}</span></div>
                 <div><span className="text-muted-foreground">Colour:</span> <span className="font-medium">{vehicle.colour}</span></div>
                 <div><span className="text-muted-foreground">Fuel:</span> <span className="font-medium">{vehicle.fuelType}</span></div>
@@ -420,34 +433,16 @@ export default function AddWarranty() {
             </div>
           )}
 
-          {/* Existing Customer Selector */}
+          {/* Existing Customer Selector with Search */}
           {customerType === "existing" && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label>Select Customer</Label>
-                <Button variant="ghost" size="sm" onClick={() => { setCustomerType(null); setSelectedCustomerId(""); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}>
-                  Change
-                </Button>
-              </div>
-              <Select value={selectedCustomerId} onValueChange={handleSelectExistingCustomer}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a customer..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {allCustomers.map(c => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name} — {c.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {selectedCustomerId && (
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm space-y-1">
-                  <p className="font-medium text-primary">Selected: {form.customerName}</p>
-                  <p className="text-muted-foreground">{form.email}</p>
-                </div>
-              )}
-            </div>
+            <ExistingCustomerSearch
+              customers={allCustomers}
+              selectedCustomerId={selectedCustomerId}
+              onSelect={handleSelectExistingCustomer}
+              onClear={() => { setCustomerType(null); setSelectedCustomerId(""); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}
+              selectedName={form.customerName}
+              selectedEmail={form.email}
+            />
           )}
 
           {/* New Customer Form */}
