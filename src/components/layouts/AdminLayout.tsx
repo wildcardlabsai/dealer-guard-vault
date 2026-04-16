@@ -63,6 +63,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
+    <>
+    <SEOHead title="Admin Dashboard | WarrantyVault" description="WarrantyVault admin dashboard." noindex />
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50">
