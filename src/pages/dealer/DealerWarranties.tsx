@@ -38,10 +38,14 @@ const sortLabels: Record<SortOption, string> = {
 
 export default function DealerWarranties() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const dealerId = user?.dealerId || "";
   const store = useWarrantyStore();
-  const [search, setSearch] = useState("");
+
+  // Pre-fill search from customer link (e.g. ?customer=email)
+  const customerParam = new URLSearchParams(location.search).get("customer");
+  const [search, setSearch] = useState(customerParam || "");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [selectedId, setSelectedId] = useState<string | null>(null);
