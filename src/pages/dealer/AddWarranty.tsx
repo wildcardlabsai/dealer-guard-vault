@@ -37,7 +37,7 @@ export default function AddWarranty() {
   const [paying, setPaying] = useState(false);
   const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
-  const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
+  const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", fundContribution: "", notes: "", coverTemplateId: "" });
   const [createdWarranty, setCreatedWarranty] = useState<{
     customerName: string; email: string; vehicleReg: string; vehicleMake: string;
     vehicleModel: string; startDate: string; endDate: string; isFree: boolean;
@@ -148,6 +148,29 @@ export default function AddWarranty() {
 
     const customerId = selectedCustomerId || `cust-${Date.now()}`;
 
+    // Create customer record in DB if new customer
+    if (customerType === "new" && form.email) {
+      try {
+        await supabase.functions.invoke("admin-data", {
+          body: {
+            table: "customers",
+            action: "insert",
+            updates: {
+              full_name: form.customerName,
+              email: form.email,
+              phone: form.phone || null,
+              dealer_id: dealerId,
+              address: selectedAddress?.line1 || null,
+              city: selectedAddress?.city || null,
+              postcode: selectedAddress?.postcode || postcode || null,
+            },
+          },
+        });
+      } catch (err) {
+        console.error("Failed to create customer record:", err);
+      }
+    }
+
     store.addWarranty({
       id: `w-${Date.now()}`,
       customerId,
@@ -166,7 +189,7 @@ export default function AddWarranty() {
       endDate,
       cost: parseInt(form.cost),
       status: "active",
-      notes: form.notes,
+      notes: form.notes + (form.fundContribution ? `\nFund contribution: £${form.fundContribution}` : ""),
       createdAt: startDate,
       coverTemplateId: form.coverTemplateId || undefined,
       paymentStatus: isFreeWarranty ? "free" : "paid",
