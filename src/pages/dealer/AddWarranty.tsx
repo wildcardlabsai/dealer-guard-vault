@@ -566,8 +566,14 @@ export default function AddWarranty() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Cost (£) *</Label>
+              <Label>Warranty Selling Price (£) *</Label>
               <Input type="number" placeholder="599" value={form.cost} onChange={e => setForm({ ...form, cost: e.target.value })} />
+              <p className="text-xs text-muted-foreground">The price you charged the customer for this warranty</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Fund Contribution (£)</Label>
+              <Input type="number" placeholder="200" value={form.fundContribution} onChange={e => setForm({ ...form, fundContribution: e.target.value })} />
+              <p className="text-xs text-muted-foreground">Amount you're setting aside in the warranty fund for claims</p>
             </div>
           </div>
           <div className="space-y-2">
