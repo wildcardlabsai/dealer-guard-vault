@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotificationStore } from "@/lib/notification-store";
 import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus, ClipboardList, Headphones, Bell, Check, Shield, LifeBuoy, MessageSquare, Menu, X } from "lucide-react";
