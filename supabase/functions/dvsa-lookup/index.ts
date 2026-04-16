@@ -5,7 +5,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const DVSA_API_URL = "https://beta.check-mot.service.gov.uk/trade/vehicles/mot-tests";
+// New DVSA MOT History API (replaces deprecated beta.check-mot.service.gov.uk)
+const DVSA_API_BASE = "https://history.mot.api.gov.uk/v1/trade/vehicles/registration";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -28,10 +29,10 @@ serve(async (req) => {
 
     const cleanReg = registration.replace(/\s/g, "").toUpperCase();
 
-    const response = await fetch(`${DVSA_API_URL}?registration=${cleanReg}`, {
+    const response = await fetch(`${DVSA_API_BASE}/${cleanReg}`, {
       method: "GET",
       headers: {
-        "Accept": "application/json+v6",
+        "Accept": "application/json",
         "x-api-key": DVSA_API_KEY,
       },
     });
@@ -50,10 +51,7 @@ serve(async (req) => {
       throw new Error(`DVSA API returned ${response.status}: ${errorText}`);
     }
 
-    const data = await response.json();
-
-    // DVSA returns an array, take the first vehicle
-    const vehicle = Array.isArray(data) ? data[0] : data;
+    const vehicle = await response.json();
 
     if (!vehicle) {
       return new Response(JSON.stringify({ error: "No MOT data found", result: null }), {
@@ -63,6 +61,7 @@ serve(async (req) => {
     }
 
     // Extract MOT test history (most recent first)
+    // The new API uses motTests array with slightly different field names
     const motTests = (vehicle.motTests || []).map((test: any) => ({
       completedDate: test.completedDate || "",
       testResult: test.testResult || "",
@@ -88,9 +87,7 @@ serve(async (req) => {
       registrationDate: vehicle.registrationDate || "",
       dvlaId: vehicle.dvlaId || "",
       motTestExpiryDate: vehicle.motTestExpiryDate || "",
-      // MOT history
       motTests,
-      // Additional identifiers
       makeInFull: vehicle.makeInFull || "",
     };
 

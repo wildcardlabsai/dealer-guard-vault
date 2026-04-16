@@ -420,34 +420,16 @@ export default function AddWarranty() {
             </div>
           )}
 
-          {/* Existing Customer Selector */}
+          {/* Existing Customer Selector with Search */}
           {customerType === "existing" && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label>Select Customer</Label>
-                <Button variant="ghost" size="sm" onClick={() => { setCustomerType(null); setSelectedCustomerId(""); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}>
-                  Change
-                </Button>
-              </div>
-              <Select value={selectedCustomerId} onValueChange={handleSelectExistingCustomer}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a customer..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {allCustomers.map(c => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name} — {c.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {selectedCustomerId && (
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm space-y-1">
-                  <p className="font-medium text-primary">Selected: {form.customerName}</p>
-                  <p className="text-muted-foreground">{form.email}</p>
-                </div>
-              )}
-            </div>
+            <ExistingCustomerSearch
+              customers={allCustomers}
+              selectedCustomerId={selectedCustomerId}
+              onSelect={handleSelectExistingCustomer}
+              onClear={() => { setCustomerType(null); setSelectedCustomerId(""); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}
+              selectedName={form.customerName}
+              selectedEmail={form.email}
+            />
           )}
 
           {/* New Customer Form */}

@@ -241,7 +241,11 @@ export default function DealerCustomers() {
                     {active > 0 && <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">{active} active</Badge>}
                   </div>
                 </div>
-                <h3 className="font-medium">{c.name}</h3>
+                <h3 className="font-medium">
+                  <Link to={`/dealer/warranties?customer=${encodeURIComponent(c.email)}`} className="hover:text-primary hover:underline transition-colors">
+                    {c.name}
+                  </Link>
+                </h3>
                 <p className="text-sm text-muted-foreground">{c.email}</p>
                 {c.phone && <p className="text-sm text-muted-foreground">{c.phone}</p>}
                 {c.address && <p className="text-xs text-muted-foreground mt-2">{c.address}{c.city ? `, ${c.city}` : ""}{c.postcode ? `, ${c.postcode}` : ""}</p>}
