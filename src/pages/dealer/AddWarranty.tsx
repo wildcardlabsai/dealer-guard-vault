@@ -268,7 +268,7 @@ export default function AddWarranty() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button onClick={() => navigate("/dealer/warranties")} variant="outline">View All Warranties</Button>
-          <Button onClick={() => { setCreatedWarranty(null); setStep(1); setVehicle(null); setDvsaData(null); setForm({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" }); setCustomerType(null); setSelectedCustomerId(""); setReg(""); }}>
+          <Button onClick={() => { setCreatedWarranty(null); setStep(1); setVehicle(null); setDvsaData(null); setForm({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", fundContribution: "", notes: "", coverTemplateId: "" }); setCustomerType(null); setSelectedCustomerId(""); setReg(""); }}>
             <Plus className="w-4 h-4 mr-2" /> Add Another Warranty
           </Button>
         </div>
