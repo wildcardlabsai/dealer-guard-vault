@@ -95,6 +95,10 @@ export default function AddWarranty() {
       lookupVehicle(reg),
       lookupMOTHistory(reg),
     ]);
+    // Supplement missing model from DVSA data
+    if (dvlaResult && (!dvlaResult.model || dvlaResult.model === "Unknown") && dvsaResult?.model) {
+      dvlaResult.model = dvsaResult.model;
+    }
     setVehicle(dvlaResult);
     setDvsaData(dvsaResult);
     setLoading(false);
