@@ -609,7 +609,8 @@ export default function AddWarranty() {
                 <p><span className="text-muted-foreground">Vehicle:</span> {vehicle.year} {vehicle.make} {vehicle.model} ({vehicle.registration})</p>
                 <p><span className="text-muted-foreground">Customer:</span> {form.customerName}</p>
                 <p><span className="text-muted-foreground">Duration:</span> {form.duration} months</p>
-                <p><span className="text-muted-foreground">Warranty Value:</span> £{form.cost}</p>
+                <p><span className="text-muted-foreground">Selling Price:</span> £{form.cost}</p>
+                {form.fundContribution && <p><span className="text-muted-foreground">Fund Contribution:</span> £{form.fundContribution}</p>}
                 {selectedTemplate && <p><span className="text-muted-foreground">Cover Level:</span> {selectedTemplate.levelName}</p>}
               </div>
             )}
