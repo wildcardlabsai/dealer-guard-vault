@@ -49,6 +49,9 @@ export default function DealerClaimAssist() {
   const [decisionReason, setDecisionReason] = useState("");
   const [decisionPayout, setDecisionPayout] = useState("");
 
+  const defaultStatusConfig = { label: "Unknown", color: "bg-muted text-muted-foreground border-border" };
+  const defaultPriorityConfig = { label: "Medium", color: "bg-amber-500/10 text-amber-400 border-amber-500/20" };
+
   const filteredClaims = allClaims.filter(c => {
     if (statusFilter !== "all" && c.status !== statusFilter) return false;
     if (searchQuery) {
@@ -155,8 +158,8 @@ ${c.decision.payoutAmount ? `<tr><td>Payout</td><td>£${c.decision.payoutAmount}
 
   // Claim workspace view
   if (claim) {
-    const status = claimStatusConfig[claim.status];
-    const priority = claimPriorityConfig[claim.priority];
+    const status = claimStatusConfig[claim.status] || defaultStatusConfig;
+    const priority = claimPriorityConfig[claim.priority] || defaultPriorityConfig;
     const coverage = coverageCheck(claim);
     const checklistComplete = claim.checklist.filter(c => c.value !== "unknown").length;
     const tabs = ["summary", "evidence", "checklist", "messages", "timeline", "decision", "audit"];
@@ -478,8 +481,8 @@ ${c.decision.payoutAmount ? `<tr><td>Payout</td><td>£${c.decision.payoutAmount}
             </thead>
             <tbody>
               {filteredClaims.map(claim => {
-                const s = claimStatusConfig[claim.status];
-                const p = claimPriorityConfig[claim.priority];
+                const s = claimStatusConfig[claim.status] || defaultStatusConfig;
+                const p = claimPriorityConfig[claim.priority] || defaultPriorityConfig;
                 return (
                   <tr key={claim.id} className="border-b border-border/30 hover:bg-secondary/20 transition-colors cursor-pointer"
                     onClick={() => { setSelectedClaim(claim.id); setActiveTab("summary"); }}>
