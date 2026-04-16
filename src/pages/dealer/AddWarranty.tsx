@@ -171,7 +171,7 @@ export default function AddWarranty() {
       }
     }
 
-    store.addWarranty({
+    await store.addWarranty({
       id: `w-${Date.now()}`,
       customerId,
       customerName: form.customerName,
