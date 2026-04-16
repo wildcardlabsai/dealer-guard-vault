@@ -330,7 +330,19 @@ export default function AddWarranty() {
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div><span className="text-muted-foreground">Make:</span> <span className="font-medium">{vehicle.make}</span></div>
-                <div><span className="text-muted-foreground">Model:</span> <span className="font-medium">{vehicle.model}</span></div>
+                <div>
+                  <span className="text-muted-foreground">Model:</span>{" "}
+                  {vehicle.model && vehicle.model !== "Unknown" ? (
+                    <span className="font-medium">{vehicle.model}</span>
+                  ) : (
+                    <Input
+                      placeholder="Enter model (e.g. Jogger)"
+                      className="inline-block h-7 w-40 text-sm mt-0.5"
+                      value={vehicle.model === "Unknown" ? "" : vehicle.model}
+                      onChange={e => setVehicle(v => v ? { ...v, model: e.target.value } : v)}
+                    />
+                  )}
+                </div>
                 <div><span className="text-muted-foreground">Year:</span> <span className="font-medium">{vehicle.year}</span></div>
                 <div><span className="text-muted-foreground">Colour:</span> <span className="font-medium">{vehicle.colour}</span></div>
                 <div><span className="text-muted-foreground">Fuel:</span> <span className="font-medium">{vehicle.fuelType}</span></div>
