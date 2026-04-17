@@ -131,14 +131,10 @@ body.public-light [class*="bg-secondary/40"],
 body.public-light [class*="bg-secondary/50"] { background-color: hsl(30 30% 97%) !important; }
 body.public-light [class*="bg-muted"] { background-color: hsl(30 25% 96%) !important; }
 
-/* Dark hex panels used in nav/footer/hero mocks → white surfaces */
-body.public-light [class*="bg-[hsl(222_30%_6%)]"],
-body.public-light [class*="bg-[hsl(222_28%_8%)]"],
-body.public-light [class*="bg-[hsl(222_28%_12%)]"],
-body.public-light [class*="bg-[hsl(222_25%_8%)]"],
-body.public-light [class*="bg-[hsl(222_25%_6%)]"],
-body.public-light [class*="bg-[hsl(222_25%_10%)]"],
-body.public-light [class*="bg-[hsl(222_30%_9%)]"] { background-color: #ffffff !important; }
+/* Dark hex panels used in nav/footer/hero mocks/sections → white surfaces.
+   Catch ANY bg-[hsl(222 ...)] regardless of lightness value. */
+body.public-light [class*="bg-[hsl(222"] { background-color: #ffffff !important; }
+body.public-light [class*="bg-[hsl(222"][class*="border-t"] { border-top-color: hsl(220 14% 90%) !important; }
 
 /* ---------- White-tint surfaces become slate tints ---------- */
 body.public-light [class*="bg-white/[0.02]"],
