@@ -24,6 +24,8 @@ import BlogIndexPage from "@/pages/BlogIndexPage";
 import DisputeIQPage from "@/pages/DisputeIQPage";
 
 import DealerLayout from "@/components/layouts/DealerLayout";
+import DealerTermsGate from "@/components/DealerTermsGate";
+import AcceptTermsPage from "@/pages/AcceptTermsPage";
 import DealerDashboard from "@/pages/dealer/DealerDashboard";
 import DealerWarranties from "@/pages/dealer/DealerWarranties";
 import AddWarranty from "@/pages/dealer/AddWarranty";
@@ -112,23 +114,26 @@ function AppRoutes() {
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
 
+      {/* Dealer Terms Acceptance (gate page itself - no DealerTermsGate wrap) */}
+      <Route path="/accept-terms" element={<ProtectedRoute role="dealer"><AcceptTermsPage /></ProtectedRoute>} />
+
       {/* Dealer Routes */}
-      <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/warranties" element={<ProtectedRoute role="dealer"><DealerLayout><DealerWarranties /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/warranties/new" element={<ProtectedRoute role="dealer"><DealerLayout><AddWarranty /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/claims" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaims /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/customers" element={<ProtectedRoute role="dealer"><DealerLayout><DealerCustomers /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/requests" element={<ProtectedRoute role="dealer"><DealerLayout><DealerRequests /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/warranty-line" element={<ProtectedRoute role="dealer"><DealerLayout><DealerWarrantyLine /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/documents" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDocuments /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/settings" element={<ProtectedRoute role="dealer"><DealerLayout><DealerSettings /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/cover-templates" element={<ProtectedRoute role="dealer"><DealerLayout><DealerCoverTemplates /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/claim-assist" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimAssist /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/claim-settings" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimSettings /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/support" element={<ProtectedRoute role="dealer"><DealerLayout><DealerSupport /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/disputeiq" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDisputeIQ /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/disputeiq/:id" element={<ProtectedRoute role="dealer"><DealerLayout><DisputeIQAssessment /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/warranty-fund" element={<ProtectedRoute role="dealer"><DealerLayout><DealerWarrantyFund /></DealerLayout></ProtectedRoute>} />
+      <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerDashboard /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/warranties" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerWarranties /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/warranties/new" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><AddWarranty /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/claims" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerClaims /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/customers" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerCustomers /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/requests" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerRequests /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/warranty-line" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerWarrantyLine /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/documents" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerDocuments /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/settings" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerSettings /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/cover-templates" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerCoverTemplates /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/claim-assist" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerClaimAssist /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/claim-settings" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerClaimSettings /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/support" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerSupport /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/disputeiq" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerDisputeIQ /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/disputeiq/:id" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DisputeIQAssessment /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
+      <Route path="/dealer/warranty-fund" element={<ProtectedRoute role="dealer"><DealerTermsGate><DealerLayout><DealerWarrantyFund /></DealerLayout></DealerTermsGate></ProtectedRoute>} />
 
       {/* Customer Routes */}
       <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerDashboard /></CustomerLayout></ProtectedRoute>} />
