@@ -1,67 +1,38 @@
 
+The user is asking a design opinion question about the FeatureMocks on the dark Features page. Looking at the current MockFrame in FeatureMocks.tsx — it uses a macOS chrome with what appears to be a dark/gradient interior. The Features page background alternates between `bg-background` and `bg-secondary/30` but the hero and CTA use the deep `hero-gradient` navy.
 
-# Launch Readiness Audit — Remaining Items
+Key consideration: real SaaS marketing pages (Linear, Vercel, Stripe, Notion) almost universally show **light-UI product screenshots on dark marketing backgrounds**. The contrast makes the product "pop" off the page and signals "this is the actual product UI." Dark mocks on a dark page tend to blend in and feel flat.
 
-After a thorough audit, the system is **mostly production-ready** but has several leftover demo artifacts that need cleaning up before launch.
+Counter-argument: the actual dashboard defaults to dark mode, so light mocks would technically misrepresent the default experience. But marketing convention wins — most users read this as "a product screenshot" not "this is exactly what you'll see."
 
-## Issues Found
+Recommendation: **light mocks**. They'll create the high-contrast, premium "floating screenshot" effect the landing page hero already achieves, and match the visual language of top-tier SaaS sites.
 
-### 1. Nine dealer pages still have `|| "d-1"` fallback IDs
-These files use `user?.dealerId || "d-1"` which means if the auth user somehow lacks a dealerId, they'd see another dealer's data:
-- `DealerRequests.tsx`, `DealerWarranties.tsx`, `DealerDocuments.tsx`, `DealerCoverTemplates.tsx`, `DealerClaims.tsx`, `DealerClaimAssist.tsx`, `DealerDisputeIQ.tsx`, `DisputeIQAssessment.tsx`, `DealerWarrantyFund.tsx`
+# Plan — Convert Feature Mocks to Light Mode
 
-**Fix:** Replace `|| "d-1"` with `|| ""` in all nine files. Empty string means they'll see nothing instead of another dealer's data.
+## Recommendation
+Switch the 11 mocks in `FeatureMocks.tsx` to a **light UI** style. Reasoning:
+- Dark mocks on a dark page blend in and look flat
+- Every premium SaaS site (Linear, Stripe, Vercel) shows light product shots on dark marketing pages — it's the visual cue for "this is a screenshot"
+- Creates the "floating window" depth effect the landing hero already has
+- The dashboard does support light mode, so it's not misleading
 
-### 2. Notification store seeds fake demo notifications
-`src/lib/notification-store.ts` has a `seedNotifications()` function that creates hardcoded fake notifications ("AutoCare Solutions", "Prestige Motors", "AB12 CDE") when no DB notifications exist. It also checks for `admin-1` and `cust-1` IDs.
+## Changes
+**File: `src/components/feature-mocks/FeatureMocks.tsx`**
 
-**Fix:** Remove the entire `seedNotifications` function. If no notifications exist in DB, show empty — that's correct for a new system.
+1. **MockFrame wrapper**: change interior from dark gradient → white/very-light-grey background (`bg-white` or `bg-slate-50`), keep the macOS chrome (traffic-light dots) but lighten the title bar to a soft grey
+2. **Drop shadow**: add a stronger shadow (`shadow-2xl` + subtle ring) so frames lift off the dark page background
+3. **Inside each mock**: swap dark surfaces (`bg-white/5`, `bg-slate-900`) → light surfaces (`bg-slate-50`, `bg-white`); swap white text → slate-900/slate-700; keep the **brand teal accent** (`text-primary`, status badges) so they still feel on-brand
+4. **Status colors**: keep semantic colors (green/amber/red badges) but use light-mode tints (e.g. `bg-green-100 text-green-700` instead of `bg-green-500/20 text-green-300`)
+5. **Charts/bars**: use teal/slate fills on white instead of glowing fills on dark
 
-### 3. ContactPage pushes notification to hardcoded `"admin-1"` 
-`src/pages/ContactPage.tsx` line 42: `pushNotification("admin-1", ...)` — this won't reach the real admin whose ID is a UUID.
+## What stays the same
+- Layout, content, icons, structure of every mock
+- Section gradients on the page itself (dark stays dark)
+- The macOS-style chrome with traffic-light dots
+- Brand teal as the primary accent color
 
-**Fix:** Push to the real admin user ID, or better, store the enquiry in DB and let the admin see it via the enquiries page (which already works).
+## Out of scope
+- No changes to FeaturesPage.tsx structure or section backgrounds
+- No new mocks added — just restyling the 11 existing ones
 
-### 4. Certificate generator uses demo cover templates
-`src/lib/generate-certificate.ts` imports `demoCoverTemplates` from the static file instead of fetching from the database. Certificates won't show real cover template data.
-
-**Fix:** Accept an optional `CoverTemplate` parameter so the caller passes the real template from the cover store.
-
-### 5. Cover templates file still has hardcoded demo arrays
-`src/data/cover-templates.ts` exports `demoCoverTemplates` (4 templates with `d-1`/`d-2` dealerIds) and `warrantyTemplateMap`. These are only used by `generate-certificate.ts` now.
-
-**Fix:** Keep the type exports, remove the demo arrays. Certificate generation will use the real template passed in.
-
-### 6. Claim data file has demo claim records
-`src/data/claim-data.ts` has ~5 hardcoded demo claims with "John Smith", "Prestige Motors" etc. But these are only type/config exports now — the actual demo claim objects aren't imported elsewhere. The types and config maps (`claimStatusConfig`, `claimPriorityConfig`, etc.) ARE used.
-
-**Fix:** Remove the demo claim array (`demoClaims` or similar) but keep all types and config objects.
-
-### 7. Certificate text says "warrantyvault.com" instead of ".co.uk"
-Line 98 of `generate-certificate.ts` says "Log into your customer portal at warrantyvault.com" — should be `.co.uk`.
-
-**Fix:** Update to `warrantyvault.co.uk`.
-
-## What's Already Good
-- Auth system — fully Supabase-only, no demo logic
-- Admin dashboard, dealers, warranties, revenue, logs — all DB-driven
-- Dealer dashboard, settings, support, warranty line — all DB-driven
-- Customer layout — no fallback IDs
-- Email service — correctly uses warrantyvault.co.uk
-- Edge functions — all production-ready
-- Signup/approval flow — working end-to-end
-- Admin account created and working
-
-## Summary of Changes
-
-| # | File(s) | Change |
-|---|---------|--------|
-| 1 | 9 dealer pages | Remove `\|\| "d-1"` fallbacks |
-| 2 | `notification-store.ts` | Remove `seedNotifications()` and demo notification data |
-| 3 | `ContactPage.tsx` | Fix admin notification target |
-| 4 | `generate-certificate.ts` | Use real template from caller, fix URL |
-| 5 | `cover-templates.ts` | Remove demo arrays, keep types |
-| 6 | `claim-data.ts` | Remove demo claim objects, keep types/configs |
-
-Total: ~15 files touched, mostly small surgical edits.
-
+Result: the dark Features page will frame 11 crisp, light "product screenshots" that pop off the page like a real SaaS marketing site.
