@@ -13,9 +13,9 @@ function applyTheme(theme: PublicTheme) {
 }
 
 function getInitial(): PublicTheme {
-  if (typeof window === "undefined") return "dark";
+  if (typeof window === "undefined") return "light";
   const saved = localStorage.getItem(STORAGE_KEY) as PublicTheme | null;
-  return saved === "light" ? "light" : "dark";
+  return saved === "dark" ? "dark" : "light";
 }
 
 /**
