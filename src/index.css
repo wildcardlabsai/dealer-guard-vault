@@ -123,13 +123,79 @@ body.public-light {
   color: hsl(220 25% 12%);
 }
 
-/* Feature mocks intentionally stay dark on the light page — neutralise
-   every public-light override for any element inside .feature-mock. */
-body.public-light .feature-mock,
-body.public-light .feature-mock * {
-  background-color: revert !important;
-  color: revert !important;
-  border-color: revert !important;
+/* Feature mocks intentionally stay dark on the light page — explicitly
+   override the public marketing light-mode transforms inside screenshot mocks. */
+body.public-light .feature-mock h1,
+body.public-light .feature-mock h2,
+body.public-light .feature-mock h3,
+body.public-light .feature-mock h4,
+body.public-light .feature-mock h5,
+body.public-light .feature-mock h6,
+body.public-light .feature-mock .text-white,
+body.public-light .feature-mock [class*="text-white/95"],
+body.public-light .feature-mock [class*="text-white/90"],
+body.public-light .feature-mock [class*="text-white/85"],
+body.public-light .feature-mock [class*="text-white/80"] {
+  color: hsl(0 0% 100%) !important;
+}
+
+body.public-light .feature-mock [class*="text-white/75"],
+body.public-light .feature-mock [class*="text-white/70"],
+body.public-light .feature-mock [class*="text-white/65"] {
+  color: hsl(220 20% 86%) !important;
+}
+
+body.public-light .feature-mock [class*="text-white/60"],
+body.public-light .feature-mock [class*="text-white/55"],
+body.public-light .feature-mock [class*="text-white/50"],
+body.public-light .feature-mock [class*="text-slate-300"] {
+  color: hsl(220 18% 78%) !important;
+}
+
+body.public-light .feature-mock [class*="text-white/45"],
+body.public-light .feature-mock [class*="text-white/40"],
+body.public-light .feature-mock [class*="text-white/35"],
+body.public-light .feature-mock [class*="text-slate-400"] {
+  color: hsl(220 14% 64%) !important;
+}
+
+body.public-light .feature-mock [class*="text-white/30"],
+body.public-light .feature-mock [class*="text-white/25"],
+body.public-light .feature-mock [class*="text-white/20"],
+body.public-light .feature-mock [class*="text-white/15"],
+body.public-light .feature-mock [class*="text-white/10"],
+body.public-light .feature-mock [class*="text-slate-500"] {
+  color: hsl(220 12% 54%) !important;
+}
+
+body.public-light .feature-mock [class*="bg-slate-950"] {
+  background-color: hsl(222 30% 8%) !important;
+}
+
+body.public-light .feature-mock [class*="bg-slate-900"] {
+  background-color: hsl(222 28% 11%) !important;
+  color: hsl(0 0% 100%) !important;
+}
+
+body.public-light .feature-mock [class*="bg-white/[0.04]"],
+body.public-light .feature-mock [class*="bg-white/[0.05]"],
+body.public-light .feature-mock [class*="bg-white/[0.06]"],
+body.public-light .feature-mock [class*="bg-white/5"] {
+  background-color: hsl(0 0% 100% / 0.05) !important;
+}
+
+body.public-light .feature-mock [class*="bg-white/[0.08]"],
+body.public-light .feature-mock [class*="bg-white/[0.1]"],
+body.public-light .feature-mock [class*="bg-white/10"] {
+  background-color: hsl(0 0% 100% / 0.08) !important;
+}
+
+body.public-light .feature-mock [class*="border-white/[0.04]"],
+body.public-light .feature-mock [class*="border-white/[0.05]"],
+body.public-light .feature-mock [class*="border-white/[0.1]"],
+body.public-light .feature-mock [class*="border-white/10"],
+body.public-light .feature-mock [class*="border-white/5"] {
+  border-color: hsl(0 0% 100% / 0.1) !important;
 }
 
 /* ---------- Page surfaces ---------- */
