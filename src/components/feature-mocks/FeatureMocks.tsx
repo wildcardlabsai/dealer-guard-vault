@@ -47,7 +47,7 @@ export function WarrantyManagementMock() {
   const rows = [
     { reg: "BD22 KXR", make: "BMW 320d", customer: "Mark Davies", status: "Active", days: 287, color: "bg-emerald-500/15 text-emerald-300" },
     { reg: "LK19 NHE", make: "Audi A4", customer: "Sarah Patel", status: "Active", days: 154, color: "bg-emerald-500/15 text-emerald-300" },
-    { reg: "WP21 MTV", make: "VW Golf", customer: "James O'Connor", status: "Expiring", days: 12, color: "bg-amber-500/100/15 text-amber-300" },
+    { reg: "WP21 MTV", make: "VW Golf", customer: "James O'Connor", status: "Expiring", days: 12, color: "bg-amber-500/15 text-amber-300" },
     { reg: "GH20 RPL", make: "Ford Kuga", customer: "Emma Wilson", status: "Active", days: 198, color: "bg-emerald-500/15 text-emerald-300" },
     { reg: "RX18 BNT", make: "Mercedes A-Class", customer: "Daniel Hughes", status: "Claimed", days: 0, color: "bg-blue-500/15 text-blue-300" },
   ];
@@ -151,7 +151,7 @@ export function CustomerPortalMock() {
 /* ============ Claims Management ============ */
 export function ClaimsManagementMock() {
   const claims = [
-    { ref: "CLM-2841", customer: "Mark Davies", issue: "Turbocharger failure", status: "Open", color: "bg-amber-500/100/15 text-amber-300", priority: "High" },
+    { ref: "CLM-2841", customer: "Mark Davies", issue: "Turbocharger failure", status: "Open", color: "bg-amber-500/15 text-amber-300", priority: "High" },
     { ref: "CLM-2840", customer: "Emma Wilson", issue: "Electrical fault", status: "Approved", color: "bg-emerald-500/15 text-emerald-300", priority: "Med" },
     { ref: "CLM-2839", customer: "Daniel Hughes", issue: "AC compressor", status: "Pending Info", color: "bg-blue-500/15 text-blue-300", priority: "Low" },
     { ref: "CLM-2838", customer: "Sarah Patel", issue: "Gearbox slipping", status: "Approved", color: "bg-emerald-500/15 text-emerald-300", priority: "High" },
@@ -197,9 +197,9 @@ export function ClaimAssistMock() {
           <h3 className="text-sm font-bold">Claim Assist</h3>
           <span className="text-[10px] font-mono text-slate-500">CLM-2841</span>
         </div>
-        <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-500/100/15 text-amber-300">Triage: Investigate</span>
+        <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-500/15 text-amber-300">Triage: Investigate</span>
       </div>
-      <div className="rounded-lg border border-amber-500/20 bg-amber-500/100/10 p-3 mb-3">
+      <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 mb-3">
         <div className="flex items-start gap-2">
           <AlertTriangle className="w-3.5 h-3.5 text-amber-600 mt-0.5" />
           <div className="text-[11px]">
@@ -282,7 +282,7 @@ export function DisputeIQMock() {
         <h3 className="text-sm font-bold">DisputeIQ Analysis</h3>
         <span className="ml-auto text-[9px] px-2 py-0.5 rounded-full bg-[hsl(172,66%,40%)]/15 text-[hsl(172,66%,32%)] font-semibold">FREE</span>
       </div>
-      <div className="rounded-lg border border-amber-500/20 bg-amber-500/100/10 p-3 mb-3">
+      <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 mb-3">
         <div className="flex items-center gap-2 mb-1">
           <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
           <span className="text-[10px] font-semibold text-amber-300 uppercase tracking-wider">Medium Risk · CRA 6-Month Window</span>
@@ -469,7 +469,7 @@ export function DocumentsMock() {
 /* ============ Support ============ */
 export function SupportMock() {
   const tickets = [
-    { ref: "TKT-104", subject: "How do I reset a customer password?", status: "Open", time: "2h ago", color: "bg-amber-500/100/15 text-amber-300" },
+    { ref: "TKT-104", subject: "How do I reset a customer password?", status: "Open", time: "2h ago", color: "bg-amber-500/15 text-amber-300" },
     { ref: "TKT-103", subject: "Bulk import warranties from CSV", status: "Resolved", time: "1d ago", color: "bg-emerald-500/15 text-emerald-300" },
     { ref: "TKT-102", subject: "Question about FCA exemption", status: "Resolved", time: "3d ago", color: "bg-emerald-500/15 text-emerald-300" },
   ];
