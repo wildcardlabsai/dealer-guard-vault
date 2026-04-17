@@ -126,25 +126,25 @@ export default function FAQPage() {
       <PublicNav currentPage="/faq" />
 
       {/* Hero */}
-      <section className="hero-gradient pt-32 pb-16 px-6">
+      <section className="hero-gradient pt-32 pb-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">FAQ</span>
-          <h1 className="text-4xl sm:text-5xl font-bold font-display text-white mt-6 mb-4">Common questions from UK dealers</h1>
-          <p className="text-white/50 text-lg max-w-2xl mx-auto mb-8">Everything you need to know about self-funding your warranties with WarrantyVault.</p>
+          <span className="eyebrow text-white/55">FAQ</span>
+          <h1 className="text-5xl sm:text-6xl font-bold font-display tracking-tight text-white leading-[1.05] mb-5">Common questions from UK dealers</h1>
+          <p className="text-white/55 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">Everything you need to know about self-funding your warranties with WarrantyVault.</p>
           <div className="max-w-md mx-auto relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search questions..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+              className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 h-12"
             />
           </div>
         </div>
       </section>
 
-      {/* Category Filters */}
-      <section className="px-6 py-6 border-b border-border/30">
+      {/* Category Filters (mobile/tablet) */}
+      <section className="px-6 py-6 border-b border-[hsl(30_20%_92%)] lg:hidden">
         <div className="max-w-4xl mx-auto flex flex-wrap gap-2 justify-center">
           <button
             onClick={() => setActiveCategory(null)}
@@ -164,41 +164,67 @@ export default function FAQPage() {
         </div>
       </section>
 
-      {/* FAQ Items by Category */}
-      <section className="py-16 px-6">
-        <div className="max-w-3xl mx-auto space-y-10">
-          {filteredCategories.map(cat => (
-            <div key={cat.category}>
-              <h2 className="text-lg font-semibold font-display mb-4 text-primary">{cat.category}</h2>
-              <div className="space-y-3">
-                {cat.items.map((faq, i) => (
-                  <motion.details
-                    key={i}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    variants={fadeUp}
-                    custom={i}
-                    className="glass-card rounded-xl group"
+      {/* FAQ Items by Category — with sticky desktop nav */}
+      <section className="py-24 md:py-32 px-6 section-hairline">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-[220px_1fr] gap-12">
+          {/* Sticky desktop category nav */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-24">
+              <p className="eyebrow">Categories</p>
+              <nav className="flex flex-col gap-1">
+                <button
+                  onClick={() => setActiveCategory(null)}
+                  className={`text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${!activeCategory ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-[hsl(30_40%_94%)] hover:text-foreground"}`}
+                >
+                  All Questions
+                </button>
+                {faqCategories.map(cat => (
+                  <button
+                    key={cat.category}
+                    onClick={() => setActiveCategory(activeCategory === cat.category ? null : cat.category)}
+                    className={`text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeCategory === cat.category ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-[hsl(30_40%_94%)] hover:text-foreground"}`}
                   >
-                    <summary className="cursor-pointer px-6 py-5 font-semibold text-sm sm:text-base list-none flex items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
-                      {faq.question}
-                      <ChevronRight className="w-4 h-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" />
-                    </summary>
-                    <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed border-t border-border/50 pt-4">
-                      {faq.answer}
-                    </div>
-                  </motion.details>
+                    {cat.category}
+                  </button>
                 ))}
+              </nav>
+            </div>
+          </aside>
+
+          <div className="space-y-12 max-w-3xl">
+            {filteredCategories.map(cat => (
+              <div key={cat.category}>
+                <h2 className="text-xl font-bold font-display tracking-tight mb-5 text-primary">{cat.category}</h2>
+                <div className="space-y-3">
+                  {cat.items.map((faq, i) => (
+                    <motion.details
+                      key={i}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      variants={fadeUp}
+                      custom={i}
+                      className="glass-card rounded-xl group"
+                    >
+                      <summary className="cursor-pointer px-6 py-5 font-semibold text-sm sm:text-base list-none flex items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
+                        {faq.question}
+                        <ChevronRight className="w-4 h-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" />
+                      </summary>
+                      <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed border-t border-[hsl(30_20%_88%)] pt-4">
+                        {faq.answer}
+                      </div>
+                    </motion.details>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-          {filteredCategories.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              <p className="text-lg font-medium mb-2">No matching questions found</p>
-              <p className="text-sm">Try a different search term or browse all categories.</p>
-            </div>
-          )}
+            ))}
+            {filteredCategories.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                <p className="text-lg font-medium mb-2">No matching questions found</p>
+                <p className="text-sm">Try a different search term or browse all categories.</p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
