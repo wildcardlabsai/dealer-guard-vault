@@ -62,6 +62,8 @@ import AdminSupport from "@/pages/admin/AdminSupport";
 import AdminEnquiries from "@/pages/admin/AdminEnquiries";
 import AdminDealerProfile from "@/pages/admin/AdminDealerProfile";
 import ContactPage from "@/pages/ContactPage";
+import TermsPage from "@/pages/TermsPage";
+import PrivacyPage from "@/pages/PrivacyPage";
 import CookieBanner from "@/components/CookieBanner";
 
 const queryClient = new QueryClient();
@@ -107,6 +109,8 @@ function AppRoutes() {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/dealers" element={<DealersLoginPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
 
       {/* Dealer Routes */}
       <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />

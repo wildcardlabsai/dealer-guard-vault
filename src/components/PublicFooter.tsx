@@ -62,8 +62,8 @@ export default function PublicFooter() {
         <div className="border-t border-slate-200 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[11px] text-slate-400">© {new Date().getFullYear()} WarrantyVault by <span className="text-slate-600">Wildcard Labs</span></p>
           <div className="flex items-center gap-5 text-[11px] text-slate-500">
-            <a href="#" className="hover:text-slate-900 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-slate-900 transition-colors">Terms</a>
+            <Link to="/privacy" className="hover:text-slate-900 transition-colors">Privacy</Link>
+            <Link to="/terms" className="hover:text-slate-900 transition-colors">Terms</Link>
             <Link to="/contact" className="hover:text-slate-900 transition-colors">Contact</Link>
           </div>
         </div>
