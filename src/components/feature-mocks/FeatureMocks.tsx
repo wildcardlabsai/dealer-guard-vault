@@ -252,17 +252,17 @@ export function ProfitTrackingMock() {
       <div className="rounded-lg border border-white/10 bg-white/5 p-4">
         <div className="flex items-center justify-between mb-3">
           <p className="text-[10px] uppercase tracking-wider text-slate-500">Last 6 months</p>
-          <div className="flex items-center gap-3 text-[9px] text-slate-500">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm" style={{ background: TEAL }} /> Revenue</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-amber-400" /> Payouts</span>
+          <div className="flex items-center gap-3 text-[9px] text-slate-400">
+            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-sm bg-[hsl(172,66%,45%)]" /> Revenue</span>
+            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-sm bg-[hsl(38,92%,55%)]" /> Payouts</span>
           </div>
         </div>
         <div className="flex items-end gap-2 h-28">
           {months.map((m, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-1">
-              <div className="w-full flex items-end gap-0.5 h-full">
-                <div className="flex-1 rounded-t" style={{ height: `${(m / max) * 100}%`, background: TEAL }} />
-                <div className="flex-1 bg-amber-400 rounded-t" style={{ height: `${(payouts[i] / max) * 100}%` }} />
+            <div key={i} className="flex flex-col items-center gap-1 flex-1 h-full">
+              <div className="flex items-end gap-0.5 flex-1 w-full min-h-0">
+                <div className="flex-1 rounded-t bg-[hsl(172,66%,45%)]" style={{ height: `${(m / max) * 100}%` }} />
+                <div className="flex-1 rounded-t bg-[hsl(38,92%,55%)]" style={{ height: `${(payouts[i] / max) * 100}%` }} />
               </div>
               <span className="text-[8px] text-slate-500">{["May","Jun","Jul","Aug","Sep","Oct"][i]}</span>
             </div>
