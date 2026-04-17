@@ -43,10 +43,19 @@ export default function PublicFooter() {
         </div>
         <div className="border-t border-white/[0.04] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[11px] text-white/15">© {new Date().getFullYear()} WarrantyVault by <span className="text-white/25">Wildcard Labs</span></p>
-          <div className="flex gap-5 text-[11px] text-white/20">
+          <div className="flex items-center gap-5 text-[11px] text-white/20">
             <a href="#" className="hover:text-white/40 transition-colors">Privacy</a>
             <a href="#" className="hover:text-white/40 transition-colors">Terms</a>
             <Link to="/contact" className="hover:text-white/40 transition-colors">Contact</Link>
+            <button
+              type="button"
+              onClick={toggle}
+              aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/10 hover:border-white/30 hover:text-white/60 transition-colors"
+            >
+              {theme === "dark" ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+              <span>{theme === "dark" ? "Light" : "Dark"}</span>
+            </button>
           </div>
         </div>
       </div>
