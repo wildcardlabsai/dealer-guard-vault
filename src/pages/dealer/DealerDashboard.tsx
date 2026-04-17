@@ -18,6 +18,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
 import { calcHealthScore, calcExposure, getEffectiveMetrics, getScoreStatus, getScoreRingColor } from "@/lib/fund-health";
+import HowItWorks from "@/components/HowItWorks";
 
 function SectionHeader({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
@@ -163,6 +164,9 @@ export default function DealerDashboard() {
         <h1 className="text-2xl font-bold font-display text-white/90">Dashboard</h1>
         <p className="text-sm text-white/30">Welcome back, {user?.name}</p>
       </div>
+
+      {/* ── HOW WARRANTYVAULT WORKS ── */}
+      <HowItWorks />
 
       {/* ── NEW DEALER ONBOARDING ── */}
       {isNewDealer && (
