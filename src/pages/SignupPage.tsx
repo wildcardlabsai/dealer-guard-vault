@@ -4,9 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle2, ArrowRight, Building2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckCircle2, ArrowRight, Building2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useSignupStore } from "@/lib/signup-store";
+import { CURRENT_SIGNUP_TERMS_VERSION } from "@/lib/terms-config";
+import { getClientIp, getUserAgent } from "@/lib/client-meta";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
 
@@ -14,6 +17,9 @@ export default function SignupPage() {
   const navigate = useNavigate();
   const { addRequest } = useSignupStore();
   const [submitted, setSubmitted] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [termsError, setTermsError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     dealershipName: "",
     contactName: "",
@@ -29,14 +35,21 @@ export default function SignupPage() {
 
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.dealershipName || !form.contactName || !form.email || !form.phone) {
       toast.error("Please fill in all required fields");
       return;
     }
+    if (!acceptedTerms) {
+      setTermsError(true);
+      toast.error("You must agree to the Terms of Use and Privacy Policy.");
+      return;
+    }
 
-    addRequest({
+    setSubmitting(true);
+    const ip = await getClientIp();
+    await addRequest({
       dealershipName: form.dealershipName,
       contactName: form.contactName,
       email: form.email,
@@ -47,8 +60,13 @@ export default function SignupPage() {
       fcaNumber: form.fcaNumber,
       estimatedVolume: form.estimatedVolume,
       message: form.message,
+      acceptedTerms: true,
+      termsVersion: CURRENT_SIGNUP_TERMS_VERSION,
+      ipAddress: ip,
+      userAgent: getUserAgent(),
     });
 
+    setSubmitting(false);
     setSubmitted(true);
   };
 
@@ -193,8 +211,35 @@ export default function SignupPage() {
             />
           </div>
 
-          <Button type="submit" size="lg" className="w-full btn-cta rounded-full h-12 text-base">
-            Submit Application <ArrowRight className="ml-2 w-4 h-4" />
+          {/* Legal acceptance */}
+          <div className="pt-2">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <Checkbox
+                checked={acceptedTerms}
+                onCheckedChange={(c) => { setAcceptedTerms(c === true); if (c === true) setTermsError(false); }}
+                className={`mt-0.5 border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary ${termsError ? "border-red-400/70 ring-2 ring-red-500/20" : ""}`}
+              />
+              <span className="text-sm text-white/80 leading-relaxed">
+                I agree to the{" "}
+                <Link to="/terms" target="_blank" className="text-primary hover:underline">Terms of Use</Link>{" "}
+                and{" "}
+                <Link to="/privacy" target="_blank" className="text-primary hover:underline">Privacy Policy</Link>,
+                and confirm I am acting in a business capacity.
+              </span>
+            </label>
+            <p className="mt-2 ml-7 text-xs text-white/40">
+              WarrantyVault is for business users only, including motor traders and dealerships.
+            </p>
+            {termsError && (
+              <div className="mt-3 ml-7 flex items-center gap-2 text-xs text-red-300">
+                <AlertCircle className="w-3.5 h-3.5" />
+                You must agree to the Terms of Use and Privacy Policy before continuing.
+              </div>
+            )}
+          </div>
+
+          <Button type="submit" size="lg" disabled={submitting} className="w-full btn-cta rounded-full h-12 text-base">
+            {submitting ? "Submitting…" : <>Submit Application <ArrowRight className="ml-2 w-4 h-4" /></>}
           </Button>
 
           <p className="text-center text-xs text-white/30">

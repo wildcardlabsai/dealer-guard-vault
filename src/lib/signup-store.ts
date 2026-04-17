@@ -116,7 +116,12 @@ export function useSignupStore() {
     signupRequests,
     loading,
 
-    async addRequest(req: Omit<SignupRequest, "id" | "createdAt" | "status">) {
+    async addRequest(req: Omit<SignupRequest, "id" | "createdAt" | "status"> & {
+      acceptedTerms?: boolean;
+      termsVersion?: string;
+      ipAddress?: string | null;
+      userAgent?: string;
+    }) {
       try {
         await supabase.functions.invoke("admin-data", {
           body: {
@@ -134,6 +139,11 @@ export function useSignupStore() {
               estimated_volume: req.estimatedVolume,
               message: req.message,
               status: "pending",
+              accepted_signup_terms: !!req.acceptedTerms,
+              accepted_signup_terms_at: req.acceptedTerms ? new Date().toISOString() : null,
+              signup_terms_version: req.termsVersion || null,
+              signup_ip_address: req.ipAddress || null,
+              signup_user_agent: req.userAgent || null,
             },
           },
         });
