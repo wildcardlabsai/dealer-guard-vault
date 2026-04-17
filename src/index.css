@@ -2,75 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =====================================================================
+   WARRANTYVAULT — "British Racing" palette
+   Primary:  Deep Racing Green   hsl(155 45% 22%)
+   Accent:   Brass / Gold        hsl(38 75% 52%)
+   Bg:       Warm bone white     hsl(40 30% 97%)
+   Ink:      Charcoal            hsl(220 15% 12%)
+   ===================================================================== */
+
 @layer base {
   :root {
-    --background: 30 25% 99%;
-    --tertiary-surface: 30 40% 94%;
-    --hairline: 30 20% 92%;
-    --foreground: 220 20% 10%;
+    --background: 40 30% 97%;
+    --tertiary-surface: 36 35% 93%;
+    --hairline: 36 18% 88%;
+    --foreground: 220 15% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 220 15% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
-    --primary: 172 66% 40%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 92%;
-    --secondary-foreground: 220 20% 10%;
-    --muted: 220 14% 92%;
-    --muted-foreground: 220 10% 46%;
-    --accent: 172 66% 40%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 51%;
+    --popover-foreground: 220 15% 12%;
+    --primary: 155 45% 22%;
+    --primary-foreground: 40 30% 97%;
+    --secondary: 36 20% 92%;
+    --secondary-foreground: 220 15% 12%;
+    --muted: 36 18% 93%;
+    --muted-foreground: 220 8% 42%;
+    --accent: 38 75% 52%;
+    --accent-foreground: 220 15% 12%;
+    --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 87%;
-    --input: 220 13% 87%;
-    --ring: 172 66% 40%;
+    --border: 36 16% 86%;
+    --input: 36 16% 86%;
+    --ring: 155 45% 22%;
     --radius: 0.75rem;
-    --cta: 24 100% 50%;
-    --cta-foreground: 0 0% 100%;
-    --hero-bg: 192 100% 12%;
-    --sidebar-background: 220 20% 97%;
-    --sidebar-foreground: 220 20% 10%;
-    --sidebar-primary: 172 66% 40%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 92%;
-    --sidebar-accent-foreground: 220 20% 10%;
-    --sidebar-border: 220 13% 87%;
-    --sidebar-ring: 172 66% 40%;
+    --cta: 38 75% 52%;
+    --cta-foreground: 220 25% 10%;
+    --hero-bg: 155 45% 12%;
+    --sidebar-background: 40 25% 96%;
+    --sidebar-foreground: 220 15% 12%;
+    --sidebar-primary: 155 45% 22%;
+    --sidebar-primary-foreground: 40 30% 97%;
+    --sidebar-accent: 36 18% 92%;
+    --sidebar-accent-foreground: 220 15% 12%;
+    --sidebar-border: 36 16% 86%;
+    --sidebar-ring: 155 45% 22%;
   }
 
   .dark {
-    --background: 222 30% 7%;
-    --foreground: 210 20% 92%;
-    --card: 222 25% 10%;
-    --card-foreground: 210 20% 92%;
-    --popover: 222 25% 10%;
-    --popover-foreground: 210 20% 92%;
-    --primary: 172 66% 40%;
+    --background: 155 30% 7%;
+    --foreground: 40 20% 92%;
+    --card: 155 25% 10%;
+    --card-foreground: 40 20% 92%;
+    --popover: 155 25% 10%;
+    --popover-foreground: 40 20% 92%;
+    --primary: 155 50% 38%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 222 20% 14%;
-    --secondary-foreground: 210 20% 92%;
-    --muted: 222 20% 14%;
-    --muted-foreground: 215 15% 55%;
-    --accent: 172 66% 40%;
-    --accent-foreground: 0 0% 100%;
+    --secondary: 155 20% 14%;
+    --secondary-foreground: 40 20% 92%;
+    --muted: 155 18% 14%;
+    --muted-foreground: 40 10% 62%;
+    --accent: 38 80% 58%;
+    --accent-foreground: 220 25% 10%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 222 20% 16%;
-    --input: 222 20% 16%;
-    --ring: 172 66% 40%;
+    --border: 155 18% 16%;
+    --input: 155 18% 16%;
+    --ring: 155 50% 38%;
     --radius: 0.75rem;
-    --cta: 24 100% 50%;
-    --cta-foreground: 0 0% 100%;
-    --hero-bg: 192 100% 12%;
-    --sidebar-background: 222 25% 9%;
-    --sidebar-foreground: 210 20% 92%;
-    --sidebar-primary: 172 66% 40%;
+    --cta: 38 80% 58%;
+    --cta-foreground: 220 25% 10%;
+    --hero-bg: 155 45% 10%;
+    --sidebar-background: 155 28% 9%;
+    --sidebar-foreground: 40 20% 92%;
+    --sidebar-primary: 155 50% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 20% 14%;
-    --sidebar-accent-foreground: 210 20% 92%;
-    --sidebar-border: 222 20% 16%;
-    --sidebar-ring: 172 66% 40%;
+    --sidebar-accent: 155 18% 14%;
+    --sidebar-accent-foreground: 40 20% 92%;
+    --sidebar-border: 155 18% 16%;
+    --sidebar-ring: 155 50% 38%;
   }
 }
 
@@ -96,39 +104,35 @@
     @apply bg-card/80 backdrop-blur-2xl border border-border/60 shadow-xl;
   }
   .glow-primary {
-    box-shadow: 0 0 30px -5px hsl(172 66% 40% / 0.25);
+    box-shadow: 0 0 30px -5px hsl(155 50% 38% / 0.3);
   }
   .glow-primary-sm {
-    box-shadow: 0 0 15px -3px hsl(172 66% 40% / 0.2);
+    box-shadow: 0 0 15px -3px hsl(155 50% 38% / 0.25);
   }
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-cyan-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(155_45%_28%)] to-[hsl(38_75%_48%)];
   }
   .gradient-border {
-    border-image: linear-gradient(135deg, hsl(172 66% 40%), hsl(190 80% 50%)) 1;
+    border-image: linear-gradient(135deg, hsl(155 45% 28%), hsl(38 75% 52%)) 1;
   }
   .hero-gradient {
-    background: linear-gradient(135deg, hsl(192 100% 12%) 0%, hsl(192 80% 8%) 50%, hsl(180 40% 15%) 100%);
+    background: linear-gradient(135deg, hsl(155 45% 10%) 0%, hsl(155 50% 8%) 50%, hsl(160 35% 14%) 100%);
   }
   .btn-cta {
-    @apply bg-[hsl(24,100%,50%)] text-white font-semibold hover:bg-[hsl(24,100%,45%)] transition-colors;
+    @apply bg-[hsl(38,75%,52%)] text-[hsl(220,25%,10%)] font-semibold hover:bg-[hsl(38,75%,46%)] transition-colors;
   }
 }
 
 /* =====================================================================
-   PUBLIC LIGHT MODE (the only mode public marketing pages use)
-   The pages are authored with hardcoded dark utilities (text-white/X,
-   bg-white/[X], bg-[hsl(222...)] etc.) for the dashboard look. Rather
-   than rewriting every component, we flip those tokens here when
-   `body.public-light` is present.
+   PUBLIC LIGHT MODE — bone-white surfaces, racing-green ink
+   Feature mocks intentionally stay dark.
    ===================================================================== */
 body.public-light {
-  background: #ffffff;
-  color: hsl(220 25% 12%);
+  background: hsl(40 30% 97%);
+  color: hsl(220 15% 12%);
 }
 
-/* Feature mocks intentionally stay dark on the light page — explicitly
-   override the public marketing light-mode transforms inside screenshot mocks. */
+/* Feature mock overrides */
 body.public-light .feature-mock h1,
 body.public-light .feature-mock h2,
 body.public-light .feature-mock h3,
@@ -146,21 +150,21 @@ body.public-light .feature-mock [class*="text-white/80"] {
 body.public-light .feature-mock [class*="text-white/75"],
 body.public-light .feature-mock [class*="text-white/70"],
 body.public-light .feature-mock [class*="text-white/65"] {
-  color: hsl(220 20% 86%) !important;
+  color: hsl(40 20% 86%) !important;
 }
 
 body.public-light .feature-mock [class*="text-white/60"],
 body.public-light .feature-mock [class*="text-white/55"],
 body.public-light .feature-mock [class*="text-white/50"],
 body.public-light .feature-mock [class*="text-slate-300"] {
-  color: hsl(220 18% 78%) !important;
+  color: hsl(40 16% 78%) !important;
 }
 
 body.public-light .feature-mock [class*="text-white/45"],
 body.public-light .feature-mock [class*="text-white/40"],
 body.public-light .feature-mock [class*="text-white/35"],
 body.public-light .feature-mock [class*="text-slate-400"] {
-  color: hsl(220 14% 64%) !important;
+  color: hsl(40 12% 64%) !important;
 }
 
 body.public-light .feature-mock [class*="text-white/30"],
@@ -169,15 +173,15 @@ body.public-light .feature-mock [class*="text-white/20"],
 body.public-light .feature-mock [class*="text-white/15"],
 body.public-light .feature-mock [class*="text-white/10"],
 body.public-light .feature-mock [class*="text-slate-500"] {
-  color: hsl(220 12% 54%) !important;
+  color: hsl(40 10% 54%) !important;
 }
 
 body.public-light .feature-mock [class*="bg-slate-950"] {
-  background-color: hsl(222 30% 8%) !important;
+  background-color: hsl(155 30% 8%) !important;
 }
 
 body.public-light .feature-mock [class*="bg-slate-900"] {
-  background-color: hsl(222 28% 11%) !important;
+  background-color: hsl(155 28% 11%) !important;
   color: hsl(0 0% 100%) !important;
 }
 
@@ -203,50 +207,46 @@ body.public-light .feature-mock [class*="border-white/5"] {
 }
 
 /* ---------- Page surfaces ---------- */
-body.public-light [class*="bg-background"] { background-color: #ffffff !important; }
+body.public-light [class*="bg-background"] { background-color: hsl(40 30% 97%) !important; }
 body.public-light [class*="bg-secondary/30"],
 body.public-light [class*="bg-secondary/20"],
 body.public-light [class*="bg-secondary/40"],
-body.public-light [class*="bg-secondary/50"] { background-color: hsl(30 30% 97%) !important; }
-body.public-light [class*="bg-muted"] { background-color: hsl(30 25% 96%) !important; }
+body.public-light [class*="bg-secondary/50"] { background-color: hsl(36 30% 95%) !important; }
+body.public-light [class*="bg-muted"] { background-color: hsl(36 25% 94%) !important; }
 
-/* Dark hex panels → light surfaces. Catch ANY bg-[hsl(222 ...)] regardless
-   of lightness value. Use `nth-of-type` style alternation via specific
-   lightness buckets so adjacent sections feel banded, not flat-white. */
-body.public-light [class*="bg-[hsl(222"] { background-color: #ffffff !important; }
-/* "Lighter" dark sections (10%, 12%, 14%) → warm cream band */
+/* Dark hex panels → light surfaces */
+body.public-light [class*="bg-[hsl(222"] { background-color: hsl(40 30% 97%) !important; }
 body.public-light [class*="bg-[hsl(222_28%_10%)"],
 body.public-light [class*="bg-[hsl(222_28%_12%)"],
 body.public-light [class*="bg-[hsl(222_25%_10%)"],
-body.public-light [class*="bg-[hsl(222_28%_14%)"] { background-color: hsl(30 50% 97.5%) !important; }
-/* "Darker" dark sections (6%, 7%, 8%, 9%) → pure white */
+body.public-light [class*="bg-[hsl(222_28%_14%)"] { background-color: hsl(36 35% 95%) !important; }
 body.public-light [class*="bg-[hsl(222_30%_6%)"],
 body.public-light [class*="bg-[hsl(222_30%_7%)"],
 body.public-light [class*="bg-[hsl(222_28%_8%)"],
 body.public-light [class*="bg-[hsl(222_28%_9%)"],
 body.public-light [class*="bg-[hsl(222_30%_9%)"],
 body.public-light [class*="bg-[hsl(222_25%_8%)"],
-body.public-light [class*="bg-[hsl(222_25%_6%)"] { background-color: #ffffff !important; }
-body.public-light [class*="bg-[hsl(222"][class*="border-t"] { border-top-color: hsl(220 14% 90%) !important; }
+body.public-light [class*="bg-[hsl(222_25%_6%)"] { background-color: hsl(40 30% 97%) !important; }
+body.public-light [class*="bg-[hsl(222"][class*="border-t"] { border-top-color: hsl(36 16% 88%) !important; }
 
-/* Section borders that were teal/orange tinted on dark — soften for light */
-body.public-light section[class*="border-[hsl(var(--cta))"] { border-top-color: hsl(24 100% 50% / 0.15) !important; }
-body.public-light section[class*="border-primary"] { border-top-color: hsl(172 66% 40% / 0.18) !important; }
+/* Section borders — soften brass + green tints for light */
+body.public-light section[class*="border-[hsl(var(--cta))"] { border-top-color: hsl(38 75% 52% / 0.2) !important; }
+body.public-light section[class*="border-primary"] { border-top-color: hsl(155 45% 22% / 0.18) !important; }
 
-/* ---------- White-tint surfaces become slate tints ---------- */
+/* ---------- White-tint surfaces become bone tints ---------- */
 body.public-light [class*="bg-white/[0.02]"],
 body.public-light [class*="bg-white/[0.03]"],
 body.public-light [class*="bg-white/[0.04]"],
 body.public-light [class*="bg-white/[0.05]"],
 body.public-light [class*="bg-white/[0.06]"],
-body.public-light [class*="bg-white/5"] { background-color: hsl(220 16% 97%) !important; }
+body.public-light [class*="bg-white/5"] { background-color: hsl(36 25% 96%) !important; }
 body.public-light [class*="bg-white/[0.08]"],
 body.public-light [class*="bg-white/[0.1]"],
-body.public-light [class*="bg-white/10"] { background-color: hsl(220 14% 93%) !important; }
+body.public-light [class*="bg-white/10"] { background-color: hsl(36 20% 93%) !important; }
 body.public-light [class*="bg-white/[0.15]"],
-body.public-light [class*="bg-white/20"] { background-color: hsl(220 12% 88%) !important; }
+body.public-light [class*="bg-white/20"] { background-color: hsl(36 16% 88%) !important; }
 
-/* ---------- White-tint borders become slate borders ---------- */
+/* ---------- White-tint borders ---------- */
 body.public-light [class*="border-white/[0.04]"],
 body.public-light [class*="border-white/[0.05]"],
 body.public-light [class*="border-white/[0.06]"],
@@ -255,165 +255,154 @@ body.public-light [class*="border-white/[0.1]"],
 body.public-light [class*="border-white/[0.15]"],
 body.public-light [class*="border-white/10"],
 body.public-light [class*="border-white/20"],
-body.public-light [class*="border-white/5"] { border-color: hsl(220 14% 88%) !important; }
+body.public-light [class*="border-white/5"] { border-color: hsl(36 14% 86%) !important; }
 
-/* ---------- White-tint text becomes slate text (contrast-safe) ---------- */
+/* ---------- White-tint text becomes charcoal text ---------- */
 body.public-light .text-white,
 body.public-light [class*="text-white/95"],
 body.public-light [class*="text-white/90"],
 body.public-light [class*="text-white/85"],
-body.public-light [class*="text-white/80"] { color: hsl(220 30% 10%) !important; }
+body.public-light [class*="text-white/80"] { color: hsl(220 20% 10%) !important; }
 body.public-light [class*="text-white/75"],
 body.public-light [class*="text-white/70"],
-body.public-light [class*="text-white/65"] { color: hsl(220 25% 18%) !important; }
+body.public-light [class*="text-white/65"] { color: hsl(220 18% 18%) !important; }
 body.public-light [class*="text-white/60"],
 body.public-light [class*="text-white/55"],
-body.public-light [class*="text-white/50"] { color: hsl(220 15% 30%) !important; }
+body.public-light [class*="text-white/50"] { color: hsl(220 12% 30%) !important; }
 body.public-light [class*="text-white/45"],
 body.public-light [class*="text-white/40"],
-body.public-light [class*="text-white/35"] { color: hsl(220 12% 38%) !important; }
+body.public-light [class*="text-white/35"] { color: hsl(220 10% 38%) !important; }
 body.public-light [class*="text-white/30"],
-body.public-light [class*="text-white/25"] { color: hsl(220 10% 45%) !important; }
+body.public-light [class*="text-white/25"] { color: hsl(220 8% 45%) !important; }
 body.public-light [class*="text-white/20"],
 body.public-light [class*="text-white/15"],
-body.public-light [class*="text-white/10"] { color: hsl(220 10% 55%) !important; }
+body.public-light [class*="text-white/10"] { color: hsl(220 8% 55%) !important; }
 
-/* ---------- Foreground utilities used in components ---------- */
+/* ---------- Foreground utilities ---------- */
 body.public-light .text-foreground,
 body.public-light [class*="text-foreground/90"],
-body.public-light [class*="text-foreground/80"] { color: hsl(220 30% 10%) !important; }
+body.public-light [class*="text-foreground/80"] { color: hsl(220 20% 10%) !important; }
 body.public-light [class*="text-foreground/70"],
-body.public-light [class*="text-foreground/60"] { color: hsl(220 20% 22%) !important; }
+body.public-light [class*="text-foreground/60"] { color: hsl(220 15% 22%) !important; }
 body.public-light [class*="text-foreground/50"],
-body.public-light [class*="text-foreground/40"] { color: hsl(220 15% 38%) !important; }
-body.public-light .text-muted-foreground { color: hsl(220 12% 42%) !important; }
+body.public-light [class*="text-foreground/40"] { color: hsl(220 12% 38%) !important; }
+body.public-light .text-muted-foreground { color: hsl(220 10% 42%) !important; }
 
-/* ---------- Headings always strong slate ---------- */
+/* ---------- Headings ---------- */
 body.public-light h1,
 body.public-light h2,
 body.public-light h3,
 body.public-light h4,
 body.public-light h5,
-body.public-light h6 { color: hsl(220 30% 10%); }
+body.public-light h6 { color: hsl(220 20% 10%); }
 
-/* ---------- Hero gradient → soft warm cream that fades to white ---------- */
+/* ---------- Hero gradient → soft cream → bone white ---------- */
 body.public-light .hero-gradient {
-  background: linear-gradient(180deg, hsl(30 100% 97%) 0%, hsl(24 100% 95.5%) 35%, hsl(30 80% 97%) 70%, #ffffff 100%) !important;
+  background: linear-gradient(180deg, hsl(40 35% 96%) 0%, hsl(38 50% 94%) 35%, hsl(40 30% 96%) 70%, hsl(40 30% 97%) 100%) !important;
 }
 body.public-light .hero-gradient h1,
 body.public-light .hero-gradient h2,
-body.public-light .hero-gradient h3 { color: hsl(220 35% 10%) !important; }
+body.public-light .hero-gradient h3 { color: hsl(155 45% 14%) !important; }
 body.public-light .hero-gradient .text-white,
 body.public-light .hero-gradient [class*="text-white/90"],
-body.public-light .hero-gradient [class*="text-white/80"] { color: hsl(220 35% 10%) !important; }
+body.public-light .hero-gradient [class*="text-white/80"] { color: hsl(155 45% 14%) !important; }
 body.public-light .hero-gradient [class*="text-white/70"],
 body.public-light .hero-gradient [class*="text-white/60"],
 body.public-light .hero-gradient [class*="text-white/55"],
-body.public-light .hero-gradient [class*="text-white/50"] { color: hsl(220 22% 28%) !important; }
+body.public-light .hero-gradient [class*="text-white/50"] { color: hsl(220 18% 28%) !important; }
 body.public-light .hero-gradient [class*="text-white/40"],
 body.public-light .hero-gradient [class*="text-white/35"],
-body.public-light .hero-gradient [class*="text-white/30"] { color: hsl(220 18% 38%) !important; }
+body.public-light .hero-gradient [class*="text-white/30"] { color: hsl(220 14% 38%) !important; }
 body.public-light .hero-gradient [class*="text-white/25"],
 body.public-light .hero-gradient [class*="text-white/20"],
-body.public-light .hero-gradient [class*="text-white/15"] { color: hsl(220 15% 48%) !important; }
+body.public-light .hero-gradient [class*="text-white/15"] { color: hsl(220 12% 48%) !important; }
 body.public-light .hero-gradient [class*="bg-white/"] { background-color: hsl(0 0% 100% / 0.7) !important; }
-body.public-light .hero-gradient [class*="border-white/"] { border-color: hsl(24 30% 80%) !important; }
+body.public-light .hero-gradient [class*="border-white/"] { border-color: hsl(38 30% 78%) !important; }
 
-/* ---------- DisputeIQ "live demo" dark card on landing ----------
-   Many sections wrap content in glass cards intended for dark UI.
-   Re-style those for light. */
+/* ---------- Glass cards on light ---------- */
 body.public-light .glass-card,
 body.public-light .glass-card-strong {
   background-color: #ffffff !important;
-  border-color: hsl(220 14% 88%) !important;
-  box-shadow: 0 4px 20px -8px hsl(220 30% 20% / 0.08), 0 0 0 1px hsl(220 14% 92%);
-}
-
-/* ---------- Buttons: outline/ghost variants used over dark in nav ---------- */
-body.public-light .btn-cta { color: #ffffff !important; }
-
-/* ---------- Generic "slate-on-near-white" panels used in mocks ---------- */
-body.public-light [class*="bg-slate-900"],
-body.public-light [class*="bg-slate-950"],
-body.public-light [class*="bg-zinc-900"],
-body.public-light [class*="bg-zinc-950"],
-body.public-light [class*="bg-neutral-900"],
-body.public-light [class*="bg-neutral-950"] { background-color: hsl(220 18% 96%) !important; color: hsl(220 30% 10%) !important; }
-
-/* ---------- Mobile menu / dropdown popovers ---------- */
-body.public-light nav [class*="shadow-["] {
-  box-shadow: 0 8px 24px -8px hsl(220 30% 20% / 0.12), 0 0 0 1px hsl(220 14% 92%) !important;
-}
-
-/* ---------- Inputs / form fields on public pages (contact, signup) ---------- */
-body.public-light input,
-body.public-light textarea,
-body.public-light select {
-  background-color: #ffffff;
-  color: hsl(220 30% 10%);
-  border-color: hsl(220 14% 85%);
-}
-body.public-light input::placeholder,
-body.public-light textarea::placeholder { color: hsl(220 10% 55%); }
-
-/* ---------- Gradient text on dark themes can become invisible ---------- */
-body.public-light .gradient-text {
-  background-image: linear-gradient(90deg, hsl(172 66% 35%), hsl(190 80% 40%)) !important;
-}
-
-/* ---------- Star ratings & cta-orange accents stay vivid ---------- */
-body.public-light [class*="text-[hsl(var(--cta))]"] { color: hsl(24 100% 50%) !important; }
-body.public-light [class*="bg-[hsl(var(--cta))]/10"] { background-color: hsl(24 100% 50% / 0.1) !important; }
-body.public-light [class*="bg-[hsl(var(--cta))]/15"] { background-color: hsl(24 100% 50% / 0.12) !important; }
-
-/* ---------- Section divider waves / blobs that used dark fills ---------- */
-body.public-light svg [fill*="hsl(222"] { fill: #ffffff !important; }
-
-/* =====================================================================
-   PREMIUM POLISH — typography, surfaces, micro-interactions
-   ===================================================================== */
-
-/* Warm off-white base for the public site */
-body.public-light { background: hsl(30 25% 99%) !important; }
-
-/* Glass cards: tactile inner highlight + warm shadow */
-body.public-light .glass-card,
-body.public-light .glass-card-strong {
-  background-color: #ffffff !important;
-  border-color: hsl(30 20% 90%) !important;
+  border-color: hsl(36 16% 86%) !important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.9),
-    0 1px 2px hsl(30 30% 60% / 0.04),
-    0 8px 24px -12px hsl(30 40% 30% / 0.08) !important;
+    0 1px 2px hsl(155 30% 20% / 0.04),
+    0 8px 24px -12px hsl(155 40% 15% / 0.08) !important;
   transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 body.public-light .glass-card:hover,
 body.public-light .glass-card-strong:hover {
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.9),
-    0 2px 4px hsl(30 30% 60% / 0.06),
-    0 16px 40px -16px hsl(30 40% 30% / 0.12) !important;
+    0 2px 4px hsl(155 30% 20% / 0.06),
+    0 16px 40px -16px hsl(155 40% 15% / 0.14) !important;
 }
 
-/* Tertiary warm beige surface (for FAQ open, testimonial cards, etc.) */
-.surface-warm { background-color: hsl(30 40% 94%); }
-body.public-light .surface-warm { background-color: hsl(30 40% 94%) !important; }
+/* ---------- CTA button (brass) ---------- */
+body.public-light .btn-cta { color: hsl(220 25% 10%) !important; }
 
-/* CTA button — hover lift + stronger shadow on light backgrounds */
+/* ---------- Slate-on-near-white panels in mocks ---------- */
+body.public-light [class*="bg-slate-900"],
+body.public-light [class*="bg-slate-950"],
+body.public-light [class*="bg-zinc-900"],
+body.public-light [class*="bg-zinc-950"],
+body.public-light [class*="bg-neutral-900"],
+body.public-light [class*="bg-neutral-950"] { background-color: hsl(36 18% 95%) !important; color: hsl(220 20% 10%) !important; }
+
+/* ---------- Mobile menu / dropdown popovers ---------- */
+body.public-light nav [class*="shadow-["] {
+  box-shadow: 0 8px 24px -8px hsl(155 30% 15% / 0.12), 0 0 0 1px hsl(36 16% 88%) !important;
+}
+
+/* ---------- Inputs / form fields on public pages ---------- */
+body.public-light input,
+body.public-light textarea,
+body.public-light select {
+  background-color: #ffffff;
+  color: hsl(220 20% 10%);
+  border-color: hsl(36 16% 84%);
+}
+body.public-light input::placeholder,
+body.public-light textarea::placeholder { color: hsl(220 8% 50%); }
+
+/* ---------- Gradient text on light ---------- */
+body.public-light .gradient-text {
+  background-image: linear-gradient(90deg, hsl(155 45% 24%), hsl(38 75% 45%)) !important;
+}
+
+/* ---------- Brass accents stay vivid ---------- */
+body.public-light [class*="text-[hsl(var(--cta))]"] { color: hsl(38 75% 45%) !important; }
+body.public-light [class*="bg-[hsl(var(--cta))]/10"] { background-color: hsl(38 75% 52% / 0.12) !important; }
+body.public-light [class*="bg-[hsl(var(--cta))]/15"] { background-color: hsl(38 75% 52% / 0.16) !important; }
+
+/* ---------- SVG dividers ---------- */
+body.public-light svg [fill*="hsl(222"] { fill: hsl(40 30% 97%) !important; }
+
+/* =====================================================================
+   PREMIUM POLISH
+   ===================================================================== */
+
+body.public-light { background: hsl(40 30% 97%) !important; }
+
+/* Tertiary warm cream surface */
+.surface-warm { background-color: hsl(36 35% 93%); }
+body.public-light .surface-warm { background-color: hsl(36 35% 93%) !important; }
+
+/* CTA hover lift on light */
 body.public-light .btn-cta {
-  box-shadow: 0 6px 16px -6px hsl(24 100% 40% / 0.4), 0 2px 4px hsl(24 100% 40% / 0.15);
+  box-shadow: 0 6px 16px -6px hsl(38 75% 35% / 0.4), 0 2px 4px hsl(38 75% 35% / 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 body.public-light .btn-cta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px -6px hsl(24 100% 40% / 0.5), 0 4px 8px hsl(24 100% 40% / 0.2);
+  box-shadow: 0 10px 24px -6px hsl(38 75% 35% / 0.5), 0 4px 8px hsl(38 75% 35% / 0.22);
 }
 
-/* Soft hairline divider helper for between sections */
-.section-hairline { border-top: 1px solid hsl(30 20% 92%); }
-body.public-light .section-hairline { border-top-color: hsl(30 20% 92%) !important; }
+/* Section hairline */
+.section-hairline { border-top: 1px solid hsl(36 16% 88%); }
+body.public-light .section-hairline { border-top-color: hsl(36 16% 88%) !important; }
 
-/* Eyebrow label (small uppercase tracked label above section h2) */
+/* Eyebrow label */
 .eyebrow {
   display: inline-block;
   font-family: 'Inter', sans-serif;
@@ -421,12 +410,12 @@ body.public-light .section-hairline { border-top-color: hsl(30 20% 92%) !importa
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: hsl(172 66% 35%);
+  color: hsl(155 45% 28%);
   margin-bottom: 0.75rem;
 }
-.eyebrow.eyebrow-cta { color: hsl(24 100% 45%); }
+.eyebrow.eyebrow-cta { color: hsl(38 75% 40%); }
 
-/* Feature mock halo — radial teal/orange glow behind dark mocks */
+/* Feature mock halo — green + brass radial glow */
 .mock-halo {
   position: relative;
   isolation: isolate;
@@ -437,13 +426,13 @@ body.public-light .section-hairline { border-top-color: hsl(30 20% 92%) !importa
   inset: -8% -6% -10% -6%;
   z-index: -1;
   background:
-    radial-gradient(60% 50% at 30% 30%, hsl(172 66% 45% / 0.10), transparent 70%),
-    radial-gradient(55% 45% at 75% 70%, hsl(24 100% 50% / 0.08), transparent 70%);
+    radial-gradient(60% 50% at 30% 30%, hsl(155 50% 30% / 0.12), transparent 70%),
+    radial-gradient(55% 45% at 75% 70%, hsl(38 75% 52% / 0.10), transparent 70%);
   filter: blur(8px);
   pointer-events: none;
 }
 
-/* Decorative quote glyph for testimonials */
+/* Decorative quote glyph */
 .quote-decor {
   position: relative;
 }
@@ -455,37 +444,37 @@ body.public-light .section-hairline { border-top-color: hsl(30 20% 92%) !importa
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 7rem;
   line-height: 1;
-  color: hsl(172 66% 40% / 0.08);
+  color: hsl(155 45% 22% / 0.10);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Marketing body text — more editorial */
+/* Marketing body text */
 body.public-light p { line-height: 1.65; }
 
-/* FAQ open state — warm beige fill */
+/* FAQ open state */
 body.public-light details[open].glass-card,
 body.public-light details[open].glass-card-strong {
-  background-color: hsl(30 40% 96%) !important;
+  background-color: hsl(36 35% 95%) !important;
 }
 
-/* Inputs on public pages — chunkier with teal focus ring */
+/* Inputs — racing green focus ring */
 body.public-light input,
 body.public-light textarea {
   padding: 0.625rem 0.875rem;
-  border-color: hsl(30 20% 86%);
+  border-color: hsl(36 16% 84%);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 body.public-light input:focus,
 body.public-light textarea:focus,
 body.public-light input:focus-visible,
 body.public-light textarea:focus-visible {
-  border-color: hsl(172 66% 40%) !important;
-  box-shadow: 0 0 0 3px hsl(172 66% 40% / 0.15) !important;
+  border-color: hsl(155 45% 28%) !important;
+  box-shadow: 0 0 0 3px hsl(155 45% 28% / 0.15) !important;
   outline: none !important;
 }
 
-/* Comparison table row striping helper */
+/* Comparison row striping */
 body.public-light .compare-row-alt:nth-child(even) {
-  background-color: hsl(30 40% 96%) !important;
+  background-color: hsl(36 35% 95%) !important;
 }
