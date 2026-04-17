@@ -14,16 +14,18 @@ const TEAL_DARK = "hsl(172,66%,32%)";
  */
 function MockFrame({ children, gradient = "from-primary/20 via-primary/5 to-transparent" }: { children: React.ReactNode; gradient?: string }) {
   return (
-    <div className={`feature-mock relative rounded-2xl p-3 bg-gradient-to-br ${gradient}`}>
-      <div className="rounded-xl overflow-hidden bg-slate-900 shadow-[0_25px_50px_-12px_rgba(15,23,42,0.45)] ring-1 ring-slate-900/20">
-        <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10 bg-slate-950/60">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-          <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-          <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-          <div className="ml-3 text-[10px] text-slate-500 font-mono">warrantyvault.co.uk</div>
-        </div>
-        <div className="p-4 sm:p-5 text-slate-100 bg-slate-900">
-          {children}
+    <div className="mock-halo">
+      <div className={`feature-mock relative rounded-2xl p-3 bg-gradient-to-br ${gradient}`}>
+        <div className="rounded-xl overflow-hidden bg-slate-900 shadow-[0_25px_50px_-12px_rgba(15,23,42,0.45)] ring-1 ring-slate-900/20">
+          <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10 bg-slate-950/60">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+            <div className="ml-3 text-[10px] text-slate-500 font-mono">warrantyvault.co.uk</div>
+          </div>
+          <div className="p-4 sm:p-5 text-slate-100 bg-slate-900">
+            {children}
+          </div>
         </div>
       </div>
     </div>

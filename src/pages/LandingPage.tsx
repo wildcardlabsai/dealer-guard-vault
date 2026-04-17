@@ -484,21 +484,21 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             <div>
               <motion.p
-                className="text-xs text-white/50 font-semibold tracking-[0.2em] uppercase mb-5"
+                className="eyebrow text-white/55"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
               >
-                Built specifically for UK independent car dealers
+                Built for UK independent car dealers
               </motion.p>
 
               <motion.h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display tracking-tight text-white leading-[1.05] mb-5"
+                className="text-5xl sm:text-6xl lg:text-7xl font-bold font-display tracking-tight text-white leading-[1.02] mb-6"
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
               >
                 Run Your Own Warranties<br />— Properly<span className="text-[hsl(var(--cta))]">.</span>
               </motion.h1>
 
               <motion.p
-                className="text-base sm:text-lg text-white/45 max-w-md mb-8 leading-relaxed"
+                className="text-base sm:text-lg text-white/55 max-w-md mb-8 leading-relaxed"
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
               >
                 Manage self-funded warranties with confidence. Handle claims, respond to complaints correctly, and stay in control of your risk and profit — all in one place.
@@ -531,7 +531,19 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Hook / Problem */}
+      {/* Trust strip */}
+      <section className="bg-[hsl(222_28%_10%)] border-t border-white/[0.05]">
+        <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+          <p className="text-xs text-white/40 font-semibold tracking-[0.15em] uppercase">Trusted by UK dealers</p>
+          <div className="flex items-center gap-6 text-white/30 text-xs font-medium">
+            <span>★★★★★ 4.9/5</span>
+            <span className="hidden sm:inline">·</span>
+            <span>200+ active dealers</span>
+            <span className="hidden sm:inline">·</span>
+            <span>£0 monthly fees</span>
+          </div>
+        </div>
+      </section>
       <section className="bg-[hsl(222_28%_10%)]">
         <motion.div className="max-w-2xl mx-auto text-center px-6 pt-14 pb-14" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display text-white leading-[1.15] tracking-[-0.02em] mb-6">
@@ -705,15 +717,23 @@ export default function LandingPage() {
       <section id="pricing" className="py-20 px-6 bg-[hsl(222_28%_10%)] relative border-t border-primary/[0.08]">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-primary/[0.03] rounded-full blur-[120px] pointer-events-none" />
         <div className="max-w-2xl mx-auto text-center relative">
-          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Simple, transparent pricing</h2>
-          <p className="text-white/35 text-sm mb-8">No monthly fees. No contracts. Pay only when you issue a warranty.</p>
-          <motion.div className="rounded-2xl p-8 sm:p-10 relative overflow-hidden border border-primary/15 bg-[hsl(222_28%_9%)] shadow-[0_0_40px_-12px_hsl(172,66%,40%,0.08)]" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
+          <span className="eyebrow">Pricing</span>
+          <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight mb-2">Simple, transparent pricing</h2>
+          <p className="text-white/45 text-sm mb-10 max-w-lg mx-auto leading-relaxed">No monthly fees. No contracts. Pay only when you issue a warranty.</p>
+          <motion.div className="rounded-2xl p-8 sm:p-12 relative overflow-hidden border border-primary/15 bg-[hsl(222_28%_9%)] shadow-[0_0_40px_-12px_hsl(172,66%,40%,0.08)]" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
             <div className="absolute top-0 right-0 w-44 h-44 bg-primary/[0.05] rounded-full blur-[80px] pointer-events-none" />
             <div className="relative">
-              <p className="text-5xl sm:text-6xl font-bold font-display mb-0.5 text-white">£0<span className="text-xl text-white/30 font-normal">/month</span></p>
-              <p className="text-lg font-semibold font-display mb-1.5 text-white/80">Only £15 per warranty</p>
+              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary/80 mb-3">Pay-per-use</p>
+              <div className="flex items-baseline justify-center gap-2 mb-2">
+                <span className="text-7xl sm:text-8xl font-bold font-display tracking-tight text-white leading-none">£15</span>
+                <span className="text-lg text-white/40 font-normal">/ warranty</span>
+              </div>
+              <p className="text-sm text-white/30 mb-1">
+                <span className="line-through">Compare to £200+ with traditional providers</span>
+              </p>
+              <p className="text-base font-semibold text-white/80 mb-1 mt-4">£0/month · No contracts</p>
               <p className="text-sm text-[hsl(var(--cta))] font-semibold mb-1">🎉 First 5 warranties FREE</p>
-              <p className="text-white/25 text-xs mb-6 max-w-xs mx-auto">No contracts. No risk. Cancel anytime.</p>
+              <p className="text-white/30 text-xs mb-7 max-w-xs mx-auto">No risk. Cancel anytime.</p>
 
               <div className="grid grid-cols-2 gap-x-6 gap-y-2 max-w-xs mx-auto mb-6">
                 {["No monthly fees", "No contracts", "Pay only when you use it", "Scale as you grow"].map(f => (

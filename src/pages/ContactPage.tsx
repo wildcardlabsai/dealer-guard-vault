@@ -80,51 +80,52 @@ export default function ContactPage() {
         description="Get in touch with the WarrantyVault team. We'd love to hear from you about self-funded car warranty solutions."
       />
       <PublicNav />
-      <div className="min-h-screen pt-24 pb-16 px-6">
+      <div className="min-h-screen pt-28 pb-20 px-6">
         <div className="max-w-2xl mx-auto">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" /> Back to home
           </Link>
 
-          <h1 className="text-3xl font-bold font-display mb-2">Get in Touch</h1>
-          <p className="text-muted-foreground mb-8">Have a question about WarrantyVault? Fill in the form below and we'll get back to you as soon as possible.</p>
+          <span className="eyebrow">Contact</span>
+          <h1 className="text-4xl sm:text-5xl font-bold font-display tracking-tight mb-3">Get in Touch</h1>
+          <p className="text-muted-foreground mb-10 text-lg leading-relaxed max-w-xl">Have a question about WarrantyVault? Fill in the form below and we'll get back to you as soon as possible.</p>
 
           {sent ? (
-            <div className="glass-card-strong rounded-xl p-10 text-center">
+            <div className="glass-card-strong rounded-2xl p-12 text-center">
               <CheckCircle2 className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h2 className="text-xl font-bold font-display mb-2">Message Sent</h2>
+              <h2 className="text-2xl font-bold font-display mb-2 tracking-tight">Message Sent</h2>
               <p className="text-muted-foreground mb-6">Thank you for reaching out. We'll respond within 24 hours.</p>
               <Button asChild variant="outline">
                 <Link to="/">Back to Home</Link>
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="glass-card-strong rounded-xl p-6 sm:p-8 space-y-5">
-              <div className="grid sm:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="glass-card-strong rounded-2xl p-7 sm:p-10 space-y-6">
+              <div className="grid sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
-                  <Input id="name" placeholder="Your name" value={form.name} onChange={e => update("name", e.target.value)} />
+                  <Label htmlFor="name" className="text-sm font-semibold">Name *</Label>
+                  <Input id="name" placeholder="Your name" value={form.name} onChange={e => update("name", e.target.value)} className="h-11" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
-                  <Input id="email" type="email" placeholder="you@company.com" value={form.email} onChange={e => update("email", e.target.value)} />
+                  <Label htmlFor="email" className="text-sm font-semibold">Email *</Label>
+                  <Input id="email" type="email" placeholder="you@company.com" value={form.email} onChange={e => update("email", e.target.value)} className="h-11" />
                 </div>
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" placeholder="07xxx xxx xxx" value={form.phone} onChange={e => update("phone", e.target.value)} />
+                  <Label htmlFor="phone" className="text-sm font-semibold">Phone</Label>
+                  <Input id="phone" placeholder="07xxx xxx xxx" value={form.phone} onChange={e => update("phone", e.target.value)} className="h-11" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="subject">Subject *</Label>
-                  <Input id="subject" placeholder="What's this about?" value={form.subject} onChange={e => update("subject", e.target.value)} />
+                  <Label htmlFor="subject" className="text-sm font-semibold">Subject *</Label>
+                  <Input id="subject" placeholder="What's this about?" value={form.subject} onChange={e => update("subject", e.target.value)} className="h-11" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="message">Message *</Label>
-                <Textarea id="message" placeholder="Tell us how we can help..." className="min-h-[140px]" value={form.message} onChange={e => update("message", e.target.value)} />
+                <Label htmlFor="message" className="text-sm font-semibold">Message *</Label>
+                <Textarea id="message" placeholder="Tell us how we can help..." className="min-h-[160px]" value={form.message} onChange={e => update("message", e.target.value)} />
               </div>
-              <Button type="submit" className="w-full glow-primary-sm" disabled={sending}>
+              <Button type="submit" className="w-full h-12 btn-cta rounded-full text-base font-semibold" disabled={sending}>
                 {sending ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...</>
                 ) : (
