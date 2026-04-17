@@ -110,3 +110,83 @@
     @apply bg-[hsl(24,100%,50%)] text-white font-semibold hover:bg-[hsl(24,100%,45%)] transition-colors;
   }
 }
+
+/* =====================================================================
+   PUBLIC LIGHT MODE
+   The public marketing pages (Landing, Features, DisputeIQ, etc.) are
+   authored with hardcoded dark utilities (text-white/X, bg-white/[X],
+   bg-[hsl(222...)] etc.) for visual fidelity. To support a light theme
+   without rewriting every component, we scope a CSS override block
+   under `body.public-light` that flips those dark surfaces and text
+   tints to light-mode equivalents. Hero gradient sections stay branded.
+   ===================================================================== */
+body.public-light {
+  background: hsl(220 20% 97%);
+  color: hsl(220 20% 10%);
+}
+
+/* Page background panels */
+body.public-light [class*="bg-background"] { background-color: hsl(220 20% 97%) !important; }
+body.public-light [class*="bg-secondary/30"],
+body.public-light [class*="bg-secondary/20"] { background-color: hsl(220 14% 94%) !important; }
+
+/* Common dark hex panels used in nav/footer/hero mocks */
+body.public-light .bg-\[hsl\(222_30\%_6\%\)\],
+body.public-light .bg-\[hsl\(222_30\%_6\%\)\\\/90\],
+body.public-light [class*="bg-[hsl(222_30%_6%)]"] { background-color: hsl(0 0% 100%) !important; }
+body.public-light [class*="bg-[hsl(222_28%_8%)]"],
+body.public-light [class*="bg-[hsl(222_28%_12%)]"],
+body.public-light [class*="bg-[hsl(222_25%_8%)]"],
+body.public-light [class*="bg-[hsl(222_25%_6%)]"],
+body.public-light [class*="bg-[hsl(222_30%_9%)]"] { background-color: hsl(220 20% 98%) !important; }
+
+/* White-tint surfaces become slate tints */
+body.public-light [class*="bg-white/[0.02]"],
+body.public-light [class*="bg-white/[0.03]"],
+body.public-light [class*="bg-white/[0.04]"],
+body.public-light [class*="bg-white/[0.05]"],
+body.public-light [class*="bg-white/[0.06]"] { background-color: hsl(220 14% 96%) !important; }
+body.public-light [class*="bg-white/[0.08]"],
+body.public-light [class*="bg-white/[0.1]"] { background-color: hsl(220 14% 92%) !important; }
+
+/* White-tint borders become slate borders */
+body.public-light [class*="border-white/[0.04]"],
+body.public-light [class*="border-white/[0.05]"],
+body.public-light [class*="border-white/[0.06]"],
+body.public-light [class*="border-white/[0.08]"],
+body.public-light [class*="border-white/[0.1]"],
+body.public-light [class*="border-white/10"],
+body.public-light [class*="border-white/5"] { border-color: hsl(220 13% 87%) !important; }
+
+/* White-tint text becomes slate text */
+body.public-light .text-white,
+body.public-light [class*="text-white/90"],
+body.public-light [class*="text-white/80"],
+body.public-light [class*="text-white/70"] { color: hsl(220 20% 12%) !important; }
+body.public-light [class*="text-white/60"],
+body.public-light [class*="text-white/50"] { color: hsl(220 15% 28%) !important; }
+body.public-light [class*="text-white/40"],
+body.public-light [class*="text-white/35"],
+body.public-light [class*="text-white/30"] { color: hsl(220 12% 42%) !important; }
+body.public-light [class*="text-white/25"],
+body.public-light [class*="text-white/20"],
+body.public-light [class*="text-white/15"],
+body.public-light [class*="text-white/10"] { color: hsl(220 10% 55%) !important; }
+
+/* Hero/CTA gradient sections — keep branded but lighten text accents
+   Hero stays dark intentionally for impact. We DO NOT override .hero-gradient. */
+body.public-light .hero-gradient,
+body.public-light .hero-gradient * { /* re-darken text inside hero so it stays readable on dark bg */ }
+body.public-light .hero-gradient .text-white,
+body.public-light .hero-gradient [class*="text-white/"] { color: inherit !important; }
+body.public-light .hero-gradient .text-white { color: #fff !important; }
+body.public-light .hero-gradient [class*="text-white/90"] { color: rgba(255,255,255,0.9) !important; }
+body.public-light .hero-gradient [class*="text-white/80"] { color: rgba(255,255,255,0.8) !important; }
+body.public-light .hero-gradient [class*="text-white/70"] { color: rgba(255,255,255,0.7) !important; }
+body.public-light .hero-gradient [class*="text-white/60"] { color: rgba(255,255,255,0.6) !important; }
+body.public-light .hero-gradient [class*="text-white/50"] { color: rgba(255,255,255,0.5) !important; }
+body.public-light .hero-gradient [class*="text-white/40"] { color: rgba(255,255,255,0.4) !important; }
+body.public-light .hero-gradient [class*="text-white/30"] { color: rgba(255,255,255,0.3) !important; }
+body.public-light .hero-gradient [class*="text-white/20"] { color: rgba(255,255,255,0.2) !important; }
+body.public-light .hero-gradient [class*="bg-white/"] { background-color: rgba(255,255,255,0.06) !important; }
+body.public-light .hero-gradient [class*="border-white/"] { border-color: rgba(255,255,255,0.1) !important; }
