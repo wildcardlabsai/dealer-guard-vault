@@ -68,7 +68,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50">
-          <img src={logo} alt="WarrantyVault" className="h-6" />
+          <Logo className="h-6" />
           <span className="text-[10px] uppercase tracking-widest text-amber-400 font-semibold mt-1 block">Super Admin</span>
         </div>
         <nav className="flex-1 p-2 space-y-1">
@@ -113,7 +113,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setMobileNav(!mobileNav)}>
             {mobileNav ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
-          <img src={logo} alt="WarrantyVault" className="h-5" />
+          <Logo className="h-5" />
           <span className="text-[10px] uppercase tracking-widest text-amber-400 font-semibold">Admin</span>
           <div className="flex-1" />
           <div className="relative" ref={notifRef}>

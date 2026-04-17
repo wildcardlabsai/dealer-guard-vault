@@ -119,7 +119,7 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
           <div className="absolute top-0 left-0 w-32 h-32 bg-primary/[0.03] rounded-full blur-[40px] pointer-events-none" />
 
           <div className="p-3 flex items-center justify-between border-b border-white/[0.06]">
-            {!collapsed && <img src={logo} alt="WarrantyVault" className="h-5" />}
+            {!collapsed && <Logo className="h-5" />}
             <Button variant="ghost" size="icon" className="h-7 w-7 text-white/40 hover:text-white/70" onClick={() => setCollapsed(!collapsed)}>
               {collapsed ? <Menu className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
             </Button>
@@ -186,7 +186,7 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
         {/* Mobile header */}
         <div className="flex-1 flex flex-col min-w-0">
           <header className="md:hidden h-14 border-b border-white/[0.06] flex items-center px-4 gap-3 bg-[hsl(222_28%_8%)]">
-            <img src={logo} alt="WarrantyVault" className="h-5" />
+            <Logo className="h-5" />
             <div className="flex-1" />
             <div className="relative" ref={notifRef}>
               <Button variant="ghost" size="icon" className="relative h-9 w-9" onClick={() => setShowNotifs(!showNotifs)}>
