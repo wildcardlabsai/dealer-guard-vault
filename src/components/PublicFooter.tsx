@@ -1,14 +1,36 @@
 import { Link } from "react-router-dom";
+import { Mail, Phone, MapPin } from "lucide-react";
 import logoLight from "@/assets/warrantylogo-light.png";
+import { CONTACT } from "@/lib/contact-info";
 
 export default function PublicFooter() {
   return (
-    <footer className="py-10 px-6 border-t border-slate-200 bg-white">
+    <footer className="py-12 px-6 border-t border-slate-200 bg-white">
       <div className="max-w-6xl mx-auto">
-        <div className="grid sm:grid-cols-4 gap-8 mb-8">
-          <div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+          <div className="lg:col-span-2">
             <Link to="/"><img src={logoLight} alt="WarrantyVault" className="h-6 mb-3" /></Link>
-            <p className="text-[11px] text-slate-500 leading-relaxed">Self-funded warranty software built for UK independent car dealers.</p>
+            <p className="text-[11px] text-slate-500 leading-relaxed mb-4 max-w-xs">
+              Self-funded warranty software built for UK independent car dealers.
+            </p>
+            <address className="not-italic space-y-2 text-[11px] text-slate-600">
+              <div className="flex items-start gap-2">
+                <MapPin className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
+                <span className="leading-relaxed">
+                  {CONTACT.addressLines.map((l, i) => (
+                    <span key={i}>{l}{i < CONTACT.addressLines.length - 1 && <br />}</span>
+                  ))}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <a href={`tel:${CONTACT.phoneTel}`} className="hover:text-slate-900 transition-colors">{CONTACT.phoneDisplay}</a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <a href={`mailto:${CONTACT.email}`} className="hover:text-slate-900 transition-colors break-all">{CONTACT.email}</a>
+              </div>
+            </address>
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-400 mb-3">Product</p>

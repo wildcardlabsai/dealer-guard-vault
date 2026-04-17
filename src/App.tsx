@@ -62,6 +62,7 @@ import AdminSupport from "@/pages/admin/AdminSupport";
 import AdminEnquiries from "@/pages/admin/AdminEnquiries";
 import AdminDealerProfile from "@/pages/admin/AdminDealerProfile";
 import ContactPage from "@/pages/ContactPage";
+import CookieBanner from "@/components/CookieBanner";
 
 const queryClient = new QueryClient();
 
@@ -160,6 +161,7 @@ const App = () => (
         <AuthProvider>
           <BrowserRouter>
             <AppRoutes />
+            <CookieBanner />
           </BrowserRouter>
         </AuthProvider>
       </TooltipProvider>
