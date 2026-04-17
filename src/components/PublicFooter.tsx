@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/warrantylogo.png";
+import { Sun, Moon } from "lucide-react";
+import logoDark from "@/assets/warrantylogo.png";
+import logoLight from "@/assets/warrantylogo-light.png";
+import { usePublicTheme } from "@/hooks/use-public-theme";
 
 export default function PublicFooter() {
+  const { theme, toggle, isLight } = usePublicTheme();
   return (
     <footer className="py-10 px-6 border-t border-white/[0.04] bg-[hsl(222_30%_6%)]">
       <div className="max-w-6xl mx-auto">
         <div className="grid sm:grid-cols-4 gap-8 mb-8">
           <div>
-            <Link to="/"><img src={logo} alt="WarrantyVault" className="h-6 opacity-50 mb-3" /></Link>
+            <Link to="/"><img src={isLight ? logoLight : logoDark} alt="WarrantyVault" className={`h-6 mb-3 ${isLight ? "" : "opacity-50"}`} /></Link>
             <p className="text-[11px] text-white/20 leading-relaxed">Self-funded warranty software built for UK independent car dealers.</p>
           </div>
           <div>
@@ -39,10 +43,19 @@ export default function PublicFooter() {
         </div>
         <div className="border-t border-white/[0.04] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[11px] text-white/15">© {new Date().getFullYear()} WarrantyVault by <span className="text-white/25">Wildcard Labs</span></p>
-          <div className="flex gap-5 text-[11px] text-white/20">
+          <div className="flex items-center gap-5 text-[11px] text-white/20">
             <a href="#" className="hover:text-white/40 transition-colors">Privacy</a>
             <a href="#" className="hover:text-white/40 transition-colors">Terms</a>
             <Link to="/contact" className="hover:text-white/40 transition-colors">Contact</Link>
+            <button
+              type="button"
+              onClick={toggle}
+              aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/10 hover:border-white/30 hover:text-white/60 transition-colors"
+            >
+              {theme === "dark" ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+              <span>{theme === "dark" ? "Light" : "Dark"}</span>
+            </button>
           </div>
         </div>
       </div>
