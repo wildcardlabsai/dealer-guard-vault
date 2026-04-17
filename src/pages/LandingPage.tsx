@@ -484,21 +484,21 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             <div>
               <motion.p
-                className="text-xs text-white/50 font-semibold tracking-[0.2em] uppercase mb-5"
+                className="eyebrow text-white/55"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
               >
-                Built specifically for UK independent car dealers
+                Built for UK independent car dealers
               </motion.p>
 
               <motion.h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display tracking-tight text-white leading-[1.05] mb-5"
+                className="text-5xl sm:text-6xl lg:text-7xl font-bold font-display tracking-tight text-white leading-[1.02] mb-6"
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
               >
                 Run Your Own Warranties<br />— Properly<span className="text-[hsl(var(--cta))]">.</span>
               </motion.h1>
 
               <motion.p
-                className="text-base sm:text-lg text-white/45 max-w-md mb-8 leading-relaxed"
+                className="text-base sm:text-lg text-white/55 max-w-md mb-8 leading-relaxed"
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
               >
                 Manage self-funded warranties with confidence. Handle claims, respond to complaints correctly, and stay in control of your risk and profit — all in one place.
@@ -531,7 +531,19 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Hook / Problem */}
+      {/* Trust strip */}
+      <section className="bg-[hsl(222_28%_10%)] border-t border-white/[0.05]">
+        <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+          <p className="text-xs text-white/40 font-semibold tracking-[0.15em] uppercase">Trusted by UK dealers</p>
+          <div className="flex items-center gap-6 text-white/30 text-xs font-medium">
+            <span>★★★★★ 4.9/5</span>
+            <span className="hidden sm:inline">·</span>
+            <span>200+ active dealers</span>
+            <span className="hidden sm:inline">·</span>
+            <span>£0 monthly fees</span>
+          </div>
+        </div>
+      </section>
       <section className="bg-[hsl(222_28%_10%)]">
         <motion.div className="max-w-2xl mx-auto text-center px-6 pt-14 pb-14" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display text-white leading-[1.15] tracking-[-0.02em] mb-6">
