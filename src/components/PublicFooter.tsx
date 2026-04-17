@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/warrantylogo.png";
+import { Sun, Moon } from "lucide-react";
+import logoDark from "@/assets/warrantylogo.png";
+import logoLight from "@/assets/warrantylogo-light.png";
+import { usePublicTheme } from "@/hooks/use-public-theme";
 
 export default function PublicFooter() {
+  const { theme, toggle, isLight } = usePublicTheme();
   return (
     <footer className="py-10 px-6 border-t border-white/[0.04] bg-[hsl(222_30%_6%)]">
       <div className="max-w-6xl mx-auto">
         <div className="grid sm:grid-cols-4 gap-8 mb-8">
           <div>
-            <Link to="/"><img src={logo} alt="WarrantyVault" className="h-6 opacity-50 mb-3" /></Link>
+            <Link to="/"><img src={isLight ? logoLight : logoDark} alt="WarrantyVault" className={`h-6 mb-3 ${isLight ? "" : "opacity-50"}`} /></Link>
             <p className="text-[11px] text-white/20 leading-relaxed">Self-funded warranty software built for UK independent car dealers.</p>
           </div>
           <div>
