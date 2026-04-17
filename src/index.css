@@ -131,14 +131,28 @@ body.public-light [class*="bg-secondary/40"],
 body.public-light [class*="bg-secondary/50"] { background-color: hsl(30 30% 97%) !important; }
 body.public-light [class*="bg-muted"] { background-color: hsl(30 25% 96%) !important; }
 
-/* Dark hex panels used in nav/footer/hero mocks → white surfaces */
-body.public-light [class*="bg-[hsl(222_30%_6%)]"],
-body.public-light [class*="bg-[hsl(222_28%_8%)]"],
-body.public-light [class*="bg-[hsl(222_28%_12%)]"],
-body.public-light [class*="bg-[hsl(222_25%_8%)]"],
-body.public-light [class*="bg-[hsl(222_25%_6%)]"],
-body.public-light [class*="bg-[hsl(222_25%_10%)]"],
-body.public-light [class*="bg-[hsl(222_30%_9%)]"] { background-color: #ffffff !important; }
+/* Dark hex panels → light surfaces. Catch ANY bg-[hsl(222 ...)] regardless
+   of lightness value. Use `nth-of-type` style alternation via specific
+   lightness buckets so adjacent sections feel banded, not flat-white. */
+body.public-light [class*="bg-[hsl(222"] { background-color: #ffffff !important; }
+/* "Lighter" dark sections (10%, 12%, 14%) → warm cream band */
+body.public-light [class*="bg-[hsl(222_28%_10%)"],
+body.public-light [class*="bg-[hsl(222_28%_12%)"],
+body.public-light [class*="bg-[hsl(222_25%_10%)"],
+body.public-light [class*="bg-[hsl(222_28%_14%)"] { background-color: hsl(30 50% 97.5%) !important; }
+/* "Darker" dark sections (6%, 7%, 8%, 9%) → pure white */
+body.public-light [class*="bg-[hsl(222_30%_6%)"],
+body.public-light [class*="bg-[hsl(222_30%_7%)"],
+body.public-light [class*="bg-[hsl(222_28%_8%)"],
+body.public-light [class*="bg-[hsl(222_28%_9%)"],
+body.public-light [class*="bg-[hsl(222_30%_9%)"],
+body.public-light [class*="bg-[hsl(222_25%_8%)"],
+body.public-light [class*="bg-[hsl(222_25%_6%)"] { background-color: #ffffff !important; }
+body.public-light [class*="bg-[hsl(222"][class*="border-t"] { border-top-color: hsl(220 14% 90%) !important; }
+
+/* Section borders that were teal/orange tinted on dark — soften for light */
+body.public-light section[class*="border-[hsl(var(--cta))"] { border-top-color: hsl(24 100% 50% / 0.15) !important; }
+body.public-light section[class*="border-primary"] { border-top-color: hsl(172 66% 40% / 0.18) !important; }
 
 /* ---------- White-tint surfaces become slate tints ---------- */
 body.public-light [class*="bg-white/[0.02]"],
@@ -203,9 +217,9 @@ body.public-light h4,
 body.public-light h5,
 body.public-light h6 { color: hsl(220 30% 10%); }
 
-/* ---------- Hero gradient → soft warm cream/orange tint ---------- */
+/* ---------- Hero gradient → soft warm cream that fades to white ---------- */
 body.public-light .hero-gradient {
-  background: linear-gradient(135deg, hsl(30 100% 97%) 0%, hsl(24 100% 95%) 45%, hsl(36 80% 96%) 100%) !important;
+  background: linear-gradient(180deg, hsl(30 100% 97%) 0%, hsl(24 100% 95.5%) 35%, hsl(30 80% 97%) 70%, #ffffff 100%) !important;
 }
 body.public-light .hero-gradient h1,
 body.public-light .hero-gradient h2,
