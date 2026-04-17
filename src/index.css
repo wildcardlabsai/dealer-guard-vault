@@ -214,12 +214,23 @@ body.public-light [class*="bg-secondary/40"],
 body.public-light [class*="bg-secondary/50"] { background-color: hsl(36 30% 95%) !important; }
 body.public-light [class*="bg-muted"] { background-color: hsl(36 25% 94%) !important; }
 
-/* Dark hex panels → light surfaces */
-body.public-light [class*="bg-[hsl(222"] { background-color: hsl(40 30% 97%) !important; }
+/* =====================================================================
+   SECTION BANDING — alternating bone / cream / deep racing green
+   The landing page (and similar) marks dark sections with bg-[hsl(222...)].
+   We map them to a 3-band rhythm: cream, GREEN, cream — so the brand
+   colour carries down the page instead of flat off-white everywhere.
+   ===================================================================== */
+
+/* Default: all dark hex panels become warm cream */
+body.public-light [class*="bg-[hsl(222"] { background-color: hsl(36 35% 94%) !important; }
+
+/* Lighter dark variants (10/12/14% lightness) → cream */
 body.public-light [class*="bg-[hsl(222_28%_10%)"],
 body.public-light [class*="bg-[hsl(222_28%_12%)"],
 body.public-light [class*="bg-[hsl(222_25%_10%)"],
-body.public-light [class*="bg-[hsl(222_28%_14%)"] { background-color: hsl(36 35% 95%) !important; }
+body.public-light [class*="bg-[hsl(222_28%_14%)"] { background-color: hsl(36 35% 94%) !important; }
+
+/* Darker dark variants (6/7/8/9% lightness) → bone */
 body.public-light [class*="bg-[hsl(222_30%_6%)"],
 body.public-light [class*="bg-[hsl(222_30%_7%)"],
 body.public-light [class*="bg-[hsl(222_28%_8%)"],
@@ -227,11 +238,95 @@ body.public-light [class*="bg-[hsl(222_28%_9%)"],
 body.public-light [class*="bg-[hsl(222_30%_9%)"],
 body.public-light [class*="bg-[hsl(222_25%_8%)"],
 body.public-light [class*="bg-[hsl(222_25%_6%)"] { background-color: hsl(40 30% 97%) !important; }
-body.public-light [class*="bg-[hsl(222"][class*="border-t"] { border-top-color: hsl(36 16% 88%) !important; }
 
-/* Section borders — soften brass + green tints for light */
+/* DEEP GREEN BANDS — every 3rd dark-tinted section becomes racing green.
+   This guarantees the brand colour reappears down a long page. */
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) {
+  background-color: hsl(155 45% 14%) !important;
+  color: hsl(40 30% 95%) !important;
+}
+
+/* Inside a green band: rewrite text colours for contrast */
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h1,
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h2,
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h3,
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h4 { color: hsl(40 30% 97%) !important; }
+
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/95"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/90"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/85"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/80"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .text-white { color: hsl(40 30% 97%) !important; }
+
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/75"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/70"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/65"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/60"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/55"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/50"] { color: hsl(40 25% 80%) !important; }
+
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/45"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/40"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/35"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/30"] { color: hsl(40 18% 70%) !important; }
+
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/25"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/20"] { color: hsl(40 14% 60%) !important; }
+
+/* Glass cards inside green bands need to lift off the green */
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card,
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong,
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.05]"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.04]"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.03]"],
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-[hsl(222_28%_9%)"] {
+  background-color: hsl(155 35% 18%) !important;
+  border-color: hsl(38 60% 55% / 0.25) !important;
+  color: hsl(40 30% 95%) !important;
+  box-shadow: 0 8px 24px -12px hsl(155 60% 6% / 0.5), inset 0 1px 0 hsl(38 60% 55% / 0.12) !important;
+}
+
+/* Card text inside green bands */
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card h3,
+body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong h3 { color: hsl(40 30% 97%) !important; }
+
+/* SVG dividers between sections — match neighbour band */
+body.public-light svg [fill*="hsl(222_28%_10%)"],
+body.public-light svg [fill*="hsl(222 28% 10%)"] { fill: hsl(36 35% 94%) !important; }
+
+/* ---------- Pricing band — brass tint to make it pop ---------- */
+body.public-light section#pricing { background-color: hsl(38 45% 92%) !important; }
+body.public-light section#pricing h2,
+body.public-light section#pricing .text-white { color: hsl(155 45% 14%) !important; }
+body.public-light section#pricing [class*="text-white/45"],
+body.public-light section#pricing [class*="text-white/40"],
+body.public-light section#pricing [class*="text-white/35"],
+body.public-light section#pricing [class*="text-white/30"] { color: hsl(220 18% 30%) !important; }
+
+/* Pricing inner card on brass band */
+body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] {
+  background-color: hsl(0 0% 100%) !important;
+  border-color: hsl(38 75% 45% / 0.35) !important;
+  box-shadow: 0 16px 50px -16px hsl(38 75% 35% / 0.25), 0 0 0 1px hsl(38 75% 52% / 0.15) !important;
+}
+body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] .text-white,
+body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] [class*="text-white/80"] { color: hsl(155 45% 14%) !important; }
+body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] [class*="text-white/60"] { color: hsl(220 18% 28%) !important; }
+body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] [class*="text-white/40"],
+body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] [class*="text-white/30"] { color: hsl(220 14% 42%) !important; }
+
+/* Section border tints */
 body.public-light section[class*="border-[hsl(var(--cta))"] { border-top-color: hsl(38 75% 52% / 0.2) !important; }
 body.public-light section[class*="border-primary"] { border-top-color: hsl(155 45% 22% / 0.18) !important; }
+
+/* Soft hairline between every consecutive pair of public sections */
+body.public-light section + section { position: relative; }
+body.public-light section + section::before {
+  content: "";
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(36 16% 82%), transparent);
+  pointer-events: none;
+}
 
 /* ---------- White-tint surfaces become bone tints ---------- */
 body.public-light [class*="bg-white/[0.02]"],
