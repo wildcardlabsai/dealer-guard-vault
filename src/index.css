@@ -215,117 +215,50 @@ body.public-light [class*="bg-secondary/50"] { background-color: hsl(36 30% 95%)
 body.public-light [class*="bg-muted"] { background-color: hsl(36 25% 94%) !important; }
 
 /* =====================================================================
-   SECTION BANDING — alternating bone / cream / deep racing green
-   The landing page (and similar) marks dark sections with bg-[hsl(222...)].
-   We map them to a 3-band rhythm: cream, GREEN, cream — so the brand
-   colour carries down the page instead of flat off-white everywhere.
+   PUBLIC SURFACE SYSTEM
+   Explicit surfaces only — no automatic nth-of-type recolouring.
+   This keeps page rhythm consistent and prevents dark product mocks from
+   being accidentally restyled into unreadable pale panels.
    ===================================================================== */
 
-/* Default: all dark hex panels become warm cream */
-body.public-light [class*="bg-[hsl(222"] { background-color: hsl(36 35% 94%) !important; }
+.surface-bone {
+  background-color: hsl(40 30% 97%);
+  color: hsl(220 15% 12%);
+}
 
-/* Lighter dark variants (10/12/14% lightness) → cream */
-body.public-light [class*="bg-[hsl(222_28%_10%)"],
-body.public-light [class*="bg-[hsl(222_28%_12%)"],
-body.public-light [class*="bg-[hsl(222_25%_10%)"],
-body.public-light [class*="bg-[hsl(222_28%_14%)"] { background-color: hsl(36 35% 94%) !important; }
+.surface-warm {
+  background-color: hsl(36 35% 94%);
+  color: hsl(220 15% 12%);
+}
 
-/* Darker dark variants (6/7/8/9% lightness) → bone */
-body.public-light [class*="bg-[hsl(222_30%_6%)"],
-body.public-light [class*="bg-[hsl(222_30%_7%)"],
-body.public-light [class*="bg-[hsl(222_28%_8%)"],
-body.public-light [class*="bg-[hsl(222_28%_9%)"],
-body.public-light [class*="bg-[hsl(222_30%_9%)"],
-body.public-light [class*="bg-[hsl(222_25%_8%)"],
-body.public-light [class*="bg-[hsl(222_25%_6%)"] { background-color: hsl(40 30% 97%) !important; }
+.surface-green {
+  background-color: hsl(155 45% 14%);
+  color: hsl(40 30% 95%);
+}
 
-/* DEEP GREEN BANDS — every 3rd dark-tinted section becomes racing green.
-   This guarantees the brand colour reappears down a long page. */
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) {
+.surface-brass {
+  background-color: hsl(38 45% 92%);
+  color: hsl(220 15% 12%);
+}
+
+body.public-light .surface-bone {
+  background-color: hsl(40 30% 97%) !important;
+  color: hsl(220 15% 12%) !important;
+}
+
+body.public-light .surface-warm {
+  background-color: hsl(36 35% 94%) !important;
+  color: hsl(220 15% 12%) !important;
+}
+
+body.public-light .surface-green {
   background-color: hsl(155 45% 14%) !important;
   color: hsl(40 30% 95%) !important;
 }
 
-/* Inside a green band: rewrite text colours for contrast */
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h1,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h2,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h3,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h4 { color: hsl(40 30% 97%) !important; }
-
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/95"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/90"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/85"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/80"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .text-white { color: hsl(40 30% 97%) !important; }
-
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/75"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/70"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/65"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/60"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/55"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/50"] { color: hsl(40 25% 80%) !important; }
-
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/45"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/40"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/35"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/30"] { color: hsl(40 18% 70%) !important; }
-
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/25"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/20"] { color: hsl(40 14% 60%) !important; }
-
-/* Glass cards inside green bands need to lift off the green */
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.05]"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.04]"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.03]"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-[hsl(222_28%_9%)"] {
-  background-color: hsl(155 35% 18%) !important;
-  border-color: hsl(38 60% 55% / 0.25) !important;
-  color: hsl(40 30% 95%) !important;
-  box-shadow: 0 8px 24px -12px hsl(155 60% 6% / 0.5), inset 0 1px 0 hsl(38 60% 55% / 0.12) !important;
-}
-
-/* Card text inside green bands */
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card h3,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong h3 { color: hsl(40 30% 97%) !important; }
-
-/* SVG dividers between sections — match neighbour band */
-body.public-light svg [fill*="hsl(222_28%_10%)"],
-body.public-light svg [fill*="hsl(222 28% 10%)"] { fill: hsl(36 35% 94%) !important; }
-
-/* ---------- Pricing band — brass tint to make it pop ---------- */
-body.public-light section#pricing { background-color: hsl(38 45% 92%) !important; }
-body.public-light section#pricing h2,
-body.public-light section#pricing .text-white { color: hsl(155 45% 14%) !important; }
-body.public-light section#pricing [class*="text-white/45"],
-body.public-light section#pricing [class*="text-white/40"],
-body.public-light section#pricing [class*="text-white/35"],
-body.public-light section#pricing [class*="text-white/30"] { color: hsl(220 18% 30%) !important; }
-
-/* Pricing inner card on brass band */
-body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] {
-  background-color: hsl(0 0% 100%) !important;
-  border-color: hsl(38 75% 45% / 0.35) !important;
-  box-shadow: 0 16px 50px -16px hsl(38 75% 35% / 0.25), 0 0 0 1px hsl(38 75% 52% / 0.15) !important;
-}
-body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] .text-white,
-body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] [class*="text-white/80"] { color: hsl(155 45% 14%) !important; }
-body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] [class*="text-white/60"] { color: hsl(220 18% 28%) !important; }
-body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] [class*="text-white/40"],
-body.public-light section#pricing [class*="bg-[hsl(222_28%_9%)"] [class*="text-white/30"] { color: hsl(220 14% 42%) !important; }
-
-/* Section border tints */
-body.public-light section[class*="border-[hsl(var(--cta))"] { border-top-color: hsl(38 75% 52% / 0.2) !important; }
-body.public-light section[class*="border-primary"] { border-top-color: hsl(155 45% 22% / 0.18) !important; }
-
-/* Soft hairline between every consecutive pair of public sections */
-body.public-light section + section { position: relative; }
-body.public-light section + section::before {
-  content: "";
-  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
-  background: linear-gradient(90deg, transparent, hsl(36 16% 82%), transparent);
-  pointer-events: none;
+body.public-light .surface-brass {
+  background-color: hsl(38 45% 92%) !important;
+  color: hsl(220 15% 12%) !important;
 }
 
 /* ---------- White-tint surfaces become bone tints ---------- */
@@ -352,7 +285,7 @@ body.public-light [class*="border-white/10"],
 body.public-light [class*="border-white/20"],
 body.public-light [class*="border-white/5"] { border-color: hsl(36 14% 86%) !important; }
 
-/* ---------- White-tint text becomes charcoal text ---------- */
+/* ---------- White-tint text becomes charcoal text on light surfaces ---------- */
 body.public-light .text-white,
 body.public-light [class*="text-white/95"],
 body.public-light [class*="text-white/90"],
@@ -391,35 +324,170 @@ body.public-light h4,
 body.public-light h5,
 body.public-light h6 { color: hsl(220 20% 10%); }
 
-/* ---------- Hero gradient → DEEP RACING GREEN (brand-led) ---------- */
+/* ---------- Hero gradient ---------- */
 body.public-light .hero-gradient {
   background: linear-gradient(135deg, hsl(155 50% 10%) 0%, hsl(155 45% 14%) 50%, hsl(160 40% 18%) 100%) !important;
 }
+
+/* ---------- Green surfaces + hero contrast ---------- */
+body.public-light .hero-gradient,
+body.public-light .surface-green {
+  color: hsl(40 30% 95%) !important;
+}
+
 body.public-light .hero-gradient h1,
 body.public-light .hero-gradient h2,
-body.public-light .hero-gradient h3 { color: hsl(40 30% 97%) !important; }
+body.public-light .hero-gradient h3,
+body.public-light .hero-gradient h4,
+body.public-light .hero-gradient h5,
+body.public-light .hero-gradient h6,
+body.public-light .surface-green h1,
+body.public-light .surface-green h2,
+body.public-light .surface-green h3,
+body.public-light .surface-green h4,
+body.public-light .surface-green h5,
+body.public-light .surface-green h6 {
+  color: hsl(40 30% 97%) !important;
+}
+
 body.public-light .hero-gradient .text-white,
 body.public-light .hero-gradient [class*="text-white/95"],
 body.public-light .hero-gradient [class*="text-white/90"],
 body.public-light .hero-gradient [class*="text-white/85"],
-body.public-light .hero-gradient [class*="text-white/80"] { color: hsl(40 30% 97%) !important; }
+body.public-light .hero-gradient [class*="text-white/80"],
+body.public-light .surface-green .text-white,
+body.public-light .surface-green [class*="text-white/95"],
+body.public-light .surface-green [class*="text-white/90"],
+body.public-light .surface-green [class*="text-white/85"],
+body.public-light .surface-green [class*="text-white/80"] {
+  color: hsl(40 30% 97%) !important;
+}
+
 body.public-light .hero-gradient [class*="text-white/75"],
 body.public-light .hero-gradient [class*="text-white/70"],
 body.public-light .hero-gradient [class*="text-white/65"],
 body.public-light .hero-gradient [class*="text-white/60"],
 body.public-light .hero-gradient [class*="text-white/55"],
-body.public-light .hero-gradient [class*="text-white/50"] { color: hsl(40 25% 82%) !important; }
+body.public-light .hero-gradient [class*="text-white/50"],
+body.public-light .surface-green [class*="text-white/75"],
+body.public-light .surface-green [class*="text-white/70"],
+body.public-light .surface-green [class*="text-white/65"],
+body.public-light .surface-green [class*="text-white/60"],
+body.public-light .surface-green [class*="text-white/55"],
+body.public-light .surface-green [class*="text-white/50"] {
+  color: hsl(40 25% 82%) !important;
+}
+
 body.public-light .hero-gradient [class*="text-white/45"],
 body.public-light .hero-gradient [class*="text-white/40"],
 body.public-light .hero-gradient [class*="text-white/35"],
-body.public-light .hero-gradient [class*="text-white/30"] { color: hsl(40 18% 70%) !important; }
+body.public-light .hero-gradient [class*="text-white/30"],
+body.public-light .surface-green [class*="text-white/45"],
+body.public-light .surface-green [class*="text-white/40"],
+body.public-light .surface-green [class*="text-white/35"],
+body.public-light .surface-green [class*="text-white/30"] {
+  color: hsl(40 18% 72%) !important;
+}
+
 body.public-light .hero-gradient [class*="text-white/25"],
 body.public-light .hero-gradient [class*="text-white/20"],
-body.public-light .hero-gradient [class*="text-white/15"] { color: hsl(40 14% 60%) !important; }
-body.public-light .hero-gradient [class*="text-foreground"] { color: hsl(40 30% 97%) !important; }
-body.public-light .hero-gradient .text-muted-foreground { color: hsl(40 18% 72%) !important; }
-body.public-light .hero-gradient [class*="bg-white/"] { background-color: hsl(0 0% 100% / 0.08) !important; }
-body.public-light .hero-gradient [class*="border-white/"] { border-color: hsl(0 0% 100% / 0.18) !important; }
+body.public-light .hero-gradient [class*="text-white/15"],
+body.public-light .surface-green [class*="text-white/25"],
+body.public-light .surface-green [class*="text-white/20"],
+body.public-light .surface-green [class*="text-white/15"] {
+  color: hsl(40 14% 60%) !important;
+}
+
+body.public-light .hero-gradient [class*="text-foreground"],
+body.public-light .surface-green [class*="text-foreground"] { color: hsl(40 30% 97%) !important; }
+body.public-light .hero-gradient .text-muted-foreground,
+body.public-light .surface-green .text-muted-foreground { color: hsl(40 18% 72%) !important; }
+body.public-light .hero-gradient [class*="text-slate-"],
+body.public-light .hero-gradient [class*="text-gray-"],
+body.public-light .surface-green [class*="text-slate-"],
+body.public-light .surface-green [class*="text-gray-"] { color: hsl(40 25% 82%) !important; }
+
+body.public-light .hero-gradient [class*="bg-white/"],
+body.public-light .surface-green [class*="bg-white/"] { background-color: hsl(0 0% 100% / 0.08) !important; }
+body.public-light .hero-gradient [class*="border-white/"],
+body.public-light .surface-green [class*="border-white/"] { border-color: hsl(0 0% 100% / 0.16) !important; }
+
+body.public-light .hero-gradient .glass-card,
+body.public-light .hero-gradient .glass-card-strong,
+body.public-light .surface-green .glass-card,
+body.public-light .surface-green .glass-card-strong {
+  background-color: hsl(155 38% 17%) !important;
+  border-color: hsl(38 60% 55% / 0.22) !important;
+  color: hsl(40 30% 95%) !important;
+  box-shadow:
+    0 10px 30px -14px hsl(155 60% 5% / 0.55),
+    inset 0 1px 0 hsl(38 60% 55% / 0.10) !important;
+}
+
+body.public-light .hero-gradient .glass-card *,
+body.public-light .hero-gradient .glass-card-strong *,
+body.public-light .surface-green .glass-card *,
+body.public-light .surface-green .glass-card-strong * {
+  color: hsl(40 28% 90%) !important;
+}
+
+body.public-light .hero-gradient .glass-card h1,
+body.public-light .hero-gradient .glass-card h2,
+body.public-light .hero-gradient .glass-card h3,
+body.public-light .hero-gradient .glass-card h4,
+body.public-light .hero-gradient .glass-card-strong h1,
+body.public-light .hero-gradient .glass-card-strong h2,
+body.public-light .hero-gradient .glass-card-strong h3,
+body.public-light .hero-gradient .glass-card-strong h4,
+body.public-light .surface-green .glass-card h1,
+body.public-light .surface-green .glass-card h2,
+body.public-light .surface-green .glass-card h3,
+body.public-light .surface-green .glass-card h4,
+body.public-light .surface-green .glass-card-strong h1,
+body.public-light .surface-green .glass-card-strong h2,
+body.public-light .surface-green .glass-card-strong h3,
+body.public-light .surface-green .glass-card-strong h4 {
+  color: hsl(40 30% 97%) !important;
+}
+
+/* Preserve brass accents on green */
+body.public-light .hero-gradient [class*="text-[hsl(var(--cta))"],
+body.public-light .surface-green [class*="text-[hsl(var(--cta))"] {
+  color: hsl(38 80% 62%) !important;
+}
+
+/* ---------- Brass sections ---------- */
+body.public-light .surface-brass h1,
+body.public-light .surface-brass h2,
+body.public-light .surface-brass h3,
+body.public-light .surface-brass h4,
+body.public-light .surface-brass .text-white,
+body.public-light .surface-brass [class*="text-white/95"],
+body.public-light .surface-brass [class*="text-white/90"],
+body.public-light .surface-brass [class*="text-white/85"],
+body.public-light .surface-brass [class*="text-white/80"] {
+  color: hsl(155 45% 14%) !important;
+}
+
+body.public-light .surface-brass [class*="text-white/60"],
+body.public-light .surface-brass [class*="text-white/55"],
+body.public-light .surface-brass [class*="text-white/50"],
+body.public-light .surface-brass [class*="text-muted-foreground"] {
+  color: hsl(220 14% 32%) !important;
+}
+
+body.public-light .surface-brass [class*="text-white/45"],
+body.public-light .surface-brass [class*="text-white/40"],
+body.public-light .surface-brass [class*="text-white/35"],
+body.public-light .surface-brass [class*="text-white/30"] {
+  color: hsl(220 12% 42%) !important;
+}
+
+body.public-light .surface-brass [class*="bg-[hsl(222_28%_9%)"] {
+  background-color: hsl(0 0% 100%) !important;
+  border-color: hsl(38 75% 45% / 0.35) !important;
+  box-shadow: 0 16px 50px -16px hsl(38 75% 35% / 0.25), 0 0 0 1px hsl(38 75% 52% / 0.15) !important;
+}
 
 /* ---------- Glass cards on light ---------- */
 body.public-light .glass-card,
@@ -440,16 +508,36 @@ body.public-light .glass-card-strong:hover {
     0 16px 40px -16px hsl(155 40% 15% / 0.14) !important;
 }
 
-/* ---------- CTA button (brass) ---------- */
+/* ---------- CTA button ---------- */
 body.public-light .btn-cta { color: hsl(220 25% 10%) !important; }
+body.public-light .btn-cta {
+  box-shadow: 0 6px 16px -6px hsl(38 75% 35% / 0.4), 0 2px 4px hsl(38 75% 35% / 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+body.public-light .btn-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -6px hsl(38 75% 35% / 0.5), 0 4px 8px hsl(38 75% 35% / 0.22);
+}
 
-/* ---------- Slate-on-near-white panels in mocks ---------- */
-body.public-light [class*="bg-slate-900"],
-body.public-light [class*="bg-slate-950"],
-body.public-light [class*="bg-zinc-900"],
-body.public-light [class*="bg-zinc-950"],
-body.public-light [class*="bg-neutral-900"],
-body.public-light [class*="bg-neutral-950"] { background-color: hsl(36 18% 95%) !important; color: hsl(220 20% 10%) !important; }
+/* ---------- Preserve deliberate dark product mocks ---------- */
+body.public-light .feature-mock [class*="bg-white/[0.02]"],
+body.public-light .feature-mock [class*="bg-white/[0.03]"],
+body.public-light .feature-mock [class*="bg-white/[0.04]"],
+body.public-light .feature-mock [class*="bg-white/[0.05]"],
+body.public-light .feature-mock [class*="bg-white/[0.06]"],
+body.public-light .feature-mock [class*="bg-white/5"] {
+  background-color: hsl(0 0% 100% / 0.05) !important;
+}
+
+body.public-light .feature-mock [class*="border-white/[0.04]"],
+body.public-light .feature-mock [class*="border-white/[0.05]"],
+body.public-light .feature-mock [class*="border-white/[0.06]"],
+body.public-light .feature-mock [class*="border-white/[0.08]"],
+body.public-light .feature-mock [class*="border-white/[0.1]"],
+body.public-light .feature-mock [class*="border-white/10"],
+body.public-light .feature-mock [class*="border-white/5"] {
+  border-color: hsl(0 0% 100% / 0.1) !important;
+}
 
 /* ---------- Mobile menu / dropdown popovers ---------- */
 body.public-light nav [class*="shadow-["] {
@@ -466,45 +554,48 @@ body.public-light select {
 }
 body.public-light input::placeholder,
 body.public-light textarea::placeholder { color: hsl(220 8% 50%); }
+body.public-light input,
+body.public-light textarea {
+  padding: 0.625rem 0.875rem;
+  border-color: hsl(36 16% 84%);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+body.public-light input:focus,
+body.public-light textarea:focus,
+body.public-light input:focus-visible,
+body.public-light textarea:focus-visible {
+  border-color: hsl(155 45% 28%) !important;
+  box-shadow: 0 0 0 3px hsl(155 45% 28% / 0.15) !important;
+  outline: none !important;
+}
 
-/* ---------- Gradient text on light ---------- */
+/* ---------- Gradient text / brass accents ---------- */
 body.public-light .gradient-text {
   background-image: linear-gradient(90deg, hsl(155 45% 24%), hsl(38 75% 45%)) !important;
 }
-
-/* ---------- Brass accents stay vivid ---------- */
 body.public-light [class*="text-[hsl(var(--cta))]"] { color: hsl(38 75% 45%) !important; }
 body.public-light [class*="bg-[hsl(var(--cta))]/10"] { background-color: hsl(38 75% 52% / 0.12) !important; }
 body.public-light [class*="bg-[hsl(var(--cta))]/15"] { background-color: hsl(38 75% 52% / 0.16) !important; }
 
-/* ---------- SVG dividers ---------- */
-body.public-light svg [fill*="hsl(222"] { fill: hsl(40 30% 97%) !important; }
-
-/* =====================================================================
-   PREMIUM POLISH
-   ===================================================================== */
-
+/* ---------- General public polish ---------- */
 body.public-light { background: hsl(40 30% 97%) !important; }
+body.public-light p { line-height: 1.65; }
 
-/* Tertiary warm cream surface */
-.surface-warm { background-color: hsl(36 35% 93%); }
-body.public-light .surface-warm { background-color: hsl(36 35% 93%) !important; }
-
-/* CTA hover lift on light */
-body.public-light .btn-cta {
-  box-shadow: 0 6px 16px -6px hsl(38 75% 35% / 0.4), 0 2px 4px hsl(38 75% 35% / 0.18);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-body.public-light .btn-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px -6px hsl(38 75% 35% / 0.5), 0 4px 8px hsl(38 75% 35% / 0.22);
-}
-
-/* Section hairline */
 .section-hairline { border-top: 1px solid hsl(36 16% 88%); }
 body.public-light .section-hairline { border-top-color: hsl(36 16% 88%) !important; }
 
-/* Eyebrow label */
+body.public-light section + section { position: relative; }
+body.public-light section + section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(36 16% 82%), transparent);
+  pointer-events: none;
+}
+
 .eyebrow {
   display: inline-block;
   font-family: 'Inter', sans-serif;
@@ -517,7 +608,9 @@ body.public-light .section-hairline { border-top-color: hsl(36 16% 88%) !importa
 }
 .eyebrow.eyebrow-cta { color: hsl(38 75% 40%); }
 
-/* Feature mock halo — green + brass radial glow */
+.hero-wave-fill { fill: hsl(155 45% 14%); }
+body.public-light .hero-wave-fill { fill: hsl(155 45% 14%) !important; }
+
 .mock-halo {
   position: relative;
   isolation: isolate;
@@ -534,7 +627,6 @@ body.public-light .section-hairline { border-top-color: hsl(36 16% 88%) !importa
   pointer-events: none;
 }
 
-/* Decorative quote glyph */
 .quote-decor {
   position: relative;
 }
@@ -546,272 +638,21 @@ body.public-light .section-hairline { border-top-color: hsl(36 16% 88%) !importa
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 7rem;
   line-height: 1;
-  color: hsl(155 45% 22% / 0.10);
+  color: hsl(40 30% 97% / 0.08);
   pointer-events: none;
   z-index: 0;
 }
+body.public-light .surface-warm .quote-decor::before,
+body.public-light .surface-bone .quote-decor::before,
+body.public-light .surface-brass .quote-decor::before {
+  color: hsl(155 45% 22% / 0.10);
+}
 
-/* Marketing body text */
-body.public-light p { line-height: 1.65; }
-
-/* FAQ open state */
 body.public-light details[open].glass-card,
 body.public-light details[open].glass-card-strong {
   background-color: hsl(36 35% 95%) !important;
 }
 
-/* Inputs — racing green focus ring */
-body.public-light input,
-body.public-light textarea {
-  padding: 0.625rem 0.875rem;
-  border-color: hsl(36 16% 84%);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-body.public-light input:focus,
-body.public-light textarea:focus,
-body.public-light input:focus-visible,
-body.public-light textarea:focus-visible {
-  border-color: hsl(155 45% 28%) !important;
-  box-shadow: 0 0 0 3px hsl(155 45% 28% / 0.15) !important;
-  outline: none !important;
-}
-
-/* Comparison row striping */
 body.public-light .compare-row-alt:nth-child(even) {
   background-color: hsl(36 35% 95%) !important;
-}
-
-/* =====================================================================
-   GREEN SURFACE CONTRAST GUARANTEE
-   Any element living inside a racing-green band — whether it's the hero,
-   the nth-of-type green section, or an explicit .surface-green wrapper —
-   MUST render with bone-white text. This overrides the global charcoal
-   rules earlier in the file (which would otherwise force dark text on
-   dark green and render content unreadable, e.g. the trust strip and
-   the testimonial carousel cards).
-   ===================================================================== */
-
-/* The reusable semantic class. Apply to any wrapper that should sit on
-   the deep racing green and inherit correct text contrast. */
-.surface-green {
-  background-color: hsl(155 45% 14%);
-  color: hsl(40 30% 95%);
-}
-
-/* Unify selectors: hero-gradient + nth-of-type green band + .surface-green */
-body.public-light .hero-gradient,
-body.public-light .surface-green,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) {
-  background-color: hsl(155 45% 14%) !important;
-  color: hsl(40 30% 95%) !important;
-}
-
-/* Force all text descendants to bone-white tints, overriding the global
-   charcoal cascade. Highest-specificity catch-all. */
-body.public-light .hero-gradient *,
-body.public-light .surface-green *,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) * {
-  border-color: hsl(40 30% 95% / 0.14);
-}
-
-body.public-light .hero-gradient h1,
-body.public-light .hero-gradient h2,
-body.public-light .hero-gradient h3,
-body.public-light .hero-gradient h4,
-body.public-light .hero-gradient h5,
-body.public-light .hero-gradient h6,
-body.public-light .surface-green h1,
-body.public-light .surface-green h2,
-body.public-light .surface-green h3,
-body.public-light .surface-green h4,
-body.public-light .surface-green h5,
-body.public-light .surface-green h6,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h1,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h2,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h3,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h4,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h5,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) h6 {
-  color: hsl(40 30% 97%) !important;
-}
-
-/* Body-text descendants: paragraphs, spans, list items, links, labels */
-body.public-light .hero-gradient p,
-body.public-light .hero-gradient span,
-body.public-light .hero-gradient li,
-body.public-light .hero-gradient label,
-body.public-light .hero-gradient address,
-body.public-light .hero-gradient .text-white,
-body.public-light .hero-gradient [class*="text-white/"],
-body.public-light .hero-gradient [class*="text-foreground"],
-body.public-light .hero-gradient .text-muted-foreground,
-body.public-light .hero-gradient [class*="text-slate-"],
-body.public-light .hero-gradient [class*="text-gray-"],
-body.public-light .surface-green p,
-body.public-light .surface-green span,
-body.public-light .surface-green li,
-body.public-light .surface-green label,
-body.public-light .surface-green address,
-body.public-light .surface-green .text-white,
-body.public-light .surface-green [class*="text-white/"],
-body.public-light .surface-green [class*="text-foreground"],
-body.public-light .surface-green .text-muted-foreground,
-body.public-light .surface-green [class*="text-slate-"],
-body.public-light .surface-green [class*="text-gray-"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) p,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) span,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) li,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) label,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) address,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .text-white,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-foreground"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .text-muted-foreground,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-slate-"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-gray-"] {
-  color: hsl(40 28% 88%) !important;
-}
-
-/* Brighter tier for emphasis text variants */
-body.public-light .hero-gradient .text-white,
-body.public-light .hero-gradient [class*="text-white/95"],
-body.public-light .hero-gradient [class*="text-white/90"],
-body.public-light .hero-gradient [class*="text-white/85"],
-body.public-light .hero-gradient [class*="text-white/80"],
-body.public-light .surface-green .text-white,
-body.public-light .surface-green [class*="text-white/95"],
-body.public-light .surface-green [class*="text-white/90"],
-body.public-light .surface-green [class*="text-white/85"],
-body.public-light .surface-green [class*="text-white/80"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .text-white,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/95"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/90"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/85"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/80"] {
-  color: hsl(40 30% 97%) !important;
-}
-
-/* Muted tier */
-body.public-light .hero-gradient [class*="text-white/45"],
-body.public-light .hero-gradient [class*="text-white/40"],
-body.public-light .hero-gradient [class*="text-white/35"],
-body.public-light .hero-gradient [class*="text-white/30"],
-body.public-light .hero-gradient [class*="text-white/25"],
-body.public-light .hero-gradient [class*="text-white/20"],
-body.public-light .surface-green [class*="text-white/45"],
-body.public-light .surface-green [class*="text-white/40"],
-body.public-light .surface-green [class*="text-white/35"],
-body.public-light .surface-green [class*="text-white/30"],
-body.public-light .surface-green [class*="text-white/25"],
-body.public-light .surface-green [class*="text-white/20"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/45"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/40"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/35"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/30"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/25"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-white/20"] {
-  color: hsl(40 22% 72%) !important;
-}
-
-/* Cards living on the green: lift them with a slightly lighter green
-   panel + brass border, and keep their inner text bone-white. */
-body.public-light .hero-gradient .glass-card,
-body.public-light .hero-gradient .glass-card-strong,
-body.public-light .surface-green .glass-card,
-body.public-light .surface-green .glass-card-strong,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong {
-  background-color: hsl(155 38% 17%) !important;
-  border-color: hsl(38 60% 55% / 0.22) !important;
-  color: hsl(40 30% 95%) !important;
-  box-shadow:
-    0 10px 30px -14px hsl(155 60% 5% / 0.55),
-    inset 0 1px 0 hsl(38 60% 55% / 0.10) !important;
-}
-
-body.public-light .hero-gradient .glass-card *,
-body.public-light .hero-gradient .glass-card-strong *,
-body.public-light .surface-green .glass-card *,
-body.public-light .surface-green .glass-card-strong *,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card *,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong * {
-  color: hsl(40 28% 90%);
-}
-
-body.public-light .hero-gradient .glass-card h1,
-body.public-light .hero-gradient .glass-card h2,
-body.public-light .hero-gradient .glass-card h3,
-body.public-light .hero-gradient .glass-card h4,
-body.public-light .hero-gradient .glass-card-strong h1,
-body.public-light .hero-gradient .glass-card-strong h2,
-body.public-light .hero-gradient .glass-card-strong h3,
-body.public-light .hero-gradient .glass-card-strong h4,
-body.public-light .surface-green .glass-card h1,
-body.public-light .surface-green .glass-card h2,
-body.public-light .surface-green .glass-card h3,
-body.public-light .surface-green .glass-card h4,
-body.public-light .surface-green .glass-card-strong h1,
-body.public-light .surface-green .glass-card-strong h2,
-body.public-light .surface-green .glass-card-strong h3,
-body.public-light .surface-green .glass-card-strong h4,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card h1,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card h2,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card h3,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card h4,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong h1,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong h2,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong h3,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .glass-card-strong h4 {
-  color: hsl(40 30% 97%) !important;
-}
-
-/* White-tint surfaces inside green should stay translucent (not bone) */
-body.public-light .hero-gradient [class*="bg-white/[0.02]"],
-body.public-light .hero-gradient [class*="bg-white/[0.03]"],
-body.public-light .hero-gradient [class*="bg-white/[0.04]"],
-body.public-light .hero-gradient [class*="bg-white/[0.05]"],
-body.public-light .hero-gradient [class*="bg-white/[0.06]"],
-body.public-light .hero-gradient [class*="bg-white/5"],
-body.public-light .surface-green [class*="bg-white/[0.02]"],
-body.public-light .surface-green [class*="bg-white/[0.03]"],
-body.public-light .surface-green [class*="bg-white/[0.04]"],
-body.public-light .surface-green [class*="bg-white/[0.05]"],
-body.public-light .surface-green [class*="bg-white/[0.06]"],
-body.public-light .surface-green [class*="bg-white/5"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.02]"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.03]"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.04]"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.05]"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/[0.06]"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="bg-white/5"] {
-  background-color: hsl(0 0% 100% / 0.06) !important;
-}
-
-/* Borders on white-tints inside green stay translucent white */
-body.public-light .hero-gradient [class*="border-white/"],
-body.public-light .surface-green [class*="border-white/"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="border-white/"] {
-  border-color: hsl(0 0% 100% / 0.15) !important;
-}
-
-/* Brass accents stay vivid on green — DO NOT recolour to charcoal */
-body.public-light .hero-gradient [class*="text-[hsl(var(--cta))"],
-body.public-light .surface-green [class*="text-[hsl(var(--cta))"],
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) [class*="text-[hsl(var(--cta))"] {
-  color: hsl(38 80% 62%) !important;
-}
-
-/* Buttons placed inside green: keep variants legible */
-body.public-light .hero-gradient .btn-cta,
-body.public-light .surface-green .btn-cta,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) .btn-cta {
-  color: hsl(220 25% 10%) !important;
-}
-
-/* Trust-strip / pill chips placed beneath the hero — make sure star icons,
-   bullet separators and meta text remain bone, not charcoal */
-body.public-light .hero-gradient svg,
-body.public-light .surface-green svg,
-body.public-light section[class*="bg-[hsl(222"]:nth-of-type(3n+2) svg {
-  color: inherit;
 }

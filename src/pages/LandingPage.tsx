@@ -58,14 +58,16 @@ function TestimonialCarousel() {
     <div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {visible.map((t, i) => (
-          <motion.div key={t.name} custom={i} initial="hidden" animate="visible" variants={fadeUp} className="rounded-xl p-5 border border-white/[0.08] bg-white/[0.05]">
-            <div className="flex gap-0.5 mb-3">
-              {[...Array(5)].map((_, j) => <Star key={j} className="w-3.5 h-3.5 fill-[hsl(var(--cta))] text-[hsl(var(--cta))]" />)}
-            </div>
-            <p className="text-[15px] text-foreground/80 mb-4 leading-relaxed">"{t.text}"</p>
-            <div>
-              <p className="font-semibold text-sm">{t.name}</p>
-              <p className="text-xs text-muted-foreground">{t.role}</p>
+          <motion.div key={t.name} custom={i} initial="hidden" animate="visible" variants={fadeUp} className="quote-decor rounded-xl p-5 border border-white/[0.08] bg-white/[0.05]">
+            <div className="relative z-10">
+              <div className="flex gap-0.5 mb-3">
+                {[...Array(5)].map((_, j) => <Star key={j} className="w-3.5 h-3.5 fill-[hsl(var(--cta))] text-[hsl(var(--cta))]" />)}
+              </div>
+              <p className="text-[15px] text-foreground/80 mb-4 leading-relaxed">"{t.text}"</p>
+              <div>
+                <p className="font-semibold text-sm">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.role}</p>
+              </div>
             </div>
           </motion.div>
         ))}
@@ -137,7 +139,6 @@ function HeroMock() {
               <div className="text-[28px] font-bold text-white leading-none mb-0.5 tracking-tight">£12,450</div>
               <div className="text-[10px] text-emerald-400/70 mb-2.5">+£2,300 this month</div>
               <div className="text-[9px] text-white/25 mb-2">Buffer: £2,650</div>
-              {/* Balance / Liability bars */}
               <div className="space-y-1.5">
                 <div>
                   <div className="flex justify-between text-[8px] text-white/30 mb-0.5">
@@ -158,7 +159,6 @@ function HeroMock() {
               </div>
             </div>
 
-            {/* Claim Assist card */}
             <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5">
               <div className="flex items-center gap-1.5 mb-2">
                 <Headphones className="w-3.5 h-3.5 text-primary" />
@@ -185,9 +185,7 @@ function HeroMock() {
             </div>
           </div>
 
-          {/* Right column */}
           <div className="space-y-2.5">
-            {/* DisputeIQ card */}
             <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
@@ -215,7 +213,6 @@ function HeroMock() {
               <span className="text-[8px] text-primary/60 font-medium cursor-default hover:text-primary/80 transition-colors">View full response →</span>
             </div>
 
-            {/* Quick links mini cards */}
             <div className="grid grid-cols-3 gap-1.5">
               {[
                 { icon: Shield, label: "Cover\nBreakdown" },
@@ -375,7 +372,6 @@ function LiveDemoSection() {
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-[hsl(var(--cta))]/5 rounded-full blur-[60px] pointer-events-none" />
 
           <div className="grid md:grid-cols-2 relative">
-            {/* Left — inputs */}
             <div className="p-6 sm:p-8 border-r border-white/[0.06] space-y-5">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles className="w-4 h-4 text-primary" />
@@ -406,7 +402,6 @@ function LiveDemoSection() {
               </Button>
             </div>
 
-            {/* Right — output */}
             <div className="p-6 sm:p-8 flex flex-col justify-center min-h-[400px]">
               {!result && !loading && (
                 <div className="text-center text-white/20">
@@ -466,7 +461,7 @@ function LiveDemoSection() {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[hsl(222_30%_6%)]">
+    <div className="min-h-screen bg-background">
       <SEOHead
         title="Warranty Management Software for UK Car Dealers | WarrantyVault"
         description="Manage self-funded warranties, handle claims, and respond to complaints correctly with WarrantyVault. Built for UK independent car dealers."
@@ -475,7 +470,6 @@ export default function LandingPage() {
 
       <PublicNav />
 
-      {/* Hero */}
       <section className="hero-gradient relative overflow-hidden">
         <div className="absolute top-10 right-[10%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-[5%] w-[300px] h-[300px] bg-[hsl(var(--cta))]/[0.03] rounded-full blur-[100px] pointer-events-none" />
@@ -483,24 +477,15 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 relative pt-28 pb-14">
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             <div>
-              <motion.p
-                className="eyebrow text-white/55"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-              >
+              <motion.p className="eyebrow text-white/55" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
                 Built for UK independent car dealers
               </motion.p>
 
-              <motion.h1
-                className="text-5xl sm:text-6xl lg:text-7xl font-bold font-display tracking-tight text-white leading-[1.02] mb-6"
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
-              >
+              <motion.h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold font-display tracking-tight text-white leading-[1.02] mb-6" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
                 Run Your Own Warranties<br />— Properly<span className="text-[hsl(var(--cta))]">.</span>
               </motion.h1>
 
-              <motion.p
-                className="text-base sm:text-lg text-white/55 max-w-md mb-8 leading-relaxed"
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
-              >
+              <motion.p className="text-base sm:text-lg text-white/55 max-w-md mb-8 leading-relaxed" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}>
                 Manage self-funded warranties with confidence. Handle claims, respond to complaints correctly, and stay in control of your risk and profit — all in one place.
               </motion.p>
 
@@ -525,14 +510,13 @@ export default function LandingPage() {
         </div>
 
         <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px">
-    <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[60px] w-full" preserveAspectRatio="none">
-            <path d="M0,50 C220,78 470,78 720,58 C980,36 1170,30 1440,55 L1440,80 L0,80 Z" fill="hsl(222 28% 10%)" />
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[60px] w-full" preserveAspectRatio="none">
+            <path d="M0,50 C220,78 470,78 720,58 C980,36 1170,30 1440,55 L1440,80 L0,80 Z" className="hero-wave-fill" />
           </svg>
         </div>
       </section>
 
-      {/* Trust strip */}
-      <section className="bg-[hsl(222_28%_10%)] border-t border-white/[0.05]">
+      <section className="surface-green border-t border-white/[0.05]">
         <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
           <p className="text-xs text-white/40 font-semibold tracking-[0.15em] uppercase">Trusted by UK dealers</p>
           <div className="flex items-center gap-6 text-white/30 text-xs font-medium">
@@ -544,7 +528,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      <section className="bg-[hsl(222_28%_10%)]">
+
+      <section className="surface-green">
         <motion.div className="max-w-2xl mx-auto text-center px-6 pt-14 pb-14" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display text-white leading-[1.15] tracking-[-0.02em] mb-6">
             Most dealers want to run their own warranties…<br />
@@ -562,15 +547,13 @@ export default function LandingPage() {
           </div>
           <p className="text-lg font-semibold font-display text-primary">WarrantyVault fixes that.</p>
         </motion.div>
-        {/* Section divider */}
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
       </section>
 
-      {/* DisputeIQ Seller */}
-      <section className="py-20 px-6 bg-[hsl(222_30%_6%)] relative border-t border-[hsl(var(--cta))]/[0.08]">
+      <section className="py-20 px-6 surface-warm relative border-t border-[hsl(var(--cta))]/[0.08]">
         <div className="absolute top-0 right-[10%] w-[300px] h-[300px] bg-[hsl(var(--cta))]/[0.03] rounded-full blur-[100px] pointer-events-none" />
         <div className="max-w-5xl mx-auto">
-          <motion.div className="rounded-2xl p-8 sm:p-10 relative overflow-hidden border border-[hsl(var(--cta))]/10 bg-[hsl(222_28%_9%)] shadow-[0_0_40px_-12px_hsl(24,100%,50%,0.06)]" initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
+          <motion.div className="glass-card-strong rounded-2xl p-8 sm:p-10 relative overflow-hidden border border-[hsl(var(--cta))]/10 shadow-[0_0_40px_-12px_hsl(24,100%,50%,0.06)]" initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
             <div className="absolute top-0 right-0 w-48 h-48 bg-[hsl(var(--cta))]/[0.04] rounded-full blur-[80px] pointer-events-none" />
             <div className="grid lg:grid-cols-2 gap-8 items-center relative">
               <div>
@@ -599,17 +582,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
-      {/* Live Demo */}
       <LiveDemoSection />
-
-      {/* Section divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-      {/* Core Features — 4 cards */}
-      <section className="py-16 px-6 bg-[hsl(222_28%_10%)]">
+      <section className="py-16 px-6 surface-warm">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Everything you need. Nothing you don't.</h2>
@@ -617,7 +594,7 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {coreFeatures.map((f, i) => (
-              <motion.div key={f.title} className="rounded-xl p-6 border border-white/[0.08] bg-white/[0.05] hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_hsl(172,66%,40%,0.1)] transition-all duration-300 group" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+              <motion.div key={f.title} className="glass-card rounded-xl p-6 hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_hsl(172,66%,40%,0.1)] transition-all duration-300 group" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
                   <f.icon className="w-5 h-5 text-primary" />
                 </div>
@@ -627,18 +604,16 @@ export default function LandingPage() {
             ))}
           </div>
           <div className="text-center mt-8">
-            <Button variant="outline" className="rounded-full px-7 h-10 text-sm border-white/[0.08] text-white/50 hover:bg-white/[0.04] hover:text-white bg-transparent" asChild>
+            <Button variant="outline" className="rounded-full px-7 h-10 text-sm border-border text-foreground/70 hover:bg-background hover:text-foreground bg-transparent" asChild>
               <Link to="/features">See all features <ArrowRight className="ml-2 w-4 h-4" /></Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Section divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-      {/* Differentiator */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_6%)]">
+      <section className="py-16 px-6 surface-bone">
         <motion.div className="max-w-2xl mx-auto text-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-2xl sm:text-3xl font-bold font-display mb-4">This isn't just warranty software</h2>
           <p className="text-white/35 mb-6 text-base max-w-md mx-auto">Most systems help you <strong className="text-white/60">log claims</strong>. WarrantyVault helps you:</p>
@@ -659,11 +634,9 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* Section divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-      {/* Warranty Fund */}
-      <section className="py-20 px-6 bg-[hsl(222_28%_10%)] relative border-t border-primary/[0.08]">
+      <section className="py-20 px-6 surface-green relative border-t border-primary/[0.08]">
         <div className="absolute bottom-0 left-[5%] w-[250px] h-[250px] bg-primary/[0.03] rounded-full blur-[80px] pointer-events-none" />
         <div className="max-w-5xl mx-auto">
           <motion.div className="grid lg:grid-cols-2 gap-8 items-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -688,11 +661,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-      {/* How It Works */}
-      <section id="how-it-works" className="py-16 px-6 bg-[hsl(222_30%_6%)]">
+      <section id="how-it-works" className="py-16 px-6 surface-warm">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">How it works</h2>
@@ -700,7 +671,7 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {steps.map((s, i) => (
-              <motion.div key={s.num} className="rounded-xl p-6 border border-white/[0.08] bg-white/[0.05]" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+              <motion.div key={s.num} className="glass-card rounded-xl p-6" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
                 <span className="text-2xl font-bold font-display text-primary/25 mb-2 block">{s.num}</span>
                 <h3 className="text-base font-semibold font-display mb-1.5 text-white/70">{s.title}</h3>
                 <p className="text-sm text-white/35 leading-relaxed">{s.desc}</p>
@@ -710,11 +681,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-      {/* Pricing */}
-      <section id="pricing" className="py-20 px-6 bg-[hsl(222_28%_10%)] relative border-t border-primary/[0.08]">
+      <section id="pricing" className="py-20 px-6 surface-brass relative border-t border-primary/[0.08]">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-primary/[0.03] rounded-full blur-[120px] pointer-events-none" />
         <div className="max-w-2xl mx-auto text-center relative">
           <span className="eyebrow">Pricing</span>
@@ -758,11 +727,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-      {/* Testimonials */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_6%)]">
+      <section className="py-16 px-6 surface-green">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Trusted by UK dealers</h2>
@@ -771,7 +738,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
       <section className="hero-gradient pt-16 pb-14 px-6 relative">
         <div className="absolute top-0 left-[15%] w-[300px] h-[200px] bg-primary/[0.04] rounded-full blur-[80px] pointer-events-none" />
         <div className="max-w-2xl mx-auto text-center relative">
