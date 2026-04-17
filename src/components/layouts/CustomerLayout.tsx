@@ -5,7 +5,7 @@ import { useNotificationStore } from "@/lib/notification-store";
 import { LayoutDashboard, Shield, FileText, MessageSquare, LogOut, BookOpen, Bell, Check, ClipboardList, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
-import logo from "@/assets/warrantylogo.png";
+import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [

@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect, createContext, useContext } from "react";
-import logo from "@/assets/warrantylogo.png";
+import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 
 // Simple Mode context
