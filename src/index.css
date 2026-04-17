@@ -296,28 +296,35 @@ body.public-light h4,
 body.public-light h5,
 body.public-light h6 { color: hsl(220 20% 10%); }
 
-/* ---------- Hero gradient → soft cream → bone white ---------- */
+/* ---------- Hero gradient → DEEP RACING GREEN (brand-led) ---------- */
 body.public-light .hero-gradient {
-  background: linear-gradient(180deg, hsl(40 35% 96%) 0%, hsl(38 50% 94%) 35%, hsl(40 30% 96%) 70%, hsl(40 30% 97%) 100%) !important;
+  background: linear-gradient(135deg, hsl(155 50% 10%) 0%, hsl(155 45% 14%) 50%, hsl(160 40% 18%) 100%) !important;
 }
 body.public-light .hero-gradient h1,
 body.public-light .hero-gradient h2,
-body.public-light .hero-gradient h3 { color: hsl(155 45% 14%) !important; }
+body.public-light .hero-gradient h3 { color: hsl(40 30% 97%) !important; }
 body.public-light .hero-gradient .text-white,
+body.public-light .hero-gradient [class*="text-white/95"],
 body.public-light .hero-gradient [class*="text-white/90"],
-body.public-light .hero-gradient [class*="text-white/80"] { color: hsl(155 45% 14%) !important; }
+body.public-light .hero-gradient [class*="text-white/85"],
+body.public-light .hero-gradient [class*="text-white/80"] { color: hsl(40 30% 97%) !important; }
+body.public-light .hero-gradient [class*="text-white/75"],
 body.public-light .hero-gradient [class*="text-white/70"],
+body.public-light .hero-gradient [class*="text-white/65"],
 body.public-light .hero-gradient [class*="text-white/60"],
 body.public-light .hero-gradient [class*="text-white/55"],
-body.public-light .hero-gradient [class*="text-white/50"] { color: hsl(220 18% 28%) !important; }
+body.public-light .hero-gradient [class*="text-white/50"] { color: hsl(40 25% 82%) !important; }
+body.public-light .hero-gradient [class*="text-white/45"],
 body.public-light .hero-gradient [class*="text-white/40"],
 body.public-light .hero-gradient [class*="text-white/35"],
-body.public-light .hero-gradient [class*="text-white/30"] { color: hsl(220 14% 38%) !important; }
+body.public-light .hero-gradient [class*="text-white/30"] { color: hsl(40 18% 70%) !important; }
 body.public-light .hero-gradient [class*="text-white/25"],
 body.public-light .hero-gradient [class*="text-white/20"],
-body.public-light .hero-gradient [class*="text-white/15"] { color: hsl(220 12% 48%) !important; }
-body.public-light .hero-gradient [class*="bg-white/"] { background-color: hsl(0 0% 100% / 0.7) !important; }
-body.public-light .hero-gradient [class*="border-white/"] { border-color: hsl(38 30% 78%) !important; }
+body.public-light .hero-gradient [class*="text-white/15"] { color: hsl(40 14% 60%) !important; }
+body.public-light .hero-gradient [class*="text-foreground"] { color: hsl(40 30% 97%) !important; }
+body.public-light .hero-gradient .text-muted-foreground { color: hsl(40 18% 72%) !important; }
+body.public-light .hero-gradient [class*="bg-white/"] { background-color: hsl(0 0% 100% / 0.08) !important; }
+body.public-light .hero-gradient [class*="border-white/"] { border-color: hsl(0 0% 100% / 0.18) !important; }
 
 /* ---------- Glass cards on light ---------- */
 body.public-light .glass-card,
