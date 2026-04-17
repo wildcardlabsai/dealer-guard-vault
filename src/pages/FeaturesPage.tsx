@@ -12,14 +12,11 @@ import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead from "@/components/SEOHead";
 
-import screenshotWarrantyMgmt from "@/assets/screenshots/warranty-management.png";
-import screenshotCustomerPortal from "@/assets/screenshots/customer-portal.png";
-import screenshotClaims from "@/assets/screenshots/claims-management.png";
-import screenshotProfit from "@/assets/screenshots/profit-tracking.png";
-import screenshotWarrantyLine from "@/assets/screenshots/warranty-line.png";
-import screenshotCoverTemplates from "@/assets/screenshots/cover-templates.png";
-import screenshotDocuments from "@/assets/screenshots/dealer-documents.png";
-import screenshotSupport from "@/assets/screenshots/dealer-support.png";
+import {
+  WarrantyManagementMock, CustomerPortalMock, ClaimsManagementMock, ClaimAssistMock,
+  ProfitTrackingMock, DisputeIQMock, WarrantyFundMock, WarrantyLineMock,
+  CoverTemplatesMock, DocumentsMock, SupportMock,
+} from "@/components/feature-mocks/FeatureMocks";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
