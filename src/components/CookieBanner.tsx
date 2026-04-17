@@ -48,7 +48,8 @@ export default function CookieBanner() {
             <p className="text-xs text-muted-foreground leading-relaxed">
               We use essential cookies to make our site work and analytics cookies to understand how you use it.
               You can accept or reject non-essential cookies. See our{" "}
-              <Link to="/contact" className="underline hover:text-foreground">privacy notice</Link> for details.
+              <Link to="/privacy" className="underline hover:text-foreground">Privacy Policy</Link> and{" "}
+              <Link to="/terms" className="underline hover:text-foreground">Terms</Link>.
             </p>
           </div>
           <button
