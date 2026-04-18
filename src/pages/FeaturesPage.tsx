@@ -12,14 +12,11 @@ import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead from "@/components/SEOHead";
 
-import screenshotWarrantyMgmt from "@/assets/screenshots/warranty-management.png";
-import screenshotCustomerPortal from "@/assets/screenshots/customer-portal.png";
-import screenshotClaims from "@/assets/screenshots/claims-management.png";
-import screenshotProfit from "@/assets/screenshots/profit-tracking.png";
-import screenshotWarrantyLine from "@/assets/screenshots/warranty-line.png";
-import screenshotCoverTemplates from "@/assets/screenshots/cover-templates.png";
-import screenshotDocuments from "@/assets/screenshots/dealer-documents.png";
-import screenshotSupport from "@/assets/screenshots/dealer-support.png";
+import {
+  WarrantyManagementMock, CustomerPortalMock, ClaimsManagementMock,
+  ClaimAssistMock, DisputeIQMock, WarrantyFundMock, ProfitTrackingMock,
+  WarrantyLineMock, CoverTemplatesMock, DocumentsMock, SupportMock
+} from "@/components/features/FeatureMocks";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -46,7 +43,7 @@ interface FeatureShowcase {
   title: string;
   desc: string;
   bullets: string[];
-  screenshot: string;
+  Mock: React.ComponentType;
 }
 
 const coreFeatures: FeatureShowcase[] = [
@@ -55,14 +52,14 @@ const coreFeatures: FeatureShowcase[] = [
     title: "Warranty Management",
     desc: "Create, edit and track all warranties from a single dashboard. Full visibility across your dealership with real-time status updates.",
     bullets: ["Issue warranties in seconds", "Track active, expired, and claimed", "Full audit trail on every warranty", "Multi-site support for dealer groups"],
-    screenshot: screenshotWarrantyMgmt,
+    Mock: WarrantyManagementMock,
   },
   {
     icon: UserCheck,
     title: "Customer Portal",
     desc: "Give every customer their own login to view warranty details, download certificates, and submit claims directly.",
     bullets: ["Dedicated /customers login page", "View warranty status and documents", "Submit claims with photo evidence", "Reduces inbound phone calls"],
-    screenshot: screenshotCustomerPortal,
+    Mock: CustomerPortalMock,
   },
 ];
 
@@ -72,21 +69,21 @@ const claimsFeatures: FeatureShowcase[] = [
     title: "Claims Management",
     desc: "Handle claims your way — approve, reject, or request more info in seconds. No third-party delays or queues.",
     bullets: ["Same-day claim decisions", "Request additional evidence", "Track claim costs vs revenue", "Notification alerts for new claims"],
-    screenshot: screenshotClaims,
+    Mock: ClaimsManagementMock,
   },
   {
     icon: Gavel,
     title: "Claim Assist",
     desc: "End-to-end claim handling workspace with evidence requests, checklists, messaging, and structured decision workflows — all in one place.",
     bullets: ["Review evidence and photos inline", "Checklist-driven claim process", "Built-in messaging with customers", "Evidence Pack Generator for printable claim summaries"],
-    screenshot: screenshotClaims,
+    Mock: ClaimAssistMock,
   },
   {
     icon: BarChart3,
     title: "Profit Tracking",
     desc: "See exactly what you're making from warranties vs what you're paying out. Real-time dashboards show your true margin.",
     bullets: ["Revenue vs payout breakdown", "Per-warranty profit visibility", "Monthly and yearly trends", "Helps build your claims reserve"],
-    screenshot: screenshotProfit,
+    Mock: ProfitTrackingMock,
   },
 ];
 
@@ -96,14 +93,14 @@ const intelligenceFeatures: FeatureShowcase[] = [
     title: "DisputeIQ",
     desc: "AI-powered complaint handler that analyses disputes against UK Consumer Rights Act timelines, identifies risk levels, and generates professional responses. Completely free for all dealers — no warranty purchase required.",
     bullets: ["100% free — just sign up, no purchase needed", "CRA-based legal reasoning and risk scoring", "Response generation in 4 styles: Helpful, Firm, Defensive, De-escalation", "Strategy Mode with internal risks and 'what NOT to say'"],
-    screenshot: screenshotClaims,
+    Mock: DisputeIQMock,
   },
   {
     icon: Wallet,
     title: "Warranty Fund",
     desc: "Financial oversight system that tracks contributions against payouts, calculates buffer health, and projects future claim impact with AI-powered recommendations.",
     bullets: ["Live fund health: Healthy, Watch, or Risk status", "Buffer calculation based on active warranties and risk", "Scenario simulator to project future claim impact", "AI contribution recommendations and market benchmarking"],
-    screenshot: screenshotProfit,
+    Mock: WarrantyFundMock,
   },
 ];
 
@@ -113,28 +110,28 @@ const addonFeatures: FeatureShowcase[] = [
     title: "Warranty Line",
     desc: "Give your dealership a dedicated warranty phone line with professional greetings, hold music, and IVR routing.",
     bullets: ["Custom greeting with your name", "Professional hold music", "Route calls to the right team", "Only £25/month add-on"],
-    screenshot: screenshotWarrantyLine,
+    Mock: WarrantyLineMock,
   },
   {
     icon: FileText,
     title: "Cover Templates",
     desc: "Create and manage reusable cover templates so every warranty is consistent and easy to issue.",
     bullets: ["Pre-built coverage options", "Customise terms and conditions", "Assign to warranties in one click", "Maintain consistency across sales"],
-    screenshot: screenshotCoverTemplates,
+    Mock: CoverTemplatesMock,
   },
   {
     icon: FolderOpen,
     title: "Dealer Documents",
     desc: "Store, manage and download essential warranty documents — T&Cs, claim forms, compliance templates — all in one place.",
     bullets: ["Pre-built document templates", "Download or view in-browser", "Keep your compliance organised", "Always accessible from dashboard"],
-    screenshot: screenshotDocuments,
+    Mock: DocumentsMock,
   },
   {
     icon: Headphones,
     title: "Dealer Support",
     desc: "Built-in support ticket system so you can raise issues, ask questions, and get help without leaving the platform.",
     bullets: ["Submit tickets from dashboard", "Track open and resolved issues", "Priority support for urgent queries", "No external email chains needed"],
-    screenshot: screenshotSupport,
+    Mock: SupportMock,
   },
 ];
 
@@ -175,9 +172,7 @@ function FeatureSection({ feature, index }: { feature: FeatureShowcase; index: n
         </div>
       </div>
       <div className={isReversed ? "lg:[direction:ltr]" : ""}>
-        <div className="relative rounded-2xl border border-white/10 bg-[hsl(222,25%,8%)] overflow-hidden shadow-2xl">
-          <img src={feature.screenshot} alt={`${feature.title} screenshot`} className="w-full h-auto" loading="lazy" />
-        </div>
+        <feature.Mock />
       </div>
     </motion.div>
   );
