@@ -16,7 +16,7 @@ import { toast } from "sonner";
 
 export default function DealerCoverTemplates() {
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "";
+  const dealerId = user?.dealerId || "d-1";
   const coverStore = useCoverStore();
   const templates = coverStore.getTemplatesForDealer(dealerId);
   const [editing, setEditing] = useState<string | null>(null);

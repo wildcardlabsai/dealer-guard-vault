@@ -13,7 +13,7 @@ const typeColors: Record<string, string> = {
 
 export default function DealerRequests() {
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "";
+  const dealerId = user?.dealerId || "d-1";
   const store = useWarrantyStore();
   const requests = store.requests.filter(r => r.dealerId === dealerId);
 

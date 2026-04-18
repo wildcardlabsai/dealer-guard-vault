@@ -1,55 +1,84 @@
 
-## Recommendations for Public Pages Polish
 
-Now that the public site is locked to light mode with dark mocks floating on top, here's what I'd recommend to lift it from "good" to "premium SaaS" tier. Grouped by impact.
+# Dashboard & Feature Audit — Recommendations
 
-### 1. Typography refinement (highest impact, lowest effort)
-- **Tighten hero headlines**: current `Space Grotesk` headlines render at default tracking. Drop to `tracking-tight` (-0.02em) on h1/h2 and bump h1 weight to 600. This is what Linear/Vercel/Stripe all do — instantly feels more designed.
-- **Larger hero h1**: bump landing hero from current size to `text-5xl md:text-7xl` for more presence on a light background (light pages need bigger type to feel confident).
-- **Body line-height**: bump body copy from default to `leading-relaxed` (1.625) on marketing paragraphs — easier to read, feels more editorial.
-- **Eyebrow labels**: add small uppercase tracked labels above each section h2 (e.g. "PLATFORM" / "PRICING") in primary teal. Adds rhythm and helps scanning.
+Keeping this strictly within the warranty platform scope. No DMS creep. Every recommendation directly serves warranty issuance, claims, fund management, or platform operations.
 
-### 2. Color & accent system
-- **Warm up the neutrals**: page background is pure `#ffffff`. Shift to a barely-off-white (`hsl(30 25% 99%)`) — same warm tone as the cream bands, removes the clinical feel.
-- **Add a soft secondary accent**: right now everything is teal + cta-orange. Introduce a soft warm beige (`hsl(30 40% 94%)`) for tertiary surfaces (testimonial cards, FAQ open state) so not every panel is white-on-white.
-- **Stronger CTA contrast**: orange CTA button currently sits on cream sections. Add a subtle dark ring/shadow on hover so it pops more.
+---
 
-### 3. Section rhythm & layout
-- **Consistent section padding**: audit landing/features — some sections are `py-16`, others `py-24`. Standardise to `py-24 md:py-32` for marketing sections so the page breathes.
-- **Max-width discipline**: hero copy and section intros currently stretch full container. Cap intro paragraphs at `max-w-2xl mx-auto` for better readability.
-- **Soft section dividers**: between cream and white bands, add a 1px hairline border in `hsl(30 20% 92%)` instead of a hard color flip — softer transition.
-- **Feature mock framing**: add a subtle gradient halo behind each dark mock (radial teal/orange glow at 5% opacity) so they feel "lit" rather than just dropped on the page.
+## What's Already Strong (No Changes Needed)
 
-### 4. Component polish
-- **Glass cards**: currently flat white with light border. Add a very subtle inner highlight (`shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]`) and a tiny warm shadow — gives them a tactile "card" feel.
-- **Pricing card**: make the £15 number much larger (`text-7xl`) and add a strikethrough "compare to £200+ traditional" underneath in muted text.
-- **Testimonial carousel**: add quote marks as a large decorative serif glyph behind the quote (in 8% opacity teal). Classic SaaS move, instantly elevates.
-- **FAQ accordions**: when open, fill with the warm beige tertiary surface instead of white-on-white.
+- **Dealer Dashboard** — Well-structured with fund health ring, claim priority badges, onboarding flow, expiring alerts, and sales target. The simple/advanced mode toggle is smart.
+- **Warranty Fund + Smart Contribution AI** — This is a standout feature. Leave as-is.
+- **DisputeIQ** — Properly scoped and valuable. No changes.
+- **Customer Dashboard** — Clean circular countdown, tier badges, coverage summary, claim tracker all work well.
+- **Contact + Enquiry system** — Recently added and functional.
 
-### 5. Micro-interactions
-- **Scroll-triggered fade-ups**: already in place via framer — but stagger by 80ms instead of default for a more deliberate feel.
-- **CTA button hover**: add a subtle lift (`hover:-translate-y-0.5 hover:shadow-lg`) on primary CTAs.
-- **Logo cloud / trust strip**: if not present, add a thin band under the hero with "Trusted by 200+ UK dealers" + small grey logos. Universal trust signal.
+---
 
-### 6. Page-specific notes
-- **Features page**: the comparison table at the bottom would benefit from row striping in cream. Also the "Ours vs Theirs" columns could use teal/red header tints.
-- **DisputeIQ page**: the live demo card could be bigger and more central — it's the flagship free tool, treat it like a hero.
-- **Blog index**: article cards are quite plain — add the tag chip in colour, larger excerpt, and a hover lift.
-- **FAQ page**: add a sticky category nav on the side (desktop) so users can jump between sections.
-- **Contact page**: form fields currently inherit default light styling — give them more padding and a focus ring in teal.
+## Recommended Improvements
 
-### My top 5 if you only do a handful
-1. Tighten hero typography (tracking-tight, weight 600, larger h1)
-2. Warm up page background off pure white
-3. Add eyebrow labels above section headlines
-4. Add radial glow halos behind dark feature mocks
-5. Polish pricing card (huge £15, strikethrough comparison)
+### DEALER SIDE
 
-Want me to implement all of these, just the top 5, or pick a specific category to start with?
+**1. Warranty Renewal Prompts**
+Expiring warranties show a "Xd left" badge but there's no way to renew. Add a "Renew" button on each expiring warranty row that pre-fills a new warranty for the same vehicle/customer. This is the single most useful action a dealer needs and it's missing.
 
-<lov-actions>
-<lov-suggestion message="Implement all the recommendations across landing, features, DisputeIQ, blog, FAQ and contact pages.">Do all of them</lov-suggestion>
-<lov-suggestion message="Just implement your top 5 recommendations: tighten hero typography, warm up the background, add eyebrow labels, add glow halos behind mocks, and polish the pricing card.">Just the top 5</lov-suggestion>
-<lov-suggestion message="Focus only on typography and color refinements (sections 1 and 2) across all public pages.">Typography & color only</lov-suggestion>
-<lov-suggestion message="Focus on component polish and micro-interactions (sections 4 and 5) across all public pages.">Components & interactions only</lov-suggestion>
-</lov-actions>
+**2. Claim Assist — Quick Stats at Top**
+The Claim Assist page already has KPIs but the dealer Claims list (`DealerClaims.tsx`) is basic — just a list with action buttons. Add 3 summary stat cards at the top (Open, Approved, Rejected) so dealers can see the picture at a glance without navigating to Claim Assist.
+
+**3. Documents Page — Too Generic**
+Every document downloads the same generic HTML template. This page should dynamically generate documents using real warranty data:
+- "Warranty Certificate" should use `generateCertificate()` (already exists) for a selected warranty
+- Remove fake templates that don't tie to real data
+- Add a simple warranty selector so the dealer picks which warranty to generate a certificate for
+
+**4. Remove "Warranty Line" Upsell from Dashboard (simplify)**
+The Warranty Line upsell banner appears on the dashboard AND on the claims page AND on settings. That's 3 upsell points for a £25/month add-on. Keep it only on the Settings page to reduce clutter. The dashboard should focus on warranties and claims, not selling add-ons.
+
+### CUSTOMER SIDE
+
+**5. Warranty Document Download — More Prominent**
+The "Certificate" download button is buried in a 2x2 grid. Move it into the warranty card itself as a standalone row beneath the vehicle details, with a clear "Download Your Warranty Certificate" label. Customers need this for their records and garage visits.
+
+**6. Claim Progress — Add Expected Timeline**
+The 3-step claim tracker (Submitted → Under Review → Decision) is good but dealers often take 3-5 working days. Add a small "Typically 3-5 working days" note beneath the tracker so customers aren't left guessing.
+
+### ADMIN SIDE
+
+**7. Admin Dashboard — Revenue Uses £50/mo Subscription Model but Settings Says Pay-Per-Use**
+There's a contradiction: `AdminSettings.tsx` says "No monthly subscription fees — Pay-Per-Use Model" and charges £15 per warranty. But `AdminDashboard.tsx` calculates `subscriptionRevenue = activeDealers * 50` and shows MRR based on £50/month subscriptions. Pick one model and make both pages consistent. Given your positioning as a lean warranty platform, the pay-per-use model in Settings is better. Update the dashboard and revenue page to use per-warranty fee calculations only.
+
+**8. Admin System Logs — Add Filtering**
+The logs page is a raw table dump with no filtering or search. Add a search input and an action type filter dropdown (warranty, claim, customer) so admins can actually find things. This is a basic usability fix.
+
+**9. Admin Revenue — Add Time Period Selector**
+Revenue page shows a single bar chart with no date filtering. Add a simple period toggle (This Month / Last 3 Months / All Time) so admins can track trends.
+
+---
+
+## What to NOT Add (Scope Discipline)
+
+- No CRM features (customer birthday reminders, marketing campaigns)
+- No inventory or stock tracking
+- No vehicle history / MOT integration beyond what's needed for warranty issuance
+- No dealer-to-dealer messaging or marketplace
+- No invoicing or accounting tools
+
+---
+
+## Summary of Changes
+
+| # | Area | Change | Effort |
+|---|------|--------|--------|
+| 1 | Dealer | Warranty renewal button on expiring warranties | Small |
+| 2 | Dealer | Claim summary stats on DealerClaims page | Small |
+| 3 | Dealer | Documents page uses real warranty data | Medium |
+| 4 | Dealer | Remove duplicate Warranty Line upsells from dashboard/claims | Small |
+| 5 | Customer | More prominent certificate download | Small |
+| 6 | Customer | Expected timeline note on claim tracker | Tiny |
+| 7 | Admin | Fix revenue model contradiction (use pay-per-use consistently) | Medium |
+| 8 | Admin | Add search/filter to System Logs | Small |
+| 9 | Admin | Add time period selector to Revenue page | Small |
+
+All 9 changes stay firmly within warranty operations. No feature bloat.
+

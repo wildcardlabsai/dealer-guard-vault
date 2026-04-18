@@ -11,7 +11,7 @@ import {
 
 export default function DealerDocuments() {
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "";
+  const dealerId = user?.dealerId || "d-1";
   const store = useWarrantyStore();
   const warranties = store.warranties.filter(w => w.dealerId === dealerId);
   const [selectedWarrantyId, setSelectedWarrantyId] = useState<string>("");

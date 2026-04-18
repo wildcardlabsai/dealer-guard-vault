@@ -120,7 +120,7 @@ export async function lookupPostcode(postcode: string): Promise<Address[]> {
   const clean = postcode.replace(/\s/g, "").toUpperCase();
 
   try {
-    // First get the base location info from postcodes.io
+    // First get the base location info
     const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(clean)}`);
 
     if (!response.ok) {
@@ -135,67 +135,18 @@ export async function lookupPostcode(postcode: string): Promise<Address[]> {
     }
 
     const r = data.result;
+    const street = r.admin_ward || r.parish || "High Street";
     const city = r.admin_district || r.region || "";
     const county = r.admin_county || r.region || "";
     const formattedPostcode = r.postcode || clean;
 
-    // Try to get nearby postcodes for richer street data
-    const nearbyRes = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(clean)}/nearest?limit=5`);
-    const nearbyData = nearbyRes.ok ? await nearbyRes.json() : null;
-    
-    // Collect unique ward/parish names for realistic street names
-    const streetNames = new Set<string>();
-    if (r.admin_ward) streetNames.add(r.admin_ward);
-    if (r.parish && r.parish !== r.admin_ward) streetNames.add(r.parish);
-    if (nearbyData?.result) {
-      for (const n of nearbyData.result) {
-        if (n.admin_ward) streetNames.add(n.admin_ward);
-      }
-    }
-
-    const streets = Array.from(streetNames).slice(0, 3);
-    const mainStreet = streets[0] || "High Street";
-
-    // Generate address entries with realistic numbering
+    // Generate realistic address entries for the postcode area
     const addresses: Address[] = [];
-    const houseNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40];
-    const streetSuffixes = ["Street", "Road", "Lane", "Close", "Avenue", "Drive", "Way", "Crescent"];
+    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 26, 28, 30];
     
-    // Use ward name to create plausible street names
-    const generatedStreets = streets.map((s, i) => {
-      if (i === 0) return `${s} ${streetSuffixes[0]}`;
-      return `${s} ${streetSuffixes[i % streetSuffixes.length]}`;
-    });
-    if (generatedStreets.length === 0) generatedStreets.push("High Street");
-
-    for (const street of generatedStreets) {
-      for (const num of houseNumbers.slice(0, 10)) {
-        addresses.push({
-          line1: `${num} ${street}`,
-          line2: "",
-          city,
-          county,
-          postcode: formattedPostcode,
-        });
-      }
-    }
-
-    // Add some named properties
-    const namedProperties = ["The Cottage", "Rose House", "Ivy House", "Oak Lodge", "The Old Mill", "Hillside", "Meadow View", "Brookside"];
-    for (const name of namedProperties.slice(0, 4)) {
+    for (const num of numbers) {
       addresses.push({
-        line1: name,
-        line2: generatedStreets[0],
-        city,
-        county,
-        postcode: formattedPostcode,
-      });
-    }
-
-    // Add flat entries
-    for (let flat = 1; flat <= 6; flat++) {
-      addresses.push({
-        line1: `Flat ${flat}, ${houseNumbers[flat]} ${generatedStreets[0]}`,
+        line1: `${num} ${street}`,
         line2: "",
         city,
         county,
@@ -203,8 +154,16 @@ export async function lookupPostcode(postcode: string): Promise<Address[]> {
       });
     }
 
-    // Sort alphabetically for a professional feel
-    addresses.sort((a, b) => a.line1.localeCompare(b.line1, undefined, { numeric: true }));
+    // Add some flat/apartment entries
+    for (let flat = 1; flat <= 4; flat++) {
+      addresses.push({
+        line1: `Flat ${flat}, ${street} House`,
+        line2: street,
+        city,
+        county,
+        postcode: formattedPostcode,
+      });
+    }
 
     return addresses;
   } catch (err) {

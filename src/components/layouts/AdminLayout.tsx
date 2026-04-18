@@ -1,5 +1,4 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotificationStore } from "@/lib/notification-store";
 import { LayoutDashboard, Building2, FileText, BarChart3, ScrollText, Settings, LogOut, UserPlus, ClipboardList, Headphones, Bell, Check, Shield, LifeBuoy, MessageSquare, Menu, X } from "lucide-react";
@@ -8,7 +7,7 @@ import { useSignupStore } from "@/lib/signup-store";
 import { useEnquiryStore } from "@/lib/enquiry-store";
 import { useSupportStore } from "@/lib/support-store";
 import { useState, useRef, useEffect } from "react";
-import Logo from "@/components/Logo";
+import logo from "@/assets/warrantylogo.png";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [
@@ -32,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const supportStore = useSupportStore();
   const enquiryStore = useEnquiryStore();
   const notifStore = useNotificationStore();
-  const userId = user?.id || "";
+  const userId = user?.id || "admin-1";
   const unreadCount = notifStore.unreadCount(userId);
   const notifications = notifStore.getNotifications(userId);
   const [showNotifs, setShowNotifs] = useState(false);
@@ -63,12 +62,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <>
-    <SEOHead title="Admin Dashboard | WarrantyVault" description="WarrantyVault admin dashboard." noindex />
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50">
-          <Logo className="h-6" />
+          <img src={logo} alt="WarrantyVault" className="h-6" />
           <span className="text-[10px] uppercase tracking-widest text-amber-400 font-semibold mt-1 block">Super Admin</span>
         </div>
         <nav className="flex-1 p-2 space-y-1">
@@ -113,7 +110,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setMobileNav(!mobileNav)}>
             {mobileNav ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
-          <Logo className="h-5" />
+          <img src={logo} alt="WarrantyVault" className="h-5" />
           <span className="text-[10px] uppercase tracking-widest text-amber-400 font-semibold">Admin</span>
           <div className="flex-1" />
           <div className="relative" ref={notifRef}>
@@ -127,6 +124,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="w-4 h-4" /></Button>
         </header>
+        {/* Mobile nav drawer */}
         {mobileNav && (
           <div className="md:hidden border-b border-border/50 bg-card/60 backdrop-blur-sm px-2 py-2 space-y-1 animate-fade-in">
             {navItems.map(item => {
@@ -157,7 +155,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
-    </>
   );
 }
 

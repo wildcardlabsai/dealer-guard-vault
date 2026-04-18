@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
-import { User, UserRole } from "@/data/demo-data";
+import { User, UserRole, demoUsers } from "@/data/demo-data";
 import { supabase } from "@/integrations/supabase/client";
+
+const DEMO_USER_KEY = "wv-demo-user";
+
+const demoPasswords: Record<string, string> = {
+  "admin@warrantyvault.com": "admin123",
+  "dealer@prestige-motors.co.uk": "dealer123",
+  "john@example.com": "customer123",
+};
 
 interface AuthContextType {
   user: User | null;
@@ -12,40 +20,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-async function fetchProfileRole(userId: string): Promise<{ role: UserRole; dealerId?: string; fullName?: string }> {
-  try {
-    const { data } = await supabase
-      .from("profiles")
-      .select("role, dealer_id, full_name")
-      .eq("user_id", userId)
-      .single();
-    if (data) {
-      return {
-        role: (data.role as UserRole) || "customer",
-        dealerId: data.dealer_id || undefined,
-        fullName: data.full_name || undefined,
-      };
-    }
-  } catch {
-    // Fall through to metadata
-  }
-  return { role: "customer" };
-}
-
-async function buildUserFromSupabase(supaUser: { id: string; email?: string; user_metadata?: Record<string, any> }): Promise<User> {
+function buildUserFromSupabase(supaUser: { id: string; email?: string; user_metadata?: Record<string, any> }): User {
   const meta = supaUser.user_metadata || {};
-  
-  // Always check the profiles table for the authoritative role
-  const profile = await fetchProfileRole(supaUser.id);
-  
-  const role: UserRole = profile.role || meta.role || "customer";
+  const role: UserRole = meta.role || "customer";
   return {
     id: supaUser.id,
     email: supaUser.email || "",
-    name: profile.fullName || meta.name || meta.full_name || supaUser.email?.split("@")[0] || "User",
+    name: meta.name || meta.full_name || supaUser.email?.split("@")[0] || "Customer",
     role,
-    dealerId: profile.dealerId || meta.dealerId,
-    dealerName: meta.dealerName,
+    dealerId: meta.dealerId,
   };
 }
 
@@ -53,20 +36,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isReady, setIsReady] = useState(false);
 
+  // On mount, restore session
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // 1. Check for persisted demo user
+    const savedDemo = localStorage.getItem(DEMO_USER_KEY);
+    if (savedDemo) {
+      try {
+        const parsed = JSON.parse(savedDemo);
+        if (parsed && parsed.email && demoPasswords[parsed.email]) {
+          setUser(parsed);
+          setIsReady(true);
+          return;
+        }
+      } catch {
+        localStorage.removeItem(DEMO_USER_KEY);
+      }
+    }
+
+    // 2. Check for real Supabase session
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        const u = await buildUserFromSupabase(session.user);
-        setUser(u);
+        setUser(buildUserFromSupabase(session.user));
       }
       setIsReady(true);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        buildUserFromSupabase(session.user).then(u => setUser(u));
+        setUser(prev => {
+          // Don't overwrite a demo user session
+          if (prev && demoPasswords[prev.email]) return prev;
+          return buildUserFromSupabase(session.user);
+        });
       } else {
-        setUser(null);
+        // Only clear if not a demo user
+        setUser(prev => {
+          if (prev && demoPasswords[prev.email]) return prev;
+          return null;
+        });
       }
     });
 
@@ -74,20 +81,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+    // 1. Try demo credentials first
+    const found = demoUsers.find(u => u.email === email);
+    if (found && demoPasswords[email] === password) {
+      await new Promise(r => setTimeout(r, 500));
+      setUser(found);
+      localStorage.setItem(DEMO_USER_KEY, JSON.stringify(found));
+      return true;
+    }
+
+    // 2. Try Supabase Auth for real accounts
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (!error && data.user) {
-        const u = await buildUserFromSupabase(data.user);
-        setUser(u);
+        localStorage.removeItem(DEMO_USER_KEY);
+        setUser(buildUserFromSupabase(data.user));
         return true;
       }
     } catch {
       // Fall through
     }
+
     return false;
   }, []);
 
   const logout = useCallback(() => {
+    localStorage.removeItem(DEMO_USER_KEY);
     supabase.auth.signOut().catch(() => {});
     setUser(null);
   }, []);

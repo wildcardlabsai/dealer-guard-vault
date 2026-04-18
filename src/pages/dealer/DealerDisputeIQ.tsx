@@ -26,7 +26,7 @@ const riskColors: Record<string, string> = {
 export default function DealerDisputeIQ() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "";
+  const dealerId = user?.dealerId || "d-1";
   const store = useDisputeIQStore();
   const cases = store.getCasesForDealer(dealerId);
   const [search, setSearch] = useState("");

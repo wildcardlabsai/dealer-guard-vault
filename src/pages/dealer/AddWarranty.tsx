@@ -6,14 +6,14 @@ import { useWarrantyStore } from "@/lib/warranty-store";
 import { useCoverStore } from "@/lib/cover-store";
 import { useDealerSettingsStore } from "@/lib/dealer-settings-store";
 import { useAuth } from "@/contexts/AuthContext";
+import { demoCustomers } from "@/data/demo-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle, UserPlus, Users, Plus } from "lucide-react";
+import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
-import ExistingCustomerSearch from "@/components/ExistingCustomerSearch";
 
 export default function AddWarranty() {
   const navigate = useNavigate();
@@ -22,14 +22,12 @@ export default function AddWarranty() {
   const store = useWarrantyStore();
   const coverStore = useCoverStore();
   const dealerSettingsStore = useDealerSettingsStore();
-  const dealerId = user?.dealerId || "";
-  const dealerName = user?.dealerName || user?.name || "";
+  const dealerId = user?.dealerId || "d-1";
   const templates = coverStore.templates.filter(t => t.dealerId === dealerId || t.dealerId === "system");
   const passedState = location.state as { reg?: string; vehicle?: DVLAVehicle } | null;
   const [step, setStep] = useState(passedState?.vehicle ? 1 : 1);
   const [reg, setReg] = useState(passedState?.reg || "");
   const [postcode, setPostcode] = useState("");
-  const [dbCustomers, setDbCustomers] = useState<{ id: string; name: string; email: string; phone: string; dealerId: string }[]>([]);
   const [vehicle, setVehicle] = useState<DVLAVehicle | null>(null);
   const [dvsaData, setDvsaData] = useState<DVSAResult | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -38,40 +36,20 @@ export default function AddWarranty() {
   const [paying, setPaying] = useState(false);
   const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
-  const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", fundContribution: "", notes: "", coverTemplateId: "" });
-  const [createdWarranty, setCreatedWarranty] = useState<{
-    customerName: string; email: string; vehicleReg: string; vehicleMake: string;
-    vehicleModel: string; startDate: string; endDate: string; isFree: boolean;
-  } | null>(null);
+  const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
 
-  // Fetch customers from DB
-  useEffect(() => {
-    if (!dealerId) return;
-    supabase.functions.invoke("admin-data", {
-      body: { table: "customers", action: "select", filters: { dealer_id: dealerId } },
-    }).then(({ data, error }) => {
-      if (!error && data?.data) {
-        setDbCustomers((data.data as any[]).map((c: any) => ({
-          id: c.id,
-          name: c.full_name,
-          email: c.email,
-          phone: c.phone || "",
-          dealerId: c.dealer_id,
-        })));
-      }
-    });
-  }, [dealerId]);
-
-  // Also include customers from warranties added by this dealer (not yet in customers table)
+  // Existing customers for this dealer
+  const existingCustomers = demoCustomers.filter(c => c.dealerId === dealerId);
+  // Also include customers from warranties added by this dealer (not in demo data)
   const warrantyCustomers = store.warranties
     .filter(w => w.dealerId === dealerId && w.customerEmail)
     .reduce((acc, w) => {
-      if (!acc.find(c => c.email === w.customerEmail) && !dbCustomers.find(c => c.email.toLowerCase() === w.customerEmail!.toLowerCase())) {
+      if (!acc.find(c => c.email === w.customerEmail) && !existingCustomers.find(c => c.email === w.customerEmail)) {
         acc.push({ id: w.customerId, name: w.customerName, email: w.customerEmail!, phone: "", dealerId });
       }
       return acc;
     }, [] as { id: string; name: string; email: string; phone: string; dealerId: string }[]);
-  const allCustomers = [...dbCustomers, ...warrantyCustomers];
+  const allCustomers = [...existingCustomers, ...warrantyCustomers];
 
   // Sync free warranty count with actual data
   const dealerWarrantyCount = store.warranties.filter(w => w.dealerId === dealerId).length;
@@ -96,10 +74,6 @@ export default function AddWarranty() {
       lookupVehicle(reg),
       lookupMOTHistory(reg),
     ]);
-    // Supplement missing model from DVSA data
-    if (dvlaResult && (!dvlaResult.model || dvlaResult.model === "Unknown") && dvsaResult?.model) {
-      dvlaResult.model = dvsaResult.model;
-    }
     setVehicle(dvlaResult);
     setDvsaData(dvsaResult);
     setLoading(false);
@@ -153,36 +127,13 @@ export default function AddWarranty() {
 
     const customerId = selectedCustomerId || `cust-${Date.now()}`;
 
-    // Create customer record in DB if new customer
-    if (customerType === "new" && form.email) {
-      try {
-        await supabase.functions.invoke("admin-data", {
-          body: {
-            table: "customers",
-            action: "insert",
-            updates: {
-              full_name: form.customerName,
-              email: form.email,
-              phone: form.phone || null,
-              dealer_id: dealerId,
-              address: selectedAddress?.line1 || null,
-              city: selectedAddress?.city || null,
-              postcode: selectedAddress?.postcode || postcode || null,
-            },
-          },
-        });
-      } catch (err) {
-        console.error("Failed to create customer record:", err);
-      }
-    }
-
-    await store.addWarranty({
+    store.addWarranty({
       id: `w-${Date.now()}`,
       customerId,
       customerName: form.customerName,
       customerEmail: form.email || undefined,
       dealerId,
-      dealerName,
+      dealerName: dealerId === "d-1" ? "Prestige Motors" : "City Autos",
       vehicleReg: vehicle.registration,
       vehicleMake: vehicle.make,
       vehicleModel: vehicle.model,
@@ -194,7 +145,7 @@ export default function AddWarranty() {
       endDate,
       cost: parseInt(form.cost),
       status: "active",
-      notes: form.notes + (form.fundContribution ? `\nFund contribution: £${form.fundContribution}` : ""),
+      notes: form.notes,
       createdAt: startDate,
       coverTemplateId: form.coverTemplateId || undefined,
       paymentStatus: isFreeWarranty ? "free" : "paid",
@@ -206,8 +157,10 @@ export default function AddWarranty() {
     }
 
     setPaying(false);
+    toast.success(isFreeWarranty ? "Free warranty created successfully!" : "Payment successful! Warranty created.");
     
     if (form.email) {
+      const dealerName = dealerId === "d-1" ? "Prestige Motors" : "City Autos";
       supabase.functions.invoke("invite-customer", {
         body: {
           email: form.email,
@@ -222,64 +175,18 @@ export default function AddWarranty() {
       }).then(({ data, error }) => {
         if (error || !data?.success) {
           console.error("Customer invite error:", error || data?.error);
+          toast.error("Warranty created but failed to send customer invite email");
+        } else if (data.isNewAccount) {
+          toast.success(`Customer portal account created for ${form.email}`);
+        } else {
+          toast.info(`Warranty notification sent to ${form.email}`);
         }
       });
     }
-    setCreatedWarranty({
-      customerName: form.customerName,
-      email: form.email,
-      vehicleReg: vehicle.registration,
-      vehicleMake: vehicle.make,
-      vehicleModel: vehicle.model,
-      startDate,
-      endDate,
-      isFree: isFreeWarranty,
-    });
+    navigate("/dealer/warranties");
   };
 
   const selectedTemplate = templates.find(t => t.id === form.coverTemplateId);
-
-  if (createdWarranty) {
-    return (
-      <div className="max-w-lg mx-auto text-center py-12 space-y-6 animate-fade-in">
-        <div className="w-20 h-20 rounded-full bg-primary/15 flex items-center justify-center mx-auto">
-          <CheckCircle2 className="w-10 h-10 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold font-display mb-2">
-            {createdWarranty.isFree ? "Free Warranty Created!" : "Payment Successful!"}
-          </h1>
-          <p className="text-muted-foreground">Warranty has been issued and is now active.</p>
-        </div>
-        <div className="glass-card rounded-xl p-5 text-left space-y-3">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Vehicle</span>
-            <span className="font-medium">{createdWarranty.vehicleReg} — {createdWarranty.vehicleMake} {createdWarranty.vehicleModel}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Customer</span>
-            <span className="font-medium">{createdWarranty.customerName}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Period</span>
-            <span className="font-medium">{new Date(createdWarranty.startDate).toLocaleDateString("en-GB")} — {new Date(createdWarranty.endDate).toLocaleDateString("en-GB")}</span>
-          </div>
-          {createdWarranty.email && (
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Portal Invite</span>
-              <span className="font-medium text-primary">Sent to {createdWarranty.email}</span>
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button onClick={() => navigate("/dealer/warranties")} variant="outline">View All Warranties</Button>
-          <Button onClick={() => { setCreatedWarranty(null); setStep(1); setVehicle(null); setDvsaData(null); setForm({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", fundContribution: "", notes: "", coverTemplateId: "" }); setCustomerType(null); setSelectedCustomerId(""); setReg(""); }}>
-            <Plus className="w-4 h-4 mr-2" /> Add Another Warranty
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -330,19 +237,7 @@ export default function AddWarranty() {
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div><span className="text-muted-foreground">Make:</span> <span className="font-medium">{vehicle.make}</span></div>
-                <div>
-                  <span className="text-muted-foreground">Model:</span>{" "}
-                  {vehicle.model && vehicle.model !== "Unknown" ? (
-                    <span className="font-medium">{vehicle.model}</span>
-                  ) : (
-                    <Input
-                      placeholder="Enter model (e.g. Jogger)"
-                      className="inline-block h-7 w-40 text-sm mt-0.5"
-                      value={vehicle.model === "Unknown" ? "" : vehicle.model}
-                      onChange={e => setVehicle(v => v ? { ...v, model: e.target.value } : v)}
-                    />
-                  )}
-                </div>
+                <div><span className="text-muted-foreground">Model:</span> <span className="font-medium">{vehicle.model}</span></div>
                 <div><span className="text-muted-foreground">Year:</span> <span className="font-medium">{vehicle.year}</span></div>
                 <div><span className="text-muted-foreground">Colour:</span> <span className="font-medium">{vehicle.colour}</span></div>
                 <div><span className="text-muted-foreground">Fuel:</span> <span className="font-medium">{vehicle.fuelType}</span></div>
@@ -433,16 +328,34 @@ export default function AddWarranty() {
             </div>
           )}
 
-          {/* Existing Customer Selector with Search */}
+          {/* Existing Customer Selector */}
           {customerType === "existing" && (
-            <ExistingCustomerSearch
-              customers={allCustomers}
-              selectedCustomerId={selectedCustomerId}
-              onSelect={handleSelectExistingCustomer}
-              onClear={() => { setCustomerType(null); setSelectedCustomerId(""); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}
-              selectedName={form.customerName}
-              selectedEmail={form.email}
-            />
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Select Customer</Label>
+                <Button variant="ghost" size="sm" onClick={() => { setCustomerType(null); setSelectedCustomerId(""); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}>
+                  Change
+                </Button>
+              </div>
+              <Select value={selectedCustomerId} onValueChange={handleSelectExistingCustomer}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a customer..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {allCustomers.map(c => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name} — {c.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedCustomerId && (
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm space-y-1">
+                  <p className="font-medium text-primary">Selected: {form.customerName}</p>
+                  <p className="text-muted-foreground">{form.email}</p>
+                </div>
+              )}
+            </div>
           )}
 
           {/* New Customer Form */}
@@ -565,14 +478,8 @@ export default function AddWarranty() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Warranty Selling Price (£) *</Label>
+              <Label>Cost (£) *</Label>
               <Input type="number" placeholder="599" value={form.cost} onChange={e => setForm({ ...form, cost: e.target.value })} />
-              <p className="text-xs text-muted-foreground">The price you charged the customer for this warranty</p>
-            </div>
-            <div className="space-y-2">
-              <Label>Fund Contribution (£)</Label>
-              <Input type="number" placeholder="200" value={form.fundContribution} onChange={e => setForm({ ...form, fundContribution: e.target.value })} />
-              <p className="text-xs text-muted-foreground">Amount you're setting aside in the warranty fund for claims</p>
             </div>
           </div>
           <div className="space-y-2">
@@ -608,8 +515,7 @@ export default function AddWarranty() {
                 <p><span className="text-muted-foreground">Vehicle:</span> {vehicle.year} {vehicle.make} {vehicle.model} ({vehicle.registration})</p>
                 <p><span className="text-muted-foreground">Customer:</span> {form.customerName}</p>
                 <p><span className="text-muted-foreground">Duration:</span> {form.duration} months</p>
-                <p><span className="text-muted-foreground">Selling Price:</span> £{form.cost}</p>
-                {form.fundContribution && <p><span className="text-muted-foreground">Fund Contribution:</span> £{form.fundContribution}</p>}
+                <p><span className="text-muted-foreground">Warranty Value:</span> £{form.cost}</p>
                 {selectedTemplate && <p><span className="text-muted-foreground">Cover Level:</span> {selectedTemplate.levelName}</p>}
               </div>
             )}

@@ -47,11 +47,11 @@ export default function DisputeIQPage() {
             <Sparkles className="w-4 h-4 text-[hsl(var(--cta))]" />
             <span className="text-sm text-white/60 font-semibold tracking-[0.2em] uppercase">AI-Powered</span>
           </motion.div>
-          <motion.h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold font-display tracking-tight text-white leading-[1.05] mb-6"
+          <motion.h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display tracking-tight text-white leading-[1.1] mb-6"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             Not sure how to respond to a<br />customer complaint<span className="text-[hsl(var(--cta))]">?</span>
           </motion.h1>
-          <motion.p className="text-lg text-white/55 max-w-2xl mx-auto mb-10 leading-relaxed"
+          <motion.p className="text-lg text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
             DisputeIQ guides you through the situation and helps you send the right response — before things escalate.
           </motion.p>
@@ -182,24 +182,21 @@ export default function DisputeIQPage() {
         </div>
       </section>
 
-      {/* Output Preview — Hero treatment for the flagship free tool */}
-      <section className="py-24 md:py-32 bg-background section-hairline">
+      {/* Output Preview */}
+      <section className="py-20 bg-background">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <motion.span className="eyebrow eyebrow-cta" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}>
-            Live Output
-          </motion.span>
-          <motion.h2 className="text-4xl sm:text-5xl font-bold font-display tracking-tight mb-4" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}>
+          <motion.h2 className="text-3xl sm:text-4xl font-bold font-display mb-4" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}>
             See what DisputeIQ generates
           </motion.h2>
-          <motion.p className="text-muted-foreground mb-12 leading-relaxed max-w-xl mx-auto" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={2}>
+          <motion.p className="text-muted-foreground mb-10" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}>
             Professional responses, ready to send — tailored to your exact situation.
           </motion.p>
-          <motion.div className="glass-card rounded-2xl p-10 sm:p-12 text-left max-w-3xl mx-auto" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={3}>
-            <div className="flex items-center gap-2 mb-6">
+          <motion.div className="glass-card rounded-xl p-8 text-left max-w-2xl mx-auto" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={2}>
+            <div className="flex items-center gap-2 mb-4">
               <div className="w-2 h-2 rounded-full bg-primary" />
-              <p className="text-xs font-semibold text-primary uppercase tracking-[0.18em]">Helpful Response · Ready to Send</p>
+              <p className="text-xs font-semibold text-primary uppercase tracking-wider">Helpful Response</p>
             </div>
-            <div className="text-base text-foreground leading-relaxed space-y-4">
+            <div className="text-sm text-foreground leading-relaxed space-y-3">
               <p>Hi James,</p>
               <p>Thanks for getting in touch and letting us know about the issue with the engine warning light. I completely understand how frustrating this must be.</p>
               <p>We take all customer concerns seriously, and I'd like to arrange for our workshop to inspect the vehicle at our earliest convenience — at no cost to you.</p>

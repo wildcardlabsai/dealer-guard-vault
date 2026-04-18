@@ -156,7 +156,7 @@ type FundInsight = {
 
 export default function DealerWarrantyFund() {
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "";
+  const dealerId = user?.dealerId || "d-1";
   const { warranties } = useWarrantyStore();
   const claimStore = useClaimStore();
   const dealerSettingsStore = useDealerSettingsStore();

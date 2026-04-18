@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, ChevronDown, Shield, Headphones, Sparkles, Wallet, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logoLight from "@/assets/warrantylogo-light.png";
-import { usePublicTheme } from "@/hooks/use-public-theme";
+import logo from "@/assets/warrantylogo.png";
 
 const productItems = [
   { to: "/features#warranty-management", label: "Warranty Management", icon: Shield, desc: "Issue and manage warranties" },
@@ -20,7 +19,6 @@ export default function PublicNav({ currentPage }: PublicNavProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  usePublicTheme();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -35,7 +33,7 @@ export default function PublicNav({ currentPage }: PublicNavProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0">
-          <img src={logoLight} alt="WarrantyVault" className="h-7 sm:h-8" />
+          <img src={logo} alt="WarrantyVault" className="h-7 sm:h-8" />
         </Link>
 
         {/* Centre nav */}

@@ -12,11 +12,14 @@ import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead from "@/components/SEOHead";
 
-import {
-  WarrantyManagementMock, CustomerPortalMock, ClaimsManagementMock, ClaimAssistMock,
-  ProfitTrackingMock, DisputeIQMock, WarrantyFundMock, WarrantyLineMock,
-  CoverTemplatesMock, DocumentsMock, SupportMock,
-} from "@/components/feature-mocks/FeatureMocks";
+import screenshotWarrantyMgmt from "@/assets/screenshots/warranty-management.png";
+import screenshotCustomerPortal from "@/assets/screenshots/customer-portal.png";
+import screenshotClaims from "@/assets/screenshots/claims-management.png";
+import screenshotProfit from "@/assets/screenshots/profit-tracking.png";
+import screenshotWarrantyLine from "@/assets/screenshots/warranty-line.png";
+import screenshotCoverTemplates from "@/assets/screenshots/cover-templates.png";
+import screenshotDocuments from "@/assets/screenshots/dealer-documents.png";
+import screenshotSupport from "@/assets/screenshots/dealer-support.png";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -43,7 +46,7 @@ interface FeatureShowcase {
   title: string;
   desc: string;
   bullets: string[];
-  Mock: React.ComponentType;
+  screenshot: string;
 }
 
 const coreFeatures: FeatureShowcase[] = [
@@ -52,14 +55,14 @@ const coreFeatures: FeatureShowcase[] = [
     title: "Warranty Management",
     desc: "Create, edit and track all warranties from a single dashboard. Full visibility across your dealership with real-time status updates.",
     bullets: ["Issue warranties in seconds", "Track active, expired, and claimed", "Full audit trail on every warranty", "Multi-site support for dealer groups"],
-    Mock: WarrantyManagementMock,
+    screenshot: screenshotWarrantyMgmt,
   },
   {
     icon: UserCheck,
     title: "Customer Portal",
     desc: "Give every customer their own login to view warranty details, download certificates, and submit claims directly.",
     bullets: ["Dedicated /customers login page", "View warranty status and documents", "Submit claims with photo evidence", "Reduces inbound phone calls"],
-    Mock: CustomerPortalMock,
+    screenshot: screenshotCustomerPortal,
   },
 ];
 
@@ -69,21 +72,21 @@ const claimsFeatures: FeatureShowcase[] = [
     title: "Claims Management",
     desc: "Handle claims your way — approve, reject, or request more info in seconds. No third-party delays or queues.",
     bullets: ["Same-day claim decisions", "Request additional evidence", "Track claim costs vs revenue", "Notification alerts for new claims"],
-    Mock: ClaimsManagementMock,
+    screenshot: screenshotClaims,
   },
   {
     icon: Gavel,
     title: "Claim Assist",
     desc: "End-to-end claim handling workspace with evidence requests, checklists, messaging, and structured decision workflows — all in one place.",
     bullets: ["Review evidence and photos inline", "Checklist-driven claim process", "Built-in messaging with customers", "Evidence Pack Generator for printable claim summaries"],
-    Mock: ClaimAssistMock,
+    screenshot: screenshotClaims,
   },
   {
     icon: BarChart3,
     title: "Profit Tracking",
     desc: "See exactly what you're making from warranties vs what you're paying out. Real-time dashboards show your true margin.",
     bullets: ["Revenue vs payout breakdown", "Per-warranty profit visibility", "Monthly and yearly trends", "Helps build your claims reserve"],
-    Mock: ProfitTrackingMock,
+    screenshot: screenshotProfit,
   },
 ];
 
@@ -93,14 +96,14 @@ const intelligenceFeatures: FeatureShowcase[] = [
     title: "DisputeIQ",
     desc: "AI-powered complaint handler that analyses disputes against UK Consumer Rights Act timelines, identifies risk levels, and generates professional responses. Completely free for all dealers — no warranty purchase required.",
     bullets: ["100% free — just sign up, no purchase needed", "CRA-based legal reasoning and risk scoring", "Response generation in 4 styles: Helpful, Firm, Defensive, De-escalation", "Strategy Mode with internal risks and 'what NOT to say'"],
-    Mock: DisputeIQMock,
+    screenshot: screenshotClaims,
   },
   {
     icon: Wallet,
     title: "Warranty Fund",
     desc: "Financial oversight system that tracks contributions against payouts, calculates buffer health, and projects future claim impact with AI-powered recommendations.",
     bullets: ["Live fund health: Healthy, Watch, or Risk status", "Buffer calculation based on active warranties and risk", "Scenario simulator to project future claim impact", "AI contribution recommendations and market benchmarking"],
-    Mock: WarrantyFundMock,
+    screenshot: screenshotProfit,
   },
 ];
 
@@ -110,28 +113,28 @@ const addonFeatures: FeatureShowcase[] = [
     title: "Warranty Line",
     desc: "Give your dealership a dedicated warranty phone line with professional greetings, hold music, and IVR routing.",
     bullets: ["Custom greeting with your name", "Professional hold music", "Route calls to the right team", "Only £25/month add-on"],
-    Mock: WarrantyLineMock,
+    screenshot: screenshotWarrantyLine,
   },
   {
     icon: FileText,
     title: "Cover Templates",
     desc: "Create and manage reusable cover templates so every warranty is consistent and easy to issue.",
     bullets: ["Pre-built coverage options", "Customise terms and conditions", "Assign to warranties in one click", "Maintain consistency across sales"],
-    Mock: CoverTemplatesMock,
+    screenshot: screenshotCoverTemplates,
   },
   {
     icon: FolderOpen,
     title: "Dealer Documents",
     desc: "Store, manage and download essential warranty documents — T&Cs, claim forms, compliance templates — all in one place.",
     bullets: ["Pre-built document templates", "Download or view in-browser", "Keep your compliance organised", "Always accessible from dashboard"],
-    Mock: DocumentsMock,
+    screenshot: screenshotDocuments,
   },
   {
     icon: Headphones,
     title: "Dealer Support",
     desc: "Built-in support ticket system so you can raise issues, ask questions, and get help without leaving the platform.",
     bullets: ["Submit tickets from dashboard", "Track open and resolved issues", "Priority support for urgent queries", "No external email chains needed"],
-    Mock: SupportMock,
+    screenshot: screenshotSupport,
   },
 ];
 
@@ -146,7 +149,6 @@ const comparisonRows = [
 
 function FeatureSection({ feature, index }: { feature: FeatureShowcase; index: number }) {
   const isReversed = index % 2 === 1;
-  const { Mock } = feature;
   return (
     <motion.div
       initial={{ opacity: 0, y: 32 }}
@@ -173,7 +175,9 @@ function FeatureSection({ feature, index }: { feature: FeatureShowcase; index: n
         </div>
       </div>
       <div className={isReversed ? "lg:[direction:ltr]" : ""}>
-        <Mock />
+        <div className="relative rounded-2xl border border-white/10 bg-[hsl(222,25%,8%)] overflow-hidden shadow-2xl">
+          <img src={feature.screenshot} alt={`${feature.title} screenshot`} className="w-full h-auto" loading="lazy" />
+        </div>
       </div>
     </motion.div>
   );
@@ -203,11 +207,11 @@ export default function FeaturesPage() {
       <PublicNav currentPage="/features" />
 
       {/* Hero */}
-      <section className="hero-gradient pt-32 pb-20 px-6">
+      <section className="hero-gradient pt-32 pb-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <span className="eyebrow eyebrow-cta">Platform Features</span>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold font-display text-white tracking-tight leading-[1.05] mb-6">Everything you need to run warranties in-house</h1>
-          <p className="text-white/55 text-lg max-w-2xl mx-auto leading-relaxed">Built for UK dealers who want higher margins, faster claim decisions, and fewer admin headaches.</p>
+          <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Platform Features</span>
+          <h1 className="text-4xl sm:text-5xl font-bold font-display text-white mb-4">Everything you need to run warranties in-house</h1>
+          <p className="text-white/50 text-lg max-w-2xl mx-auto">Built for UK dealers who want higher margins, faster claim decisions, and fewer admin headaches.</p>
         </div>
       </section>
 
@@ -228,13 +232,13 @@ export default function FeaturesPage() {
       </section>
 
       {/* Core Features */}
-      <section id="warranty-management" className="py-24 md:py-32 px-6 bg-secondary/30 scroll-mt-20 section-hairline">
+      <section id="warranty-management" className="py-14 px-6 bg-secondary/30 scroll-mt-20">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 max-w-2xl mx-auto">
-            <span className="eyebrow">Core Features</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight">The foundation of your warranty business</h2>
+          <div className="text-center mb-12">
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Core Features</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display">The foundation of your warranty business</h2>
           </div>
-          <div className="space-y-24">
+          <div className="space-y-20">
             {coreFeatures.map((f, i) => (
               <FeatureSection key={f.title} feature={f} index={i} />
             ))}
@@ -243,13 +247,13 @@ export default function FeaturesPage() {
       </section>
 
       {/* Claims & Control */}
-      <section id="claim-assist" className="py-24 md:py-32 px-6 scroll-mt-20 section-hairline">
+      <section id="claim-assist" className="py-14 px-6 scroll-mt-20">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 max-w-2xl mx-auto">
-            <span className="eyebrow eyebrow-cta">Claims & Control</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight">Stay in control of every claim and payout</h2>
+          <div className="text-center mb-12">
+            <span className="text-[hsl(var(--cta))] text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Claims & Control</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display">Stay in control of every claim and payout</h2>
           </div>
-          <div className="space-y-24">
+          <div className="space-y-20">
             {claimsFeatures.map((f, i) => (
               <FeatureSection key={f.title} feature={f} index={i} />
             ))}
@@ -258,13 +262,13 @@ export default function FeaturesPage() {
       </section>
 
       {/* Intelligence & Risk */}
-      <section id="warranty-fund" className="py-24 md:py-32 px-6 bg-secondary/30 scroll-mt-20 section-hairline">
+      <section id="warranty-fund" className="py-14 px-6 bg-secondary/30 scroll-mt-20">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 max-w-2xl mx-auto">
-            <span className="eyebrow">Intelligence & Risk</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight">AI-powered tools to protect your business</h2>
+          <div className="text-center mb-12">
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Intelligence & Risk</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display">AI-powered tools to protect your business</h2>
           </div>
-          <div className="space-y-24">
+          <div className="space-y-20">
             {intelligenceFeatures.map((f, i) => (
               <FeatureSection key={f.title} feature={f} index={i} />
             ))}
@@ -273,13 +277,13 @@ export default function FeaturesPage() {
       </section>
 
       {/* Add-ons */}
-      <section className="py-24 md:py-32 px-6 section-hairline">
+      <section className="py-14 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 max-w-2xl mx-auto">
-            <span className="eyebrow">Add-ons & Extras</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight">Optional tools to level up your operation</h2>
+          <div className="text-center mb-12">
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Add-ons & Extras</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display">Optional tools to level up your operation</h2>
           </div>
-          <div className="space-y-24">
+          <div className="space-y-20">
             {addonFeatures.map((f, i) => (
               <FeatureSection key={f.title} feature={f} index={i} />
             ))}
@@ -288,22 +292,22 @@ export default function FeaturesPage() {
       </section>
 
       {/* Comparison */}
-      <section className="py-24 md:py-32 px-6 bg-secondary/30 section-hairline">
+      <section className="py-16 px-6 bg-secondary/30">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12 max-w-2xl mx-auto">
-            <span className="eyebrow">Dealer Comparison</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight mb-4">See the difference in one glance</h2>
-            <p className="text-muted-foreground leading-relaxed">Built to make profit and control obvious, not hidden in paperwork and provider delays.</p>
+          <div className="text-center mb-10">
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Dealer Comparison</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">See the difference in one glance</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">Built to make profit and control obvious, not hidden in paperwork and provider delays.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <div className="flex items-center justify-between mb-4 px-1 py-2 rounded-lg bg-destructive/5 border border-destructive/15 px-3">
-                <h3 className="font-semibold font-display text-destructive/80">With Warranty Providers</h3>
-                <span className="text-[10px] font-semibold uppercase tracking-wider bg-destructive/15 text-destructive px-3 py-1 rounded-full">Less Control</span>
+              <div className="flex items-center justify-between mb-4 px-1">
+                <h3 className="font-semibold font-display text-muted-foreground">With Warranty Providers</h3>
+                <span className="text-[10px] font-semibold uppercase tracking-wider bg-destructive/10 text-destructive px-3 py-1 rounded-full">Less Control</span>
               </div>
               <div className="space-y-3">
-                {comparisonRows.map((row, i) => (
-                  <div key={row.label} className={`compare-row-alt rounded-xl p-5 border border-[hsl(30_20%_88%)] bg-white`}>
+                {comparisonRows.map(row => (
+                  <div key={row.label} className="glass-card rounded-xl p-5">
                     <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-muted-foreground/60 mb-2">{row.label}</p>
                     <div className="flex items-center gap-2">
                       <X className="w-4 h-4 text-destructive flex-shrink-0" />
@@ -314,13 +318,13 @@ export default function FeaturesPage() {
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between mb-4 px-3 py-2 rounded-lg bg-primary/5 border border-primary/20">
-                <h3 className="font-semibold font-display text-primary">With WarrantyVault</h3>
-                <span className="text-[10px] font-semibold uppercase tracking-wider bg-primary/15 text-primary px-3 py-1 rounded-full">Higher Margin</span>
+              <div className="flex items-center justify-between mb-4 px-1">
+                <h3 className="font-semibold font-display">With WarrantyVault</h3>
+                <span className="text-[10px] font-semibold uppercase tracking-wider bg-primary/10 text-primary px-3 py-1 rounded-full">Higher Margin</span>
               </div>
               <div className="space-y-3">
-                {comparisonRows.map((row, i) => (
-                  <div key={row.label} className="compare-row-alt rounded-xl p-5 border border-primary/20 bg-primary/[0.04]">
+                {comparisonRows.map(row => (
+                  <div key={row.label} className="glass-card rounded-xl p-5 border-primary/20 bg-primary/[0.03]">
                     <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-primary/70 mb-2">{row.label}</p>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />

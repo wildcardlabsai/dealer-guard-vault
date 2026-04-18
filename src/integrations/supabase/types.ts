@@ -328,45 +328,6 @@ export type Database = {
         }
         Relationships: []
       }
-      dealer_terms_acceptance: {
-        Row: {
-          accepted_dashboard_terms: boolean
-          accepted_dashboard_terms_at: string | null
-          created_at: string
-          dashboard_ip_address: string | null
-          dashboard_terms_version: string
-          dashboard_user_agent: string | null
-          dealer_id: string
-          id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          accepted_dashboard_terms?: boolean
-          accepted_dashboard_terms_at?: string | null
-          created_at?: string
-          dashboard_ip_address?: string | null
-          dashboard_terms_version: string
-          dashboard_user_agent?: string | null
-          dealer_id: string
-          id?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          accepted_dashboard_terms?: boolean
-          accepted_dashboard_terms_at?: string | null
-          created_at?: string
-          dashboard_ip_address?: string | null
-          dashboard_terms_version?: string
-          dashboard_user_agent?: string | null
-          dealer_id?: string
-          id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       dealers: {
         Row: {
           address: string | null
@@ -639,8 +600,6 @@ export type Database = {
       }
       signup_requests: {
         Row: {
-          accepted_signup_terms: boolean
-          accepted_signup_terms_at: string | null
           address: string | null
           city: string | null
           contact_name: string
@@ -655,14 +614,9 @@ export type Database = {
           postcode: string | null
           rejection_reason: string | null
           reviewed_at: string | null
-          signup_ip_address: string | null
-          signup_terms_version: string | null
-          signup_user_agent: string | null
           status: string
         }
         Insert: {
-          accepted_signup_terms?: boolean
-          accepted_signup_terms_at?: string | null
           address?: string | null
           city?: string | null
           contact_name: string
@@ -677,14 +631,9 @@ export type Database = {
           postcode?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
-          signup_ip_address?: string | null
-          signup_terms_version?: string | null
-          signup_user_agent?: string | null
           status?: string
         }
         Update: {
-          accepted_signup_terms?: boolean
-          accepted_signup_terms_at?: string | null
           address?: string | null
           city?: string | null
           contact_name?: string
@@ -699,9 +648,6 @@ export type Database = {
           postcode?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
-          signup_ip_address?: string | null
-          signup_terms_version?: string | null
-          signup_user_agent?: string | null
           status?: string
         }
         Relationships: []

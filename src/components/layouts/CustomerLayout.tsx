@@ -1,11 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotificationStore } from "@/lib/notification-store";
 import { LayoutDashboard, Shield, FileText, MessageSquare, LogOut, BookOpen, Bell, Check, ClipboardList, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
-import Logo from "@/components/Logo";
+import logo from "@/assets/warrantylogo.png";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [
@@ -22,7 +21,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
   const location = useLocation();
   const navigate = useNavigate();
   const notifStore = useNotificationStore();
-  const userId = user?.id || "";
+  const userId = user?.id || "customer-1";
   const unreadCount = notifStore.unreadCount(userId);
   const notifications = notifStore.getNotifications(userId);
   const [showNotifs, setShowNotifs] = useState(false);
@@ -47,12 +46,10 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
   };
 
   return (
-    <>
-    <SEOHead title="Customer Portal | WarrantyVault" description="View your warranty, claims and coverage details." noindex />
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50">
-          <Logo className="h-6" />
+          <img src={logo} alt="WarrantyVault" className="h-6" />
         </div>
         <nav className="flex-1 p-2 space-y-1">
           {navItems.map(item => {
@@ -80,7 +77,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
       </aside>
       <div className="flex-1 flex flex-col min-w-0">
         <header className="md:hidden h-14 border-b border-border/50 flex items-center px-4 gap-3 bg-card/40">
-          <Logo className="h-5" />
+          <img src={logo} alt="WarrantyVault" className="h-5" />
           <div className="flex-1" />
           <div className="relative" ref={notifRef}>
             <Button variant="ghost" size="icon" className="relative h-9 w-9" onClick={() => setShowNotifs(!showNotifs)}>
@@ -118,7 +115,6 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
         <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
-    </>
   );
 }
 

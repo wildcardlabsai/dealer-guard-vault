@@ -56,7 +56,7 @@ serve(async (req) => {
     // Map DVLA response to our DVLAVehicle format
     const vehicle = {
       make: data.make || "Unknown",
-      model: data.model || "Unknown",
+      model: data.model || data.genericMake || data.make || "Unknown",
       colour: data.colour || "Unknown",
       year: data.yearOfManufacture || 0,
       fuelType: data.fuelType || "Unknown",

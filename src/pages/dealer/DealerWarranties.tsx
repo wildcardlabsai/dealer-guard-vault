@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import EmptyState from "@/components/EmptyState";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useAuth } from "@/contexts/AuthContext";
 import { lookupVehicle, type DVLAVehicle } from "@/lib/simulated-apis";
@@ -38,14 +37,10 @@ const sortLabels: Record<SortOption, string> = {
 
 export default function DealerWarranties() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useAuth();
-  const dealerId = user?.dealerId || "";
+  const dealerId = user?.dealerId || "d-1";
   const store = useWarrantyStore();
-
-  // Pre-fill search from customer link (e.g. ?customer=email)
-  const customerParam = new URLSearchParams(location.search).get("customer");
-  const [search, setSearch] = useState(customerParam || "");
+  const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -267,11 +262,6 @@ export default function DealerWarranties() {
                 </tr>
                 );
               })}
-              {warranties.length === 0 && (
-                <tr><td colSpan={8} className="p-0">
-                  <EmptyState icon={FileText} title="No Warranties Found" description="Issue your first warranty to get started. Your first 5 are free!" actionLabel="Add Warranty" actionPath="/dealer/warranties/new" />
-                </td></tr>
-              )}
             </tbody>
           </table>
         </div>
