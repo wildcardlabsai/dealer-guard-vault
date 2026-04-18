@@ -3,82 +3,80 @@
 @tailwind utilities;
 
 /* =====================================================================
-   WARRANTYVAULT — "British Racing" palette
-   Primary:  Deep Racing Green   hsl(155 45% 22%)
-   Accent:   Brass / Gold        hsl(38 75% 52%)
-   Bg:       Warm bone white     hsl(40 30% 97%)
-   Ink:      Charcoal            hsl(220 15% 12%)
+   WARRANTYVAULT — Public dark theme (navy + teal + orange CTA)
+   Bg:      Deep navy            hsl(222 30% 6%)
+   Surface: Lifted navy panels   hsl(222 28% 10%)
+   Primary: Teal                 hsl(172 66% 40%)
+   CTA:     Orange               hsl(25 95% 53%)
+   Ink:     Near-white           hsl(40 20% 96%)
    ===================================================================== */
 
 @layer base {
   :root {
-    --background: 40 30% 97%;
-    --tertiary-surface: 36 35% 93%;
-    --hairline: 36 18% 88%;
-    --foreground: 220 15% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 15% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 12%;
-    --primary: 155 45% 22%;
-    --primary-foreground: 40 30% 97%;
-    --secondary: 36 20% 92%;
-    --secondary-foreground: 220 15% 12%;
-    --muted: 36 18% 93%;
-    --muted-foreground: 220 8% 42%;
-    --accent: 38 75% 52%;
-    --accent-foreground: 220 15% 12%;
-    --destructive: 0 72% 45%;
+    --background: 222 30% 6%;
+    --foreground: 40 20% 96%;
+    --card: 222 28% 10%;
+    --card-foreground: 40 20% 96%;
+    --popover: 222 28% 10%;
+    --popover-foreground: 40 20% 96%;
+    --primary: 172 66% 40%;
+    --primary-foreground: 222 30% 6%;
+    --secondary: 222 22% 14%;
+    --secondary-foreground: 40 20% 96%;
+    --muted: 222 20% 14%;
+    --muted-foreground: 220 10% 65%;
+    --accent: 25 95% 53%;
+    --accent-foreground: 222 30% 6%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 36 16% 86%;
-    --input: 36 16% 86%;
-    --ring: 155 45% 22%;
+    --border: 222 18% 16%;
+    --input: 222 18% 16%;
+    --ring: 172 66% 40%;
     --radius: 0.75rem;
-    --cta: 38 75% 52%;
-    --cta-foreground: 220 25% 10%;
-    --hero-bg: 155 45% 12%;
-    --sidebar-background: 40 25% 96%;
-    --sidebar-foreground: 220 15% 12%;
-    --sidebar-primary: 155 45% 22%;
-    --sidebar-primary-foreground: 40 30% 97%;
-    --sidebar-accent: 36 18% 92%;
-    --sidebar-accent-foreground: 220 15% 12%;
-    --sidebar-border: 36 16% 86%;
-    --sidebar-ring: 155 45% 22%;
+    --cta: 25 95% 53%;
+    --cta-foreground: 222 30% 6%;
+    --hero-bg: 222 35% 5%;
+    --sidebar-background: 222 30% 7%;
+    --sidebar-foreground: 40 20% 96%;
+    --sidebar-primary: 172 66% 40%;
+    --sidebar-primary-foreground: 222 30% 6%;
+    --sidebar-accent: 222 20% 14%;
+    --sidebar-accent-foreground: 40 20% 96%;
+    --sidebar-border: 222 18% 16%;
+    --sidebar-ring: 172 66% 40%;
   }
 
   .dark {
-    --background: 155 30% 7%;
-    --foreground: 40 20% 92%;
-    --card: 155 25% 10%;
-    --card-foreground: 40 20% 92%;
-    --popover: 155 25% 10%;
-    --popover-foreground: 40 20% 92%;
-    --primary: 155 50% 38%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 155 20% 14%;
-    --secondary-foreground: 40 20% 92%;
-    --muted: 155 18% 14%;
-    --muted-foreground: 40 10% 62%;
-    --accent: 38 80% 58%;
-    --accent-foreground: 220 25% 10%;
+    --background: 222 30% 6%;
+    --foreground: 40 20% 96%;
+    --card: 222 28% 10%;
+    --card-foreground: 40 20% 96%;
+    --popover: 222 28% 10%;
+    --popover-foreground: 40 20% 96%;
+    --primary: 172 66% 40%;
+    --primary-foreground: 222 30% 6%;
+    --secondary: 222 22% 14%;
+    --secondary-foreground: 40 20% 96%;
+    --muted: 222 20% 14%;
+    --muted-foreground: 220 10% 65%;
+    --accent: 25 95% 53%;
+    --accent-foreground: 222 30% 6%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 155 18% 16%;
-    --input: 155 18% 16%;
-    --ring: 155 50% 38%;
-    --radius: 0.75rem;
-    --cta: 38 80% 58%;
-    --cta-foreground: 220 25% 10%;
-    --hero-bg: 155 45% 10%;
-    --sidebar-background: 155 28% 9%;
-    --sidebar-foreground: 40 20% 92%;
-    --sidebar-primary: 155 50% 38%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 155 18% 14%;
-    --sidebar-accent-foreground: 40 20% 92%;
-    --sidebar-border: 155 18% 16%;
-    --sidebar-ring: 155 50% 38%;
+    --border: 222 18% 16%;
+    --input: 222 18% 16%;
+    --ring: 172 66% 40%;
+    --cta: 25 95% 53%;
+    --cta-foreground: 222 30% 6%;
+    --hero-bg: 222 35% 5%;
+    --sidebar-background: 222 30% 7%;
+    --sidebar-foreground: 40 20% 96%;
+    --sidebar-primary: 172 66% 40%;
+    --sidebar-primary-foreground: 222 30% 6%;
+    --sidebar-accent: 222 20% 14%;
+    --sidebar-accent-foreground: 40 20% 96%;
+    --sidebar-border: 222 18% 16%;
+    --sidebar-ring: 172 66% 40%;
   }
 }
 
@@ -98,503 +96,49 @@
 
 @layer utilities {
   .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50 shadow-lg;
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] shadow-lg;
   }
   .glass-card-strong {
-    @apply bg-card/80 backdrop-blur-2xl border border-border/60 shadow-xl;
+    @apply bg-white/[0.05] backdrop-blur-2xl border border-white/[0.08] shadow-xl;
   }
   .glow-primary {
-    box-shadow: 0 0 30px -5px hsl(155 50% 38% / 0.3);
+    box-shadow: 0 0 30px -5px hsl(172 66% 40% / 0.3);
   }
   .glow-primary-sm {
-    box-shadow: 0 0 15px -3px hsl(155 50% 38% / 0.25);
+    box-shadow: 0 0 15px -3px hsl(172 66% 40% / 0.25);
   }
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(155_45%_28%)] to-[hsl(38_75%_48%)];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(172_66%_50%)] to-[hsl(25_95%_60%)];
   }
   .gradient-border {
-    border-image: linear-gradient(135deg, hsl(155 45% 28%), hsl(38 75% 52%)) 1;
+    border-image: linear-gradient(135deg, hsl(172 66% 40%), hsl(25 95% 53%)) 1;
   }
   .hero-gradient {
-    background: linear-gradient(135deg, hsl(155 45% 10%) 0%, hsl(155 50% 8%) 50%, hsl(160 35% 14%) 100%);
+    background: linear-gradient(135deg, hsl(222 35% 5%) 0%, hsl(222 30% 7%) 50%, hsl(222 28% 9%) 100%);
   }
   .btn-cta {
-    @apply bg-[hsl(38,75%,52%)] text-[hsl(220,25%,10%)] font-semibold hover:bg-[hsl(38,75%,46%)] transition-colors;
+    @apply bg-[hsl(25,95%,53%)] text-[hsl(222,30%,6%)] font-semibold hover:bg-[hsl(25,95%,48%)] transition-colors;
   }
 }
 
 /* =====================================================================
-   PUBLIC LIGHT MODE — bone-white surfaces, racing-green ink
-   Feature mocks intentionally stay dark.
+   Surface helpers — kept as no-op aliases to the dark theme so existing
+   markup using surface-bone/warm/green/brass continues to render the
+   intended dark navy aesthetic.
    ===================================================================== */
-body.public-light {
-  background: hsl(40 30% 97%);
-  color: hsl(220 15% 12%);
-}
-
-/* Feature mock overrides */
-body.public-light .feature-mock h1,
-body.public-light .feature-mock h2,
-body.public-light .feature-mock h3,
-body.public-light .feature-mock h4,
-body.public-light .feature-mock h5,
-body.public-light .feature-mock h6,
-body.public-light .feature-mock .text-white,
-body.public-light .feature-mock [class*="text-white/95"],
-body.public-light .feature-mock [class*="text-white/90"],
-body.public-light .feature-mock [class*="text-white/85"],
-body.public-light .feature-mock [class*="text-white/80"] {
-  color: hsl(0 0% 100%) !important;
-}
-
-body.public-light .feature-mock [class*="text-white/75"],
-body.public-light .feature-mock [class*="text-white/70"],
-body.public-light .feature-mock [class*="text-white/65"] {
-  color: hsl(40 20% 86%) !important;
-}
-
-body.public-light .feature-mock [class*="text-white/60"],
-body.public-light .feature-mock [class*="text-white/55"],
-body.public-light .feature-mock [class*="text-white/50"],
-body.public-light .feature-mock [class*="text-slate-300"] {
-  color: hsl(40 16% 78%) !important;
-}
-
-body.public-light .feature-mock [class*="text-white/45"],
-body.public-light .feature-mock [class*="text-white/40"],
-body.public-light .feature-mock [class*="text-white/35"],
-body.public-light .feature-mock [class*="text-slate-400"] {
-  color: hsl(40 12% 64%) !important;
-}
-
-body.public-light .feature-mock [class*="text-white/30"],
-body.public-light .feature-mock [class*="text-white/25"],
-body.public-light .feature-mock [class*="text-white/20"],
-body.public-light .feature-mock [class*="text-white/15"],
-body.public-light .feature-mock [class*="text-white/10"],
-body.public-light .feature-mock [class*="text-slate-500"] {
-  color: hsl(40 10% 54%) !important;
-}
-
-body.public-light .feature-mock [class*="bg-slate-950"] {
-  background-color: hsl(155 30% 8%) !important;
-}
-
-body.public-light .feature-mock [class*="bg-slate-900"] {
-  background-color: hsl(155 28% 11%) !important;
-  color: hsl(0 0% 100%) !important;
-}
-
-body.public-light .feature-mock [class*="bg-white/[0.04]"],
-body.public-light .feature-mock [class*="bg-white/[0.05]"],
-body.public-light .feature-mock [class*="bg-white/[0.06]"],
-body.public-light .feature-mock [class*="bg-white/5"] {
-  background-color: hsl(0 0% 100% / 0.05) !important;
-}
-
-body.public-light .feature-mock [class*="bg-white/[0.08]"],
-body.public-light .feature-mock [class*="bg-white/[0.1]"],
-body.public-light .feature-mock [class*="bg-white/10"] {
-  background-color: hsl(0 0% 100% / 0.08) !important;
-}
-
-body.public-light .feature-mock [class*="border-white/[0.04]"],
-body.public-light .feature-mock [class*="border-white/[0.05]"],
-body.public-light .feature-mock [class*="border-white/[0.1]"],
-body.public-light .feature-mock [class*="border-white/10"],
-body.public-light .feature-mock [class*="border-white/5"] {
-  border-color: hsl(0 0% 100% / 0.1) !important;
-}
-
-/* ---------- Page surfaces ---------- */
-body.public-light [class*="bg-background"] { background-color: hsl(40 30% 97%) !important; }
-body.public-light [class*="bg-secondary/30"],
-body.public-light [class*="bg-secondary/20"],
-body.public-light [class*="bg-secondary/40"],
-body.public-light [class*="bg-secondary/50"] { background-color: hsl(36 30% 95%) !important; }
-body.public-light [class*="bg-muted"] { background-color: hsl(36 25% 94%) !important; }
-
-/* =====================================================================
-   PUBLIC SURFACE SYSTEM
-   Explicit surfaces only — no automatic nth-of-type recolouring.
-   This keeps page rhythm consistent and prevents dark product mocks from
-   being accidentally restyled into unreadable pale panels.
-   ===================================================================== */
-
-.surface-bone {
-  background-color: hsl(40 30% 97%);
-  color: hsl(220 15% 12%);
-}
-
-.surface-warm {
-  background-color: hsl(36 35% 94%);
-  color: hsl(220 15% 12%);
-}
-
+.surface-bone,
+.surface-warm,
 .surface-green {
-  background-color: hsl(155 45% 14%);
-  color: hsl(40 30% 95%);
+  background-color: hsl(222 30% 6%);
+  color: hsl(40 20% 96%);
 }
 
 .surface-brass {
-  background-color: hsl(38 45% 92%);
-  color: hsl(220 15% 12%);
+  background-color: hsl(222 28% 8%);
+  color: hsl(40 20% 96%);
 }
 
-body.public-light .surface-bone {
-  background-color: hsl(40 30% 97%) !important;
-  color: hsl(220 15% 12%) !important;
-}
-
-body.public-light .surface-warm {
-  background-color: hsl(36 35% 94%) !important;
-  color: hsl(220 15% 12%) !important;
-}
-
-body.public-light .surface-green {
-  background-color: hsl(155 45% 14%) !important;
-  color: hsl(40 30% 95%) !important;
-}
-
-body.public-light .surface-brass {
-  background-color: hsl(38 45% 92%) !important;
-  color: hsl(220 15% 12%) !important;
-}
-
-/* ---------- White-tint surfaces become bone tints ---------- */
-body.public-light [class*="bg-white/[0.02]"],
-body.public-light [class*="bg-white/[0.03]"],
-body.public-light [class*="bg-white/[0.04]"],
-body.public-light [class*="bg-white/[0.05]"],
-body.public-light [class*="bg-white/[0.06]"],
-body.public-light [class*="bg-white/5"] { background-color: hsl(36 25% 96%) !important; }
-body.public-light [class*="bg-white/[0.08]"],
-body.public-light [class*="bg-white/[0.1]"],
-body.public-light [class*="bg-white/10"] { background-color: hsl(36 20% 93%) !important; }
-body.public-light [class*="bg-white/[0.15]"],
-body.public-light [class*="bg-white/20"] { background-color: hsl(36 16% 88%) !important; }
-
-/* ---------- White-tint borders ---------- */
-body.public-light [class*="border-white/[0.04]"],
-body.public-light [class*="border-white/[0.05]"],
-body.public-light [class*="border-white/[0.06]"],
-body.public-light [class*="border-white/[0.08]"],
-body.public-light [class*="border-white/[0.1]"],
-body.public-light [class*="border-white/[0.15]"],
-body.public-light [class*="border-white/10"],
-body.public-light [class*="border-white/20"],
-body.public-light [class*="border-white/5"] { border-color: hsl(36 14% 86%) !important; }
-
-/* ---------- White-tint text becomes charcoal text on light surfaces ---------- */
-body.public-light .text-white,
-body.public-light [class*="text-white/95"],
-body.public-light [class*="text-white/90"],
-body.public-light [class*="text-white/85"],
-body.public-light [class*="text-white/80"] { color: hsl(220 20% 10%) !important; }
-body.public-light [class*="text-white/75"],
-body.public-light [class*="text-white/70"],
-body.public-light [class*="text-white/65"] { color: hsl(220 18% 18%) !important; }
-body.public-light [class*="text-white/60"],
-body.public-light [class*="text-white/55"],
-body.public-light [class*="text-white/50"] { color: hsl(220 12% 30%) !important; }
-body.public-light [class*="text-white/45"],
-body.public-light [class*="text-white/40"],
-body.public-light [class*="text-white/35"] { color: hsl(220 10% 38%) !important; }
-body.public-light [class*="text-white/30"],
-body.public-light [class*="text-white/25"] { color: hsl(220 8% 45%) !important; }
-body.public-light [class*="text-white/20"],
-body.public-light [class*="text-white/15"],
-body.public-light [class*="text-white/10"] { color: hsl(220 8% 55%) !important; }
-
-/* ---------- Foreground utilities ---------- */
-body.public-light .text-foreground,
-body.public-light [class*="text-foreground/90"],
-body.public-light [class*="text-foreground/80"] { color: hsl(220 20% 10%) !important; }
-body.public-light [class*="text-foreground/70"],
-body.public-light [class*="text-foreground/60"] { color: hsl(220 15% 22%) !important; }
-body.public-light [class*="text-foreground/50"],
-body.public-light [class*="text-foreground/40"] { color: hsl(220 12% 38%) !important; }
-body.public-light .text-muted-foreground { color: hsl(220 10% 42%) !important; }
-
-/* ---------- Headings ---------- */
-body.public-light h1,
-body.public-light h2,
-body.public-light h3,
-body.public-light h4,
-body.public-light h5,
-body.public-light h6 { color: hsl(220 20% 10%); }
-
-/* ---------- Hero gradient ---------- */
-body.public-light .hero-gradient {
-  background: linear-gradient(135deg, hsl(155 50% 10%) 0%, hsl(155 45% 14%) 50%, hsl(160 40% 18%) 100%) !important;
-}
-
-/* ---------- Green surfaces + hero contrast ---------- */
-body.public-light .hero-gradient,
-body.public-light .surface-green {
-  color: hsl(40 30% 95%) !important;
-}
-
-body.public-light .hero-gradient h1,
-body.public-light .hero-gradient h2,
-body.public-light .hero-gradient h3,
-body.public-light .hero-gradient h4,
-body.public-light .hero-gradient h5,
-body.public-light .hero-gradient h6,
-body.public-light .surface-green h1,
-body.public-light .surface-green h2,
-body.public-light .surface-green h3,
-body.public-light .surface-green h4,
-body.public-light .surface-green h5,
-body.public-light .surface-green h6 {
-  color: hsl(40 30% 97%) !important;
-}
-
-body.public-light .hero-gradient .text-white,
-body.public-light .hero-gradient [class*="text-white/95"],
-body.public-light .hero-gradient [class*="text-white/90"],
-body.public-light .hero-gradient [class*="text-white/85"],
-body.public-light .hero-gradient [class*="text-white/80"],
-body.public-light .surface-green .text-white,
-body.public-light .surface-green [class*="text-white/95"],
-body.public-light .surface-green [class*="text-white/90"],
-body.public-light .surface-green [class*="text-white/85"],
-body.public-light .surface-green [class*="text-white/80"] {
-  color: hsl(40 30% 97%) !important;
-}
-
-body.public-light .hero-gradient [class*="text-white/75"],
-body.public-light .hero-gradient [class*="text-white/70"],
-body.public-light .hero-gradient [class*="text-white/65"],
-body.public-light .hero-gradient [class*="text-white/60"],
-body.public-light .hero-gradient [class*="text-white/55"],
-body.public-light .hero-gradient [class*="text-white/50"],
-body.public-light .surface-green [class*="text-white/75"],
-body.public-light .surface-green [class*="text-white/70"],
-body.public-light .surface-green [class*="text-white/65"],
-body.public-light .surface-green [class*="text-white/60"],
-body.public-light .surface-green [class*="text-white/55"],
-body.public-light .surface-green [class*="text-white/50"] {
-  color: hsl(40 25% 82%) !important;
-}
-
-body.public-light .hero-gradient [class*="text-white/45"],
-body.public-light .hero-gradient [class*="text-white/40"],
-body.public-light .hero-gradient [class*="text-white/35"],
-body.public-light .hero-gradient [class*="text-white/30"],
-body.public-light .surface-green [class*="text-white/45"],
-body.public-light .surface-green [class*="text-white/40"],
-body.public-light .surface-green [class*="text-white/35"],
-body.public-light .surface-green [class*="text-white/30"] {
-  color: hsl(40 18% 72%) !important;
-}
-
-body.public-light .hero-gradient [class*="text-white/25"],
-body.public-light .hero-gradient [class*="text-white/20"],
-body.public-light .hero-gradient [class*="text-white/15"],
-body.public-light .surface-green [class*="text-white/25"],
-body.public-light .surface-green [class*="text-white/20"],
-body.public-light .surface-green [class*="text-white/15"] {
-  color: hsl(40 14% 60%) !important;
-}
-
-body.public-light .hero-gradient [class*="text-foreground"],
-body.public-light .surface-green [class*="text-foreground"] { color: hsl(40 30% 97%) !important; }
-body.public-light .hero-gradient .text-muted-foreground,
-body.public-light .surface-green .text-muted-foreground { color: hsl(40 18% 72%) !important; }
-body.public-light .hero-gradient [class*="text-slate-"],
-body.public-light .hero-gradient [class*="text-gray-"],
-body.public-light .surface-green [class*="text-slate-"],
-body.public-light .surface-green [class*="text-gray-"] { color: hsl(40 25% 82%) !important; }
-
-body.public-light .hero-gradient [class*="bg-white/"],
-body.public-light .surface-green [class*="bg-white/"] { background-color: hsl(0 0% 100% / 0.08) !important; }
-body.public-light .hero-gradient [class*="border-white/"],
-body.public-light .surface-green [class*="border-white/"] { border-color: hsl(0 0% 100% / 0.16) !important; }
-
-body.public-light .hero-gradient .glass-card,
-body.public-light .hero-gradient .glass-card-strong,
-body.public-light .surface-green .glass-card,
-body.public-light .surface-green .glass-card-strong {
-  background-color: hsl(155 38% 17%) !important;
-  border-color: hsl(38 60% 55% / 0.22) !important;
-  color: hsl(40 30% 95%) !important;
-  box-shadow:
-    0 10px 30px -14px hsl(155 60% 5% / 0.55),
-    inset 0 1px 0 hsl(38 60% 55% / 0.10) !important;
-}
-
-body.public-light .hero-gradient .glass-card *,
-body.public-light .hero-gradient .glass-card-strong *,
-body.public-light .surface-green .glass-card *,
-body.public-light .surface-green .glass-card-strong * {
-  color: hsl(40 28% 90%) !important;
-}
-
-body.public-light .hero-gradient .glass-card h1,
-body.public-light .hero-gradient .glass-card h2,
-body.public-light .hero-gradient .glass-card h3,
-body.public-light .hero-gradient .glass-card h4,
-body.public-light .hero-gradient .glass-card-strong h1,
-body.public-light .hero-gradient .glass-card-strong h2,
-body.public-light .hero-gradient .glass-card-strong h3,
-body.public-light .hero-gradient .glass-card-strong h4,
-body.public-light .surface-green .glass-card h1,
-body.public-light .surface-green .glass-card h2,
-body.public-light .surface-green .glass-card h3,
-body.public-light .surface-green .glass-card h4,
-body.public-light .surface-green .glass-card-strong h1,
-body.public-light .surface-green .glass-card-strong h2,
-body.public-light .surface-green .glass-card-strong h3,
-body.public-light .surface-green .glass-card-strong h4 {
-  color: hsl(40 30% 97%) !important;
-}
-
-/* Preserve brass accents on green */
-body.public-light .hero-gradient [class*="text-[hsl(var(--cta))"],
-body.public-light .surface-green [class*="text-[hsl(var(--cta))"] {
-  color: hsl(38 80% 62%) !important;
-}
-
-/* ---------- Brass sections ---------- */
-body.public-light .surface-brass h1,
-body.public-light .surface-brass h2,
-body.public-light .surface-brass h3,
-body.public-light .surface-brass h4,
-body.public-light .surface-brass .text-white,
-body.public-light .surface-brass [class*="text-white/95"],
-body.public-light .surface-brass [class*="text-white/90"],
-body.public-light .surface-brass [class*="text-white/85"],
-body.public-light .surface-brass [class*="text-white/80"] {
-  color: hsl(155 45% 14%) !important;
-}
-
-body.public-light .surface-brass [class*="text-white/60"],
-body.public-light .surface-brass [class*="text-white/55"],
-body.public-light .surface-brass [class*="text-white/50"],
-body.public-light .surface-brass [class*="text-muted-foreground"] {
-  color: hsl(220 14% 32%) !important;
-}
-
-body.public-light .surface-brass [class*="text-white/45"],
-body.public-light .surface-brass [class*="text-white/40"],
-body.public-light .surface-brass [class*="text-white/35"],
-body.public-light .surface-brass [class*="text-white/30"] {
-  color: hsl(220 12% 42%) !important;
-}
-
-body.public-light .surface-brass [class*="bg-[hsl(222_28%_9%)"] {
-  background-color: hsl(0 0% 100%) !important;
-  border-color: hsl(38 75% 45% / 0.35) !important;
-  box-shadow: 0 16px 50px -16px hsl(38 75% 35% / 0.25), 0 0 0 1px hsl(38 75% 52% / 0.15) !important;
-}
-
-/* ---------- Glass cards on light ---------- */
-body.public-light .glass-card,
-body.public-light .glass-card-strong {
-  background-color: #ffffff !important;
-  border-color: hsl(36 16% 86%) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.9),
-    0 1px 2px hsl(155 30% 20% / 0.04),
-    0 8px 24px -12px hsl(155 40% 15% / 0.08) !important;
-  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
-}
-body.public-light .glass-card:hover,
-body.public-light .glass-card-strong:hover {
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.9),
-    0 2px 4px hsl(155 30% 20% / 0.06),
-    0 16px 40px -16px hsl(155 40% 15% / 0.14) !important;
-}
-
-/* ---------- CTA button ---------- */
-body.public-light .btn-cta { color: hsl(220 25% 10%) !important; }
-body.public-light .btn-cta {
-  box-shadow: 0 6px 16px -6px hsl(38 75% 35% / 0.4), 0 2px 4px hsl(38 75% 35% / 0.18);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-body.public-light .btn-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px -6px hsl(38 75% 35% / 0.5), 0 4px 8px hsl(38 75% 35% / 0.22);
-}
-
-/* ---------- Preserve deliberate dark product mocks ---------- */
-body.public-light .feature-mock [class*="bg-white/[0.02]"],
-body.public-light .feature-mock [class*="bg-white/[0.03]"],
-body.public-light .feature-mock [class*="bg-white/[0.04]"],
-body.public-light .feature-mock [class*="bg-white/[0.05]"],
-body.public-light .feature-mock [class*="bg-white/[0.06]"],
-body.public-light .feature-mock [class*="bg-white/5"] {
-  background-color: hsl(0 0% 100% / 0.05) !important;
-}
-
-body.public-light .feature-mock [class*="border-white/[0.04]"],
-body.public-light .feature-mock [class*="border-white/[0.05]"],
-body.public-light .feature-mock [class*="border-white/[0.06]"],
-body.public-light .feature-mock [class*="border-white/[0.08]"],
-body.public-light .feature-mock [class*="border-white/[0.1]"],
-body.public-light .feature-mock [class*="border-white/10"],
-body.public-light .feature-mock [class*="border-white/5"] {
-  border-color: hsl(0 0% 100% / 0.1) !important;
-}
-
-/* ---------- Mobile menu / dropdown popovers ---------- */
-body.public-light nav [class*="shadow-["] {
-  box-shadow: 0 8px 24px -8px hsl(155 30% 15% / 0.12), 0 0 0 1px hsl(36 16% 88%) !important;
-}
-
-/* ---------- Inputs / form fields on public pages ---------- */
-body.public-light input,
-body.public-light textarea,
-body.public-light select {
-  background-color: #ffffff;
-  color: hsl(220 20% 10%);
-  border-color: hsl(36 16% 84%);
-}
-body.public-light input::placeholder,
-body.public-light textarea::placeholder { color: hsl(220 8% 50%); }
-body.public-light input,
-body.public-light textarea {
-  padding: 0.625rem 0.875rem;
-  border-color: hsl(36 16% 84%);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-body.public-light input:focus,
-body.public-light textarea:focus,
-body.public-light input:focus-visible,
-body.public-light textarea:focus-visible {
-  border-color: hsl(155 45% 28%) !important;
-  box-shadow: 0 0 0 3px hsl(155 45% 28% / 0.15) !important;
-  outline: none !important;
-}
-
-/* ---------- Gradient text / brass accents ---------- */
-body.public-light .gradient-text {
-  background-image: linear-gradient(90deg, hsl(155 45% 24%), hsl(38 75% 45%)) !important;
-}
-body.public-light [class*="text-[hsl(var(--cta))]"] { color: hsl(38 75% 45%) !important; }
-body.public-light [class*="bg-[hsl(var(--cta))]/10"] { background-color: hsl(38 75% 52% / 0.12) !important; }
-body.public-light [class*="bg-[hsl(var(--cta))]/15"] { background-color: hsl(38 75% 52% / 0.16) !important; }
-
-/* ---------- General public polish ---------- */
-body.public-light { background: hsl(40 30% 97%) !important; }
-body.public-light p { line-height: 1.65; }
-
-.section-hairline { border-top: 1px solid hsl(36 16% 88%); }
-body.public-light .section-hairline { border-top-color: hsl(36 16% 88%) !important; }
-
-body.public-light section + section { position: relative; }
-body.public-light section + section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, hsl(36 16% 82%), transparent);
-  pointer-events: none;
-}
+.section-hairline { border-top: 1px solid hsl(222 18% 14%); }
 
 .eyebrow {
   display: inline-block;
@@ -603,13 +147,12 @@ body.public-light section + section::before {
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: hsl(155 45% 28%);
+  color: hsl(172 66% 50%);
   margin-bottom: 0.75rem;
 }
-.eyebrow.eyebrow-cta { color: hsl(38 75% 40%); }
+.eyebrow.eyebrow-cta { color: hsl(25 95% 60%); }
 
-.hero-wave-fill { fill: hsl(155 45% 14%); }
-body.public-light .hero-wave-fill { fill: hsl(155 45% 14%) !important; }
+.hero-wave-fill { fill: hsl(222 30% 6%); }
 
 .mock-halo {
   position: relative;
@@ -621,8 +164,8 @@ body.public-light .hero-wave-fill { fill: hsl(155 45% 14%) !important; }
   inset: -8% -6% -10% -6%;
   z-index: -1;
   background:
-    radial-gradient(60% 50% at 30% 30%, hsl(155 50% 30% / 0.12), transparent 70%),
-    radial-gradient(55% 45% at 75% 70%, hsl(38 75% 52% / 0.10), transparent 70%);
+    radial-gradient(60% 50% at 30% 30%, hsl(172 66% 40% / 0.12), transparent 70%),
+    radial-gradient(55% 45% at 75% 70%, hsl(25 95% 53% / 0.10), transparent 70%);
   filter: blur(8px);
   pointer-events: none;
 }
@@ -638,21 +181,7 @@ body.public-light .hero-wave-fill { fill: hsl(155 45% 14%) !important; }
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 7rem;
   line-height: 1;
-  color: hsl(40 30% 97% / 0.08);
+  color: hsl(40 30% 97% / 0.06);
   pointer-events: none;
   z-index: 0;
-}
-body.public-light .surface-warm .quote-decor::before,
-body.public-light .surface-bone .quote-decor::before,
-body.public-light .surface-brass .quote-decor::before {
-  color: hsl(155 45% 22% / 0.10);
-}
-
-body.public-light details[open].glass-card,
-body.public-light details[open].glass-card-strong {
-  background-color: hsl(36 35% 95%) !important;
-}
-
-body.public-light .compare-row-alt:nth-child(even) {
-  background-color: hsl(36 35% 95%) !important;
 }
