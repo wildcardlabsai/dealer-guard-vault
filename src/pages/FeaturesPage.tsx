@@ -172,9 +172,7 @@ function FeatureSection({ feature, index }: { feature: FeatureShowcase; index: n
         </div>
       </div>
       <div className={isReversed ? "lg:[direction:ltr]" : ""}>
-        <div className="relative rounded-2xl border border-white/10 bg-[hsl(222,25%,8%)] overflow-hidden shadow-2xl">
-          <img src={feature.screenshot} alt={`${feature.title} screenshot`} className="w-full h-auto" loading="lazy" />
-        </div>
+        <feature.Mock />
       </div>
     </motion.div>
   );
