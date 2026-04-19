@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -29,12 +30,41 @@ export default function LoginPage() {
     const success = await login(email, password);
     setLoading(false);
     if (success) {
-      // Check demo users first for role-based redirect
       const { demoUsers } = await import("@/data/demo-data");
       const demoUser = demoUsers.find(u => u.email === email);
-      if (demoUser?.role === "admin") navigate("/admin");
-      else if (demoUser?.role === "dealer") navigate("/dealer");
-      else navigate("/customer");
+
+      if (demoUser?.role === "admin") {
+        navigate("/admin");
+        return;
+      }
+
+      if (demoUser?.role === "dealer") {
+        navigate("/dealer");
+        return;
+      }
+
+      const { data: { session } } = await supabase.auth.getSession();
+      const authUser = session?.user;
+
+      if (authUser?.id) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("user_id", authUser.id)
+          .maybeSingle();
+
+        if (profile?.role === "admin") {
+          navigate("/admin");
+          return;
+        }
+
+        if (profile?.role === "dealer") {
+          navigate("/dealer");
+          return;
+        }
+      }
+
+      navigate("/customer");
     } else {
       setError("Invalid email or password.");
     }
