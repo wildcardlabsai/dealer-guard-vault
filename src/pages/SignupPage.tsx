@@ -196,6 +196,21 @@ export default function SignupPage() {
             />
           </div>
 
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10">
+            <Checkbox
+              id="terms"
+              checked={acceptedTerms}
+              onCheckedChange={v => setAcceptedTerms(v === true)}
+              className="mt-0.5 border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+            />
+            <Label htmlFor="terms" className="text-sm text-white/70 leading-relaxed cursor-pointer font-normal">
+              I confirm I am authorised to apply on behalf of my business and I agree to the{" "}
+              <Link to="/terms" target="_blank" className="text-primary hover:underline">Terms of Service</Link>,{" "}
+              <Link to="/privacy" target="_blank" className="text-primary hover:underline">Privacy Policy</Link> and{" "}
+              <Link to="/cookies" target="_blank" className="text-primary hover:underline">Cookie Policy</Link>. I understand WarrantyVault is a software platform and the dealer remains responsible for funding and administering claims.
+            </Label>
+          </div>
+
           <Button type="submit" size="lg" className="w-full btn-cta rounded-full h-12 text-base">
             Submit Application <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
