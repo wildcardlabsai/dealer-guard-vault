@@ -17,6 +17,7 @@ export default function SignupPage() {
   const navigate = useNavigate();
   const { addRequest } = useSignupStore();
   const [submitted, setSubmitted] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [form, setForm] = useState({
     dealershipName: "",
     contactName: "",
@@ -38,6 +39,10 @@ export default function SignupPage() {
       toast.error("Please fill in all required fields");
       return;
     }
+    if (!acceptedTerms) {
+      toast.error("Please accept the Terms of Service and Privacy Policy to continue");
+      return;
+    }
 
     addRequest({
       dealershipName: form.dealershipName,
@@ -50,6 +55,8 @@ export default function SignupPage() {
       fcaNumber: form.fcaNumber,
       estimatedVolume: form.estimatedVolume,
       message: form.message,
+      acceptedTerms: true,
+      termsVersion: TERMS_VERSION,
     });
 
     setSubmitted(true);
