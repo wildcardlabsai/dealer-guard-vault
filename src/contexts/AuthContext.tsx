@@ -95,7 +95,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (!error && data.user) {
         localStorage.removeItem(DEMO_USER_KEY);
-        setUser(buildUserFromSupabase(data.user));
+        const u = await buildUserFromSupabase(data.user);
+        setUser(u);
         return true;
       }
     } catch {
