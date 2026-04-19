@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { HelmetProvider } from "react-helmet-async";
+import CookieConsent from "@/components/CookieConsent";
 
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
@@ -164,6 +165,7 @@ const App = () => (
         <AuthProvider>
           <BrowserRouter>
             <AppRoutes />
+            <CookieConsent />
           </BrowserRouter>
         </AuthProvider>
       </TooltipProvider>
