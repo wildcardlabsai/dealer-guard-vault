@@ -4,16 +4,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { CheckCircle2, ArrowRight, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { useSignupStore } from "@/lib/signup-store";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
 
+const TERMS_VERSION = "v1.0";
+
 export default function SignupPage() {
   const navigate = useNavigate();
   const { addRequest } = useSignupStore();
   const [submitted, setSubmitted] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [form, setForm] = useState({
     dealershipName: "",
     contactName: "",
@@ -35,6 +39,10 @@ export default function SignupPage() {
       toast.error("Please fill in all required fields");
       return;
     }
+    if (!acceptedTerms) {
+      toast.error("Please accept the Terms of Service and Privacy Policy to continue");
+      return;
+    }
 
     addRequest({
       dealershipName: form.dealershipName,
@@ -47,6 +55,8 @@ export default function SignupPage() {
       fcaNumber: form.fcaNumber,
       estimatedVolume: form.estimatedVolume,
       message: form.message,
+      acceptedTerms: true,
+      termsVersion: TERMS_VERSION,
     });
 
     setSubmitted(true);
@@ -191,6 +201,21 @@ export default function SignupPage() {
               placeholder="Tell us about your dealership..."
               className="bg-white/5 border-white/10 text-white placeholder:text-white/20 min-h-[80px]"
             />
+          </div>
+
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10">
+            <Checkbox
+              id="terms"
+              checked={acceptedTerms}
+              onCheckedChange={v => setAcceptedTerms(v === true)}
+              className="mt-0.5 border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+            />
+            <Label htmlFor="terms" className="text-sm text-white/70 leading-relaxed cursor-pointer font-normal">
+              I confirm I am authorised to apply on behalf of my business and I agree to the{" "}
+              <Link to="/terms" target="_blank" className="text-primary hover:underline">Terms of Service</Link>,{" "}
+              <Link to="/privacy" target="_blank" className="text-primary hover:underline">Privacy Policy</Link> and{" "}
+              <Link to="/cookies" target="_blank" className="text-primary hover:underline">Cookie Policy</Link>. I understand WarrantyVault is a software platform and the dealer remains responsible for funding and administering claims.
+            </Label>
           </div>
 
           <Button type="submit" size="lg" className="w-full btn-cta rounded-full h-12 text-base">

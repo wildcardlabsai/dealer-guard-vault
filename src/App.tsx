@@ -22,6 +22,9 @@ import KnowledgeBasePage from "@/pages/KnowledgeBasePage";
 import KBArticlePage from "@/pages/KBArticlePage";
 import BlogIndexPage from "@/pages/BlogIndexPage";
 import DisputeIQPage from "@/pages/DisputeIQPage";
+import TermsPage from "@/pages/legal/TermsPage";
+import PrivacyPage from "@/pages/legal/PrivacyPage";
+import CookiesPage from "@/pages/legal/CookiesPage";
 
 import DealerLayout from "@/components/layouts/DealerLayout";
 import DealerDashboard from "@/pages/dealer/DealerDashboard";
@@ -105,6 +108,9 @@ function AppRoutes() {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/dealers" element={<DealersLoginPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/cookies" element={<CookiesPage />} />
 
       {/* Dealer Routes */}
       <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />
