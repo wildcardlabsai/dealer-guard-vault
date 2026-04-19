@@ -9,6 +9,7 @@ import { useSupportStore } from "@/lib/support-store";
 import { useState, useRef, useEffect } from "react";
 import logo from "@/assets/warrantylogo.png";
 import ThemeToggle from "@/components/ThemeToggle";
+import SEOHead from "@/components/SEOHead";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
@@ -63,6 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen flex bg-background">
+      <SEOHead title="Admin Dashboard | WarrantyVault" description="WarrantyVault super admin dashboard." noindex />
       <aside className="w-64 flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50">
           <img src={logo} alt="WarrantyVault" className="h-6" />

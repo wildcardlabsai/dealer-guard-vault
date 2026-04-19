@@ -5,6 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { claimStatusConfig, claimPriorityConfig } from "@/data/claim-data";
 import { Search, ClipboardList, Building2, BarChart3 } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
+
+const fallbackStatus = { label: "Unknown", color: "bg-muted text-muted-foreground border-border" };
+const fallbackPriority = { label: "—", color: "bg-muted text-muted-foreground border-border" };
 
 export default function AdminClaims() {
   const claimStore = useClaimStore();
@@ -31,6 +35,7 @@ export default function AdminClaims() {
 
   return (
     <div className="space-y-6">
+      <SEOHead title="All Claims | WarrantyVault Admin" description="Admin view of all claims across dealers." noindex />
       <div>
         <h1 className="text-2xl font-bold font-display">All Claims</h1>
         <p className="text-sm text-muted-foreground">{allClaims.length} claims across all dealers</p>
@@ -103,8 +108,8 @@ export default function AdminClaims() {
             </thead>
             <tbody>
               {filteredClaims.map(claim => {
-                const s = claimStatusConfig[claim.status];
-                const p = claimPriorityConfig[claim.priority];
+                const s = claimStatusConfig[claim.status] || fallbackStatus;
+                const p = claimPriorityConfig[claim.priority] || fallbackPriority;
                 return (
                   <tr key={claim.id} className="border-b border-border/30 hover:bg-secondary/20 transition-colors">
                     <td className="px-4 py-3 font-mono text-xs">{claim.reference}</td>
