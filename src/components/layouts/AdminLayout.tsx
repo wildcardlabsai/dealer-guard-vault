@@ -9,6 +9,7 @@ import { useSupportStore } from "@/lib/support-store";
 import { useState, useRef, useEffect } from "react";
 import logo from "@/assets/warrantylogo.png";
 import ThemeToggle from "@/components/ThemeToggle";
+import SEOHead from "@/components/SEOHead";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
