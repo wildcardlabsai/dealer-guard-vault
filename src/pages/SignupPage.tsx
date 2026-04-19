@@ -4,11 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { CheckCircle2, ArrowRight, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { useSignupStore } from "@/lib/signup-store";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
+
+const TERMS_VERSION = "v1.0";
 
 export default function SignupPage() {
   const navigate = useNavigate();
