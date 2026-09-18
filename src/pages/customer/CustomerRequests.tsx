@@ -12,15 +12,8 @@ import { toast } from "sonner";
 export default function CustomerRequests() {
   const { user } = useAuth();
   const store = useWarrantyStore();
-  const userEmail = user?.email?.toLowerCase();
-  const warranties = store.warranties.filter(w =>
-    w.customerId === user?.id ||
-    (userEmail && w.customerEmail?.toLowerCase() === userEmail)
-  );
-  const requests = store.requests.filter(r =>
-    r.customerId === user?.id ||
-    warranties.some(w => w.id === r.warrantyId)
-  );
+  const requests = store.requests.filter(r => r.customerId === user?.id);
+  const warranties = store.warranties.filter(w => w.customerId === user?.id);
   const [showNew, setShowNew] = useState(false);
   const [type, setType] = useState("extension");
   const [desc, setDesc] = useState("");

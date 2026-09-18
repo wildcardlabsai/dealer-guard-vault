@@ -1,27 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  Shield, ArrowRight, CheckCircle2, Star,
-  Headphones, Sparkles, Wallet, ClipboardList,
-  ChevronLeft, ChevronRight, TrendingUp, AlertTriangle,
-  MessageSquare, BarChart3,
+  Shield, Car, Search, ArrowRight, CheckCircle2, Star,
+  BarChart3, FileCheck, UserCheck, ClipboardCheck, PoundSterling, Menu, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
-import PublicNav from "@/components/PublicNav";
-import PublicFooter from "@/components/PublicFooter";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.07, duration: 0.45, ease: "easeOut" } }),
+  hidden: { opacity: 0, y: 24 },
+  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" } }),
 };
 
-const coreFeatures = [
-  { icon: Shield, title: "Warranty Management", desc: "Set up and manage warranties without spreadsheets or guesswork" },
-  { icon: Headphones, title: "Claim Assist", desc: "Handle claims from first report to decision in one place" },
-  { icon: Sparkles, title: "DisputeIQ", desc: "Know what to do and what to say when complaints come in" },
-  { icon: Wallet, title: "Warranty Fund", desc: "Track your money, understand your risk, and stay profitable" },
+const features = [
+  { icon: Shield, title: "Warranty Management", desc: "Create, edit and track all warranties in one place with full visibility." },
+  { icon: FileCheck, title: "Branded Certificates", desc: "Generate professional, branded warranty certificates instantly." },
+  { icon: Search, title: "DVLA Lookup", desc: "Enter a reg and instantly pull vehicle data — no manual input needed." },
+  { icon: UserCheck, title: "Customer Portal", desc: "Give customers their own login to view warranties, download documents and submit claims." },
+  { icon: ClipboardCheck, title: "Claims Management", desc: "Handle claims your way — approve, reject or request more info in seconds." },
+  { icon: BarChart3, title: "Profit Tracking", desc: "See exactly what you're making from warranties vs what you're paying out." },
 ];
 
 const testimonials = [
@@ -35,737 +34,296 @@ const testimonials = [
   { name: "Sarah T.", role: "Dealer Principal, Leeds", text: "Claims are no longer a bottleneck. We decide quickly and customers get clear updates." },
 ];
 
-const steps = [
-  { num: "01", title: "Set up your warranties", desc: "Create warranties with vehicle data pulled in automatically" },
-  { num: "02", title: "Manage claims in one place", desc: "Review, decide, and communicate — all from one screen" },
-  { num: "03", title: "Use DisputeIQ when issues arise", desc: "Get guided responses before complaints escalate" },
-  { num: "04", title: "Track your fund and profit", desc: "See your balance, exposure, and what to adjust" },
-];
-
-function TestimonialCarousel() {
-  const [page, setPage] = useState(0);
-  const perPage = 4;
-  const totalPages = Math.ceil(testimonials.length / perPage);
-
-  useEffect(() => {
-    const timer = setInterval(() => setPage(p => (p + 1) % totalPages), 6000);
-    return () => clearInterval(timer);
-  }, [totalPages]);
-
-  const visible = testimonials.slice(page * perPage, page * perPage + perPage);
-
-  return (
-    <div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {visible.map((t, i) => (
-          <motion.div key={t.name} custom={i} initial="hidden" animate="visible" variants={fadeUp} className="rounded-xl p-5 border border-white/[0.08] bg-white/[0.05]">
-            <div className="flex gap-0.5 mb-3">
-              {[...Array(5)].map((_, j) => <Star key={j} className="w-3.5 h-3.5 fill-[hsl(var(--cta))] text-[hsl(var(--cta))]" />)}
-            </div>
-            <p className="text-[15px] text-foreground/80 mb-4 leading-relaxed">"{t.text}"</p>
-            <div>
-              <p className="font-semibold text-sm">{t.name}</p>
-              <p className="text-xs text-muted-foreground">{t.role}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      <div className="flex justify-center gap-2 mt-5">
-        {Array.from({ length: totalPages }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setPage(i)}
-            className={`w-2 h-2 rounded-full transition-colors ${i === page ? "bg-primary" : "bg-white/20"}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function HeroMock() {
-  return (
-    <motion.div
-      className="relative w-full max-w-[480px] mx-auto"
-      initial={{ opacity: 0, y: 28 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-      style={{ perspective: "1200px" }}
-    >
-      {/* Glow layers */}
-      <div className="absolute -inset-6 bg-primary/8 rounded-3xl blur-[50px] pointer-events-none" />
-      <div className="absolute -inset-3 bg-[hsl(var(--cta))]/5 rounded-3xl blur-[30px] pointer-events-none" />
-
-      <motion.div
-        className="relative rounded-3xl border border-white/[0.08] bg-[hsl(222_30%_9%)]/90 backdrop-blur-2xl shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5),0_0_40px_-10px_hsl(172,66%,40%,0.1)] overflow-hidden"
-        style={{ transform: "rotateX(2deg) rotateY(-2deg)", transformStyle: "preserve-3d" }}
-      >
-        {/* Top status bar */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
-          <div className="flex items-center gap-2">
-            <Shield className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[11px] font-semibold text-white/70 tracking-wide">WarrantyVault</span>
-            <div className="flex items-center gap-1 ml-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[9px] text-white/30">Live</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5">
-            {[
-              { label: "124 Warranties", color: "bg-primary/15 text-primary" },
-              { label: "9 Claims", color: "bg-white/[0.06] text-white/50" },
-              { label: "Healthy Fund", color: "bg-emerald-500/15 text-emerald-400/80" },
-            ].map(p => (
-              <span key={p.label} className={`text-[8px] font-medium px-1.5 py-0.5 rounded-full ${p.color}`}>{p.label}</span>
-            ))}
-          </div>
-        </div>
-
-        {/* Main content */}
-        <div className="grid grid-cols-[1.1fr_1fr] gap-2.5 p-3">
-          {/* Left column */}
-          <div className="space-y-2.5">
-            {/* Warranty Fund card */}
-            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1.5">
-                  <Wallet className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-[10px] font-semibold text-white/50">Warranty Fund</span>
-                </div>
-                <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-medium">Healthy</span>
-              </div>
-              <div className="text-[28px] font-bold text-white leading-none mb-0.5 tracking-tight">£12,450</div>
-              <div className="text-[10px] text-emerald-400/70 mb-2.5">+£2,300 this month</div>
-              <div className="text-[9px] text-white/25 mb-2">Buffer: £2,650</div>
-              {/* Balance / Liability bars */}
-              <div className="space-y-1.5">
-                <div>
-                  <div className="flex justify-between text-[8px] text-white/30 mb-0.5">
-                    <span>Balance</span><span>£12,450</span>
-                  </div>
-                  <div className="h-1 bg-white/[0.04] rounded-full">
-                    <div className="h-full w-[78%] bg-primary/50 rounded-full" />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-[8px] text-white/30 mb-0.5">
-                    <span>Liability</span><span>£9,800</span>
-                  </div>
-                  <div className="h-1 bg-white/[0.04] rounded-full">
-                    <div className="h-full w-[62%] bg-[hsl(var(--cta))]/40 rounded-full" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Claim Assist card */}
-            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5">
-              <div className="flex items-center gap-1.5 mb-2">
-                <Headphones className="w-3.5 h-3.5 text-primary" />
-                <span className="text-[10px] font-semibold text-white/50">Claim Assist</span>
-              </div>
-              <div className="space-y-1 mb-2.5">
-                <div className="flex justify-between text-[9px]">
-                  <span className="text-white/30">Ref</span>
-                  <span className="text-white/60 font-medium">CLM-1042</span>
-                </div>
-                <div className="flex justify-between text-[9px]">
-                  <span className="text-white/30">Issue</span>
-                  <span className="text-white/60">Engine warning light</span>
-                </div>
-                <div className="flex justify-between text-[9px]">
-                  <span className="text-white/30">Status</span>
-                  <span className="text-[hsl(var(--cta))]/80 font-medium">Awaiting review</span>
-                </div>
-              </div>
-              <div className="inline-flex items-center gap-1 text-[8px] font-medium text-primary bg-primary/10 px-2 py-1 rounded-full cursor-default">
-                <ClipboardList className="w-2.5 h-2.5" />
-                Review Claim
-              </div>
-            </div>
-          </div>
-
-          {/* Right column */}
-          <div className="space-y-2.5">
-            {/* DisputeIQ card */}
-            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3.5">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-[10px] font-semibold text-white/50">DisputeIQ</span>
-                </div>
-                <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-[hsl(var(--cta))]/15 text-[hsl(var(--cta))] font-medium">Medium Risk</span>
-              </div>
-              <div className="space-y-1.5 mb-2.5">
-                <div className="flex items-start gap-1.5 text-[9px] text-white/50">
-                  <div className="w-1 h-1 rounded-full bg-[hsl(var(--cta))]/50 mt-1 shrink-0" />
-                  <span>Within 6 months of sale</span>
-                </div>
-                <div className="flex items-start gap-1.5 text-[9px] text-white/50">
-                  <div className="w-1 h-1 rounded-full bg-primary/50 mt-1 shrink-0" />
-                  <span>Inspect vehicle and offer repair if fault confirmed</span>
-                </div>
-              </div>
-              <div className="rounded-lg bg-primary/[0.06] border border-primary/10 p-2 mb-2">
-                <div className="text-[8px] text-primary/50 mb-0.5">Suggested reply</div>
-                <div className="text-[9px] text-white/55 leading-relaxed">
-                  "Thanks for getting in touch. We'd like to arrange an inspection to assess the issue properly."
-                </div>
-              </div>
-              <span className="text-[8px] text-primary/60 font-medium cursor-default hover:text-primary/80 transition-colors">View full response →</span>
-            </div>
-
-            {/* Quick links mini cards */}
-            <div className="grid grid-cols-3 gap-1.5">
-              {[
-                { icon: Shield, label: "Cover\nBreakdown" },
-                { icon: MessageSquare, label: "Complaint\nGuidance" },
-                { icon: TrendingUp, label: "Profit\nTracking" },
-              ].map(item => (
-                <div key={item.label} className="rounded-lg bg-white/[0.03] border border-white/[0.05] p-2 text-center cursor-default hover:bg-white/[0.05] transition-colors">
-                  <item.icon className="w-3 h-3 text-primary/60 mx-auto mb-1" />
-                  <div className="text-[7px] text-white/30 leading-tight whitespace-pre-line">{item.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-function DisputeIQMock() {
-  return (
-    <div className="glass-card rounded-xl p-5 max-w-sm w-full">
-      <div className="flex items-center gap-2 mb-3">
-        <Sparkles className="w-4 h-4 text-primary" />
-        <span className="text-xs font-medium text-white/50">DisputeIQ Response</span>
-      </div>
-      <div className="space-y-2.5">
-        <div className="bg-white/5 rounded-lg p-3">
-          <div className="text-[11px] text-white/30 mb-1">Customer complaint</div>
-          <div className="text-xs text-white/60">"The gearbox failed after 3 weeks. I want a full refund."</div>
-        </div>
-        <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
-          <div className="text-[11px] text-primary/70 mb-1">Your position</div>
-          <div className="text-xs text-white/70">This falls within warranty coverage. A repair is the appropriate remedy under CRA 2015. A refund is not required at this stage.</div>
-        </div>
-        <div className="flex items-center gap-2 pt-1">
-          <div className="h-1 flex-1 bg-primary/30 rounded-full">
-            <div className="h-full w-4/5 bg-primary rounded-full" />
-          </div>
-          <span className="text-[10px] text-primary/70">Strong position</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function FundMock() {
-  return (
-    <div className="glass-card rounded-xl p-5 max-w-xs w-full">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs text-white/40 font-medium">Fund Balance</span>
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-medium">Healthy</span>
-      </div>
-      <div className="text-3xl font-bold text-white mb-3">£4,280</div>
-      <div className="space-y-2">
-        {[
-          { label: "Contributions", val: "£6,140", color: "bg-primary/40" },
-          { label: "Claims paid", val: "£1,860", color: "bg-[hsl(var(--cta))]/40" },
-        ].map(r => (
-          <div key={r.label}>
-            <div className="flex justify-between text-[11px] text-white/40 mb-1">
-              <span>{r.label}</span><span>{r.val}</span>
-            </div>
-            <div className="h-1.5 bg-white/5 rounded-full">
-              <div className={`h-full ${r.color} rounded-full`} style={{ width: r.label === "Contributions" ? "100%" : "30%" }} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-const demoResponses: Record<string, { risk: string; riskColor: string; action: string; response: string; legal: string }> = {
-  "engine-under30-sudden": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect and repair under warranty. Likely covered.", response: "Thanks for getting in touch. We take this seriously and would like to arrange an inspection at our earliest convenience to assess the issue properly.", legal: "Consumer Rights Act 2015 — fault within 30 days may entitle rejection or repair." },
-  "engine-under30-wear": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Inspect vehicle. Wear and tear within 30 days is unusual — assess carefully.", response: "Thank you for contacting us. We'd like to inspect the vehicle to understand the issue before confirming next steps.", legal: "Wear and tear within 30 days is uncommon. Inspection recommended." },
-  "engine-under30-unknown": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Arrange independent inspection to determine fault type.", response: "Thanks for your message. We'd like to arrange an independent inspection to determine the nature of the issue.", legal: "Burden of proof is on the dealer within 6 months of sale." },
-  "engine-6months-sudden": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Offer inspection and repair if fault is confirmed.", response: "Thank you for letting us know. We'd like to book the vehicle in for inspection so we can assess the fault and discuss options.", legal: "Within 6 months, fault is presumed present at sale unless proven otherwise." },
-  "engine-6months-wear": { risk: "Low", riskColor: "text-primary", action: "Inspect. Wear and tear is generally not covered.", response: "Thanks for getting in touch. We'll arrange an inspection to assess whether this is a manufacturing fault or general wear.", legal: "Wear and tear is not typically covered under CRA 2015." },
-  "engine-6months-unknown": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Independent inspection recommended.", response: "We appreciate you raising this. We'd like to arrange an independent assessment to determine the nature of the fault.", legal: "Within 6 months — burden of proof on dealer." },
-  "engine-over6-sudden": { risk: "Low", riskColor: "text-primary", action: "Customer must prove fault existed at point of sale.", response: "Thank you for contacting us. We'd recommend an independent inspection report to support your claim, as the vehicle is outside the 6-month period.", legal: "After 6 months, burden of proof shifts to the consumer." },
-  "engine-over6-wear": { risk: "Low", riskColor: "text-primary", action: "Wear and tear after 6 months is expected. Unlikely to be covered.", response: "Thanks for your message. Wear and tear after this period is generally expected and not typically covered.", legal: "Wear and tear is not a fault under CRA 2015." },
-  "engine-over6-unknown": { risk: "Low", riskColor: "text-primary", action: "Request independent inspection from customer.", response: "We'd suggest obtaining an independent report to confirm the nature of the fault before we can assess further.", legal: "After 6 months, consumer must prove fault was present at sale." },
-  "gearbox-under30-sudden": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect immediately. Likely requires repair or replacement under warranty.", response: "We're sorry to hear about this. We'd like to arrange an urgent inspection to assess the gearbox and discuss the appropriate resolution.", legal: "Sudden gearbox failure within 30 days — strong consumer position." },
-  "gearbox-under30-wear": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Unusual for gearbox wear within 30 days. Inspect thoroughly.", response: "Thanks for letting us know. We'll arrange an inspection to assess the gearbox.", legal: "Wear within 30 days may indicate pre-sale issue." },
-  "gearbox-under30-unknown": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect and diagnose. Dealer bears burden of proof.", response: "Thank you for raising this. We'll arrange a full diagnostic to determine the cause.", legal: "Within 30 days — burden on dealer." },
-  "gearbox-6months-sudden": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Offer inspection and repair if fault confirmed.", response: "Thank you for letting us know. We'd like to arrange an inspection to assess the gearbox fault.", legal: "Within 6 months — fault presumed present at sale." },
-  "gearbox-6months-wear": { risk: "Low", riskColor: "text-primary", action: "Inspect. Gearbox wear may not be covered.", response: "We'll inspect the vehicle to determine the cause and advise accordingly.", legal: "Wear and tear generally not covered." },
-  "gearbox-6months-unknown": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Independent inspection recommended.", response: "We'd like to arrange an assessment to understand the issue before confirming our position.", legal: "Burden of proof on dealer within 6 months." },
-  "gearbox-over6-sudden": { risk: "Low", riskColor: "text-primary", action: "Customer to provide independent report.", response: "Thank you for contacting us. We'd recommend an independent inspection to support your claim.", legal: "After 6 months — consumer must prove fault existed at sale." },
-  "gearbox-over6-wear": { risk: "Low", riskColor: "text-primary", action: "Wear and tear after 6 months is expected.", response: "Gearbox wear over this period is generally considered normal usage.", legal: "Wear and tear is not a manufacturing fault." },
-  "gearbox-over6-unknown": { risk: "Low", riskColor: "text-primary", action: "Request independent inspection.", response: "We'd suggest an independent report to confirm the issue before we can advise further.", legal: "Consumer must prove fault after 6 months." },
-  "electrical-under30-sudden": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect immediately. Strong consumer rights apply.", response: "We're sorry about this issue. We'd like to inspect the vehicle as soon as possible to identify and resolve the electrical fault.", legal: "Electrical fault within 30 days — strong position for consumer." },
-  "electrical-under30-wear": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Inspect. Electrical wear within 30 days is uncommon.", response: "Thanks for letting us know. We'll arrange an inspection to assess the electrical system.", legal: "Unusual wear within 30 days may indicate pre-sale issue." },
-  "electrical-under30-unknown": { risk: "High", riskColor: "text-[hsl(var(--cta))]", action: "Inspect and diagnose. Dealer bears burden of proof.", response: "Thank you for raising this. We'll arrange a full diagnostic to determine the cause.", legal: "Within 30 days — burden on dealer." },
-  "electrical-6months-sudden": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Offer diagnostic and repair if fault confirmed.", response: "We'd like to arrange a diagnostic to understand the electrical issue and discuss options.", legal: "Within 6 months — fault presumed present at sale." },
-  "electrical-6months-wear": { risk: "Low", riskColor: "text-primary", action: "Inspect. Electrical wear may not be covered.", response: "We'll inspect the vehicle to determine whether this is a fault or general wear.", legal: "Wear and tear generally not covered under CRA." },
-  "electrical-6months-unknown": { risk: "Medium", riskColor: "text-[hsl(var(--cta))]", action: "Arrange diagnostic inspection.", response: "Thanks for contacting us. We'll arrange a full diagnostic to establish the cause.", legal: "Within 6 months — dealer burden of proof." },
-  "electrical-over6-sudden": { risk: "Low", riskColor: "text-primary", action: "Customer to provide independent diagnosis.", response: "Thank you. We'd recommend an independent diagnostic report to support your claim.", legal: "After 6 months — consumer must prove pre-existing fault." },
-  "electrical-over6-wear": { risk: "Low", riskColor: "text-primary", action: "Electrical wear after 6 months is expected.", response: "Electrical component wear over this period is generally considered normal and not typically covered.", legal: "Wear and tear is not a fault." },
-  "electrical-over6-unknown": { risk: "Low", riskColor: "text-primary", action: "Request independent diagnostic.", response: "We'd suggest an independent diagnostic to confirm the issue before we can advise further.", legal: "Consumer must prove fault after 6 months." },
-};
-
-function LiveDemoSection() {
-  const [issue, setIssue] = useState("engine");
-  const [time, setTime] = useState("under30");
-  const [fault, setFault] = useState("sudden");
-  const [result, setResult] = useState<(typeof demoResponses)[string] | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleGenerate = () => {
-    setLoading(true);
-    setResult(null);
-    setTimeout(() => {
-      const key = `${issue}-${time}-${fault}`;
-      setResult(demoResponses[key] || demoResponses["engine-6months-sudden"]);
-      setLoading(false);
-    }, 800);
-  };
-
-  const radioGroup = (label: string, options: { value: string; label: string }[], selected: string, onChange: (v: string) => void) => (
-    <div>
-      <label className="text-xs font-medium text-white/40 mb-2 block">{label}</label>
-      <div className="space-y-1.5">
-        {options.map(o => (
-          <button
-            key={o.value}
-            onClick={() => onChange(o.value)}
-            className={`w-full text-left text-sm px-3 py-2 rounded-lg border transition-all ${
-              selected === o.value
-                ? "border-primary/40 bg-primary/10 text-white"
-                : "border-white/[0.06] bg-white/[0.02] text-white/50 hover:bg-white/[0.04] hover:text-white/70"
-            }`}
-          >
-            {o.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
-  return (
-    <section className="py-16 px-6 bg-secondary/20">
-      <div className="max-w-5xl mx-auto">
-        <motion.div className="text-center mb-10" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">See how it works in seconds</h2>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">Try a real example of how WarrantyVault helps you respond properly</p>
-        </motion.div>
-
-        <motion.div
-          className="glass-card-strong rounded-2xl overflow-hidden relative"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="absolute top-0 left-0 w-40 h-40 bg-primary/5 rounded-full blur-[60px] pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-[hsl(var(--cta))]/5 rounded-full blur-[60px] pointer-events-none" />
-
-          <div className="grid md:grid-cols-2 relative">
-            {/* Left — inputs */}
-            <div className="p-6 sm:p-8 border-r border-white/[0.06] space-y-5">
-              <div className="flex items-center gap-2 mb-1">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-xs font-semibold text-white/50 tracking-wide uppercase">DisputeIQ Demo</span>
-              </div>
-
-              {radioGroup("Customer issue", [
-                { value: "engine", label: "Engine fault" },
-                { value: "gearbox", label: "Gearbox issue" },
-                { value: "electrical", label: "Electrical fault" },
-              ], issue, setIssue)}
-
-              {radioGroup("Time since purchase", [
-                { value: "under30", label: "Under 30 days" },
-                { value: "6months", label: "30 days – 6 months" },
-                { value: "over6", label: "Over 6 months" },
-              ], time, setTime)}
-
-              {radioGroup("Fault type", [
-                { value: "sudden", label: "Sudden failure" },
-                { value: "wear", label: "Wear and tear" },
-                { value: "unknown", label: "Unknown" },
-              ], fault, setFault)}
-
-              <Button onClick={handleGenerate} disabled={loading} className="btn-cta rounded-full w-full h-10 text-sm shadow-[0_0_20px_-4px_hsl(24,100%,50%,0.3)]">
-                {loading ? "Analysing…" : "Get Recommendation"}
-                {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
-              </Button>
-            </div>
-
-            {/* Right — output */}
-            <div className="p-6 sm:p-8 flex flex-col justify-center min-h-[400px]">
-              {!result && !loading && (
-                <div className="text-center text-white/20">
-                  <Sparkles className="w-8 h-8 mx-auto mb-3 text-white/10" />
-                  <p className="text-sm">Select a scenario and click<br />"Get Recommendation"</p>
-                </div>
-              )}
-
-              {loading && (
-                <div className="text-center">
-                  <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-3" />
-                  <p className="text-sm text-white/30">Analysing scenario…</p>
-                </div>
-              )}
-
-              {result && !loading && (
-                <motion.div
-                  className="space-y-4"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-white/40">Risk Level</span>
-                    <span className={`text-sm font-bold ${result.riskColor}`}>{result.risk}</span>
-                  </div>
-
-                  <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] p-3">
-                    <div className="text-[10px] text-white/30 mb-1 uppercase tracking-wide">Legal context</div>
-                    <p className="text-xs text-white/60 leading-relaxed">{result.legal}</p>
-                  </div>
-
-                  <div className="rounded-lg bg-primary/[0.06] border border-primary/15 p-3">
-                    <div className="text-[10px] text-primary/60 mb-1 uppercase tracking-wide">Recommended action</div>
-                    <p className="text-sm text-white/70 leading-relaxed">{result.action}</p>
-                  </div>
-
-                  <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] p-3">
-                    <div className="text-[10px] text-white/30 mb-1 uppercase tracking-wide">Suggested response</div>
-                    <p className="text-sm text-white/60 leading-relaxed italic">"{result.response}"</p>
-                  </div>
-
-                  <div className="pt-1">
-                    <Button variant="outline" size="sm" className="rounded-full text-xs border-white/10 text-white/50 hover:bg-white/5 hover:text-white bg-transparent" asChild>
-                      <Link to="/signup">Try DisputeIQ with your own claims <ArrowRight className="ml-1.5 w-3 h-3" /></Link>
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
 export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-[hsl(222_30%_6%)]">
+    <div className="min-h-screen bg-background">
       <SEOHead
-        title="Warranty Management Software for UK Car Dealers | WarrantyVault"
-        description="Manage self-funded warranties, handle claims, and respond to complaints correctly with WarrantyVault. Built for UK independent car dealers."
+        title="Self-Funded Car Warranty Software for UK Dealers | WarrantyVault"
+        description="Create, manage and handle self-funded car warranties in-house. No third-party providers. Better margins, faster decisions, full control for UK dealerships."
         canonical="https://dealer-guard-vault.lovable.app/"
       />
 
-      <PublicNav />
+      {/* Nav */}
+      <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between">
+          <img src={logo} alt="WarrantyVault" className="h-8 sm:h-10" />
+          <div className="hidden md:flex items-center gap-10 text-[15px] text-white/70">
+            <Link to="/features" className="hover:text-white transition-colors">Features</Link>
+            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+            <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
+            <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
+            <Link to="/dealers" className="hover:text-white transition-colors">Dealers</Link>
+            <Link to="/customers" className="hover:text-white transition-colors">Customers</Link>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-sm sm:text-[15px] px-3" asChild>
+              <Link to="/login">Sign In</Link>
+            </Button>
+            <Button size="sm" className="btn-cta rounded-full px-4 sm:px-6 text-sm sm:text-[15px] h-9 sm:h-10 hidden sm:inline-flex" asChild>
+              <Link to="/signup">Sign Up</Link>
+            </Button>
+            <button
+              className="md:hidden text-white/80 hover:text-white p-1"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-[hsl(var(--hero-bg))] border-t border-white/5 px-4 pb-4 space-y-1">
+            <Link to="/features" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Features</Link>
+            <a href="#pricing" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+            <Link to="/faq" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+            <Link to="/blog" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
+            <Link to="/dealers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Dealer Portal</Link>
+            <Link to="/customers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Customer Portal</Link>
+            <Button size="sm" className="btn-cta rounded-full w-full mt-2 text-sm h-10" asChild>
+              <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
+            </Button>
+          </div>
+        )}
+      </nav>
 
       {/* Hero */}
       <section className="hero-gradient relative overflow-hidden">
-        <div className="absolute top-10 right-[10%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 left-[5%] w-[300px] h-[300px] bg-[hsl(var(--cta))]/[0.03] rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-10 right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(var(--cta))]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-6xl mx-auto px-6 relative pt-28 pb-14">
-          <div className="grid lg:grid-cols-2 gap-10 items-center">
+        <div className="max-w-7xl mx-auto px-6 relative pt-32 pb-20">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <motion.p
-                className="text-xs text-white/50 font-semibold tracking-[0.2em] uppercase mb-5"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-              >
-                Built specifically for UK independent car dealers
-              </motion.p>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="inline-flex items-center gap-3 mb-8">
+                <div className="w-10 h-[2px] bg-[hsl(var(--cta))]" />
+                <span className="text-sm text-white/60 font-semibold tracking-[0.2em] uppercase">Built for UK Dealerships</span>
+              </motion.div>
 
               <motion.h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display tracking-tight text-white leading-[1.05] mb-5"
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
+                className="text-5xl sm:text-6xl lg:text-[4.2rem] font-bold font-display tracking-tight text-white leading-[1.06] mb-8"
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}
               >
-                Run Your Own Warranties<br />— Properly<span className="text-[hsl(var(--cta))]">.</span>
+                Take Control of Your<br />Warranty Process<span className="text-[hsl(var(--cta))]">.</span>
               </motion.h1>
 
               <motion.p
-                className="text-base sm:text-lg text-white/45 max-w-md mb-8 leading-relaxed"
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-lg text-white/50 max-w-lg mb-10 leading-relaxed"
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}
               >
-                Manage self-funded warranties with confidence. Handle claims, respond to complaints correctly, and stay in control of your risk and profit — all in one place.
+                Create, manage and handle self-funded warranties in-house. No third-party providers. Better margins, faster decisions, full control.
               </motion.p>
 
-              <motion.div className="flex flex-col sm:flex-row gap-3" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
-                <Button size="lg" className="btn-cta text-base px-10 rounded-full h-13 shadow-[0_0_24px_-4px_hsl(24,100%,50%,0.4)]" asChild>
-                  <Link to="/signup">Start Free — No Monthly Fees <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              <motion.div className="flex flex-col sm:flex-row gap-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
+                <Button size="lg" className="btn-cta text-base px-10 rounded-full h-14" asChild>
+                  <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-sm px-8 rounded-full h-13 border-white/[0.1] text-white/50 hover:bg-white/[0.04] hover:text-white bg-transparent" asChild>
-                  <a href="#how-it-works">See How It Works</a>
+                <Button size="lg" variant="outline" className="text-base px-10 rounded-full h-14 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent" asChild>
+                  <Link to="/features">See Features</Link>
                 </Button>
               </motion.div>
 
-              <motion.p className="text-xs text-white/25 mt-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
-                No monthly fees · First 5 warranties free · £15 per warranty after that
-              </motion.p>
+              <motion.div className="mt-8 space-y-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
+                <p className="text-sm text-white/40">No monthly fees. Only pay when you use it.</p>
+                <p className="text-xs text-white/30">£19 per warranty. No monthly fees.</p>
+              </motion.div>
             </div>
 
-            <div className="hidden lg:flex justify-center">
-              <HeroMock />
-            </div>
+            <motion.div className="hidden lg:block" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}>
+              <div className="bg-[hsl(222,25%,10%)]/80 backdrop-blur-md border border-white/8 rounded-2xl p-5 shadow-2xl">
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[hsl(0,60%,50%)]/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[hsl(40,80%,55%)]/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[hsl(140,60%,45%)]/60" />
+                </div>
+                <div className="space-y-3 mb-5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-white/50">Active Warranties</span>
+                    <span className="text-lg font-bold font-display text-primary">47</span>
+                  </div>
+                  <div className="w-full h-1 bg-white/5 rounded-full"><div className="h-1 bg-primary rounded-full" style={{ width: "70%" }} /></div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-white/50">Per Warranty Fee</span>
+                    <span className="text-lg font-bold font-display text-[hsl(var(--cta))]">£19</span>
+                  </div>
+                  <div className="w-full h-1 bg-white/5 rounded-full"><div className="h-1 bg-[hsl(var(--cta))] rounded-full" style={{ width: "85%" }} /></div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-white/50">Monthly Fee</span>
+                    <span className="text-lg font-bold font-display text-white">£0</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {["BMW 320d", "Audi A4", "Mercedes C200"].map(car => (
+                    <div key={car} className="bg-[hsl(222,20%,12%)] border border-white/5 rounded-lg p-3 text-center">
+                      <Car className="w-4 h-4 text-primary mx-auto mb-1.5" />
+                      <span className="text-xs text-white/60">{car}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
 
         <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px">
-    <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[60px] w-full" preserveAspectRatio="none">
-            <path d="M0,50 C220,78 470,78 720,58 C980,36 1170,30 1440,55 L1440,80 L0,80 Z" fill="hsl(222 28% 10%)" />
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[120px] w-full" preserveAspectRatio="none">
+            <path d="M0,70 C220,108 470,108 720,82 C980,54 1170,46 1440,78 L1440,120 L0,120 Z" fill="hsl(222 30% 7%)" />
           </svg>
         </div>
       </section>
 
-      {/* Hook / Problem */}
-      <section className="bg-[hsl(222_28%_10%)]">
-        <motion.div className="max-w-2xl mx-auto text-center px-6 pt-14 pb-14" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display text-white leading-[1.15] tracking-[-0.02em] mb-6">
-            Most dealers want to run their own warranties…<br />
-            <span className="text-white/35">but don't have the system to do it properly</span>
-          </h2>
-          <div className="text-left max-w-sm mx-auto mb-6 space-y-2.5">
-            <p className="text-white/40 text-sm">So what happens?</p>
-            {["Claims get messy", "Complaints escalate", "Dealers aren't sure what to say", "Money isn't tracked properly"].map(item => (
-              <div key={item} className="flex items-center gap-3 text-white/40 text-sm">
-                <div className="w-1.5 h-1.5 rounded-full bg-destructive/50 shrink-0" />
+      {/* Statement */}
+      <section className="bg-[hsl(222_30%_7%)] border-b border-white/5">
+        <motion.div className="max-w-6xl mx-auto text-center px-6 pt-12 pb-12" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <p className="text-[2.25rem] sm:text-[2.65rem] lg:text-[3rem] font-bold font-display text-white leading-[1.15] tracking-[-0.03em] mb-4">
+            Most dealers are already moving away from warranty providers...
+          </p>
+          <p className="text-white/45 text-lg sm:text-[1.45rem] max-w-3xl mx-auto leading-relaxed">
+            The problem is they don't have the right system to manage it properly.
+          </p>
+        </motion.div>
+
+        <div className="border-t border-white/5 px-6 py-8">
+          <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-x-10 gap-y-4 lg:gap-x-16">
+            {["£0/month", "Only pay per warranty", "£19 per warranty", "No contracts or upfront costs"].map(item => (
+              <div key={item} className="flex items-center gap-3 text-sm sm:text-base text-white/55">
+                <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
                 <span>{item}</span>
               </div>
             ))}
-            <p className="text-white/25 text-xs pt-1">And suddenly it becomes more stress than it's worth.</p>
           </div>
-          <p className="text-lg font-semibold font-display text-primary">WarrantyVault fixes that.</p>
-        </motion.div>
-        {/* Section divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-      </section>
-
-      {/* DisputeIQ Seller */}
-      <section className="py-20 px-6 bg-[hsl(222_30%_6%)] relative border-t border-[hsl(var(--cta))]/[0.08]">
-        <div className="absolute top-0 right-[10%] w-[300px] h-[300px] bg-[hsl(var(--cta))]/[0.03] rounded-full blur-[100px] pointer-events-none" />
-        <div className="max-w-5xl mx-auto">
-          <motion.div className="rounded-2xl p-8 sm:p-10 relative overflow-hidden border border-[hsl(var(--cta))]/10 bg-[hsl(222_28%_9%)] shadow-[0_0_40px_-12px_hsl(24,100%,50%,0.06)]" initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
-            <div className="absolute top-0 right-0 w-48 h-48 bg-[hsl(var(--cta))]/[0.04] rounded-full blur-[80px] pointer-events-none" />
-            <div className="grid lg:grid-cols-2 gap-8 items-center relative">
-              <div>
-                <Sparkles className="w-7 h-7 text-[hsl(var(--cta))] mb-3" />
-                <h2 className="text-2xl sm:text-3xl font-bold font-display mb-3">Not sure how to respond to a complaint?</h2>
-                <p className="text-white/40 text-base mb-6 max-w-md">
-                  DisputeIQ guides you through the situation and helps you send the right response — before things escalate.
-                </p>
-                <div className="space-y-2.5 mb-6">
-                  {["Understand your position instantly", "Get clear next steps", "Send professional responses with confidence"].map(item => (
-                    <div key={item} className="flex items-center gap-2.5 text-sm text-white/60">
-                      <CheckCircle2 className="w-4 h-4 text-[hsl(var(--cta))]/70 shrink-0" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-                <Button className="btn-cta rounded-full px-7 h-10 text-sm shadow-[0_0_16px_-4px_hsl(24,100%,50%,0.3)]" asChild>
-                  <Link to="/disputeiq">See how DisputeIQ works <ArrowRight className="ml-2 w-4 h-4" /></Link>
-                </Button>
-              </div>
-              <div className="hidden lg:flex justify-center">
-                <DisputeIQMock />
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 
-      {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
-      {/* Live Demo */}
-      <LiveDemoSection />
-
-      {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
-      {/* Core Features — 4 cards */}
-      <section className="py-16 px-6 bg-[hsl(222_28%_10%)]">
-        <div className="max-w-5xl mx-auto">
+      {/* Features (condensed) */}
+      <section className="py-16 px-6">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Everything you need. Nothing you don't.</h2>
-            <p className="text-white/35 text-sm max-w-md mx-auto">Four focused tools to run self-funded warranties properly.</p>
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Platform Features</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Everything you need to stay in control</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">Built for UK dealers who want higher margins, faster claim decisions, and fewer admin headaches.</p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {coreFeatures.map((f, i) => (
-              <motion.div key={f.title} className="rounded-xl p-6 border border-white/[0.08] bg-white/[0.05] hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_hsl(172,66%,40%,0.1)] transition-all duration-300 group" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {features.map((f, i) => (
+              <motion.div key={f.title} className="glass-card rounded-xl p-6 hover:border-primary/30 transition-all duration-300 group" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
                   <f.icon className="w-5 h-5 text-primary" />
                 </div>
-                <h3 className="text-base font-semibold font-display mb-1.5 text-white/80">{f.title}</h3>
-                <p className="text-sm text-white/35 leading-relaxed">{f.desc}</p>
+                <h3 className="font-semibold font-display mb-2">{f.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </motion.div>
             ))}
           </div>
-          <div className="text-center mt-8">
-            <Button variant="outline" className="rounded-full px-7 h-10 text-sm border-white/[0.08] text-white/50 hover:bg-white/[0.04] hover:text-white bg-transparent" asChild>
-              <Link to="/features">See all features <ArrowRight className="ml-2 w-4 h-4" /></Link>
+          <div className="text-center mt-10">
+            <Button variant="outline" className="rounded-full px-8 h-11 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent" asChild>
+              <Link to="/features">See All Features & Comparison <ArrowRight className="ml-2 w-4 h-4" /></Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
-      {/* Differentiator */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_6%)]">
-        <motion.div className="max-w-2xl mx-auto text-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-4">This isn't just warranty software</h2>
-          <p className="text-white/35 mb-6 text-base max-w-md mx-auto">Most systems help you <strong className="text-white/60">log claims</strong>. WarrantyVault helps you:</p>
-          <div className="grid sm:grid-cols-2 gap-3 max-w-md mx-auto text-left mb-8">
-            {[
-              "Understand your position",
-              "Avoid saying the wrong thing",
-              "Stay in control financially",
-              "Run warranties properly end to end",
-            ].map(item => (
-              <div key={item} className="flex items-center gap-2.5 text-sm text-white/60">
-                <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-          <p className="text-white/30 text-sm italic">The system dealers wish they had before things go wrong.</p>
-        </motion.div>
-      </section>
-
-      {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
-      {/* Warranty Fund */}
-      <section className="py-20 px-6 bg-[hsl(222_28%_10%)] relative border-t border-primary/[0.08]">
-        <div className="absolute bottom-0 left-[5%] w-[250px] h-[250px] bg-primary/[0.03] rounded-full blur-[80px] pointer-events-none" />
-        <div className="max-w-5xl mx-auto">
-          <motion.div className="grid lg:grid-cols-2 gap-8 items-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div>
-              <Wallet className="w-7 h-7 text-primary mb-3" />
-              <h2 className="text-2xl sm:text-3xl font-bold font-display mb-4">Know exactly where you stand financially</h2>
-              <p className="text-white/40 text-base mb-6 max-w-md">Running your own warranties shouldn't feel risky. WarrantyVault shows you:</p>
-              <div className="space-y-2.5 mb-6">
-                {["How much you've got set aside", "Your real exposure", "Whether you're underfunding", "What to adjust"].map(item => (
-                  <div key={item} className="flex items-center gap-2.5 text-sm text-white/60">
-                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-white/40 font-medium">Run warranties with confidence, not guesswork.</p>
-            </div>
-            <div className="hidden lg:flex justify-center">
-              <FundMock />
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
-      {/* How It Works */}
-      <section id="how-it-works" className="py-16 px-6 bg-[hsl(222_30%_6%)]">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">How it works</h2>
-            <p className="text-white/35 text-sm">Four steps. No complexity.</p>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {steps.map((s, i) => (
-              <motion.div key={s.num} className="rounded-xl p-6 border border-white/[0.08] bg-white/[0.05]" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-                <span className="text-2xl font-bold font-display text-primary/25 mb-2 block">{s.num}</span>
-                <h3 className="text-base font-semibold font-display mb-1.5 text-white/70">{s.title}</h3>
-                <p className="text-sm text-white/35 leading-relaxed">{s.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
       {/* Pricing */}
-      <section id="pricing" className="py-20 px-6 bg-[hsl(222_28%_10%)] relative border-t border-primary/[0.08]">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-primary/[0.03] rounded-full blur-[120px] pointer-events-none" />
-        <div className="max-w-2xl mx-auto text-center relative">
-          <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Simple, transparent pricing</h2>
-          <p className="text-white/35 text-sm mb-8">No monthly fees. No contracts. Pay only when you issue a warranty.</p>
-          <motion.div className="rounded-2xl p-8 sm:p-10 relative overflow-hidden border border-primary/15 bg-[hsl(222_28%_9%)] shadow-[0_0_40px_-12px_hsl(172,66%,40%,0.08)]" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
-            <div className="absolute top-0 right-0 w-44 h-44 bg-primary/[0.05] rounded-full blur-[80px] pointer-events-none" />
+      <section id="pricing" className="py-16 px-6 bg-secondary/30">
+        <div className="max-w-3xl mx-auto text-center">
+          <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Pricing</span>
+          <h2 className="text-3xl sm:text-4xl font-bold font-display mb-3">Simple, transparent pricing</h2>
+          <p className="text-muted-foreground mb-10">No monthly fees. No contracts. Pay only when you issue a warranty.</p>
+          <motion.div className="glass-card-strong rounded-2xl p-10 sm:p-14 glow-primary relative overflow-hidden" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
+            <div className="absolute top-0 right-0 w-52 h-52 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
             <div className="relative">
-              <p className="text-5xl sm:text-6xl font-bold font-display mb-0.5 text-white">£0<span className="text-xl text-white/30 font-normal">/month</span></p>
-              <p className="text-lg font-semibold font-display mb-1.5 text-white/80">Only £15 per warranty</p>
+              <p className="text-5xl sm:text-6xl font-bold font-display mb-1">£0<span className="text-2xl text-muted-foreground font-normal">/month</span></p>
+              <p className="text-xl font-semibold font-display mb-2">Only £19 per warranty</p>
               <p className="text-sm text-[hsl(var(--cta))] font-semibold mb-1">🎉 First 5 warranties FREE</p>
-              <p className="text-white/25 text-xs mb-6 max-w-xs mx-auto">No contracts. No risk. Cancel anytime.</p>
+              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">Start with 5 free warranties, then £19 each via Stripe. No hidden fees.</p>
 
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2 max-w-xs mx-auto mb-6">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-3 max-w-xs mx-auto mb-8">
                 {["No monthly fees", "No contracts", "Pay only when you use it", "Scale as you grow"].map(f => (
-                  <div key={f} className="flex items-center gap-2 text-sm text-white/60">
+                  <div key={f} className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                     <span>{f}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="bg-white/[0.03] rounded-lg p-3 mb-6 max-w-xs mx-auto border border-white/[0.06]">
-                <p className="text-xs text-white/40">
+              <div className="bg-secondary/40 rounded-xl p-4 mb-8 max-w-sm mx-auto border border-border/20">
+                <p className="text-sm">
                   Optional add-on: <Link to="/warranty-line" className="font-semibold text-[hsl(var(--cta))] hover:underline">Dedicated Warranty Line — £25/month</Link>.
                 </p>
               </div>
 
-              <Button size="lg" className="btn-cta rounded-full px-10 h-12 shadow-[0_0_24px_-4px_hsl(24,100%,50%,0.4)]" asChild>
-                <Link to="/signup">Start Free Today</Link>
+              <div className="bg-secondary/40 rounded-xl p-4 mb-8 max-w-sm mx-auto border border-border/20">
+                <p className="text-sm">
+                  Keep an extra <span className="font-semibold">£300–£800 per deal</span> by managing warranties in-house.
+                </p>
+              </div>
+
+              <Button size="lg" className="btn-cta rounded-full px-12 h-12" asChild>
+                <Link to="/signup">Sign Up</Link>
               </Button>
+              <p className="text-xs text-muted-foreground mt-3">No monthly fees. No contracts.</p>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Section divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
       {/* Testimonials */}
-      <section className="py-16 px-6 bg-[hsl(222_30%_6%)]">
+      <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold font-display mb-2">Trusted by UK dealers</h2>
+          <div className="text-center mb-10">
+            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Trust</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-3">Built by someone with real dealership experience</h2>
+            <p className="text-muted-foreground">Don't just take our word for it.</p>
           </div>
-          <TestimonialCarousel />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {testimonials.map((t, i) => (
+              <motion.div key={t.name} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="glass-card rounded-xl p-6">
+                <div className="flex gap-0.5 mb-4">
+                  {[...Array(5)].map((_, j) => <Star key={j} className="w-3.5 h-3.5 fill-[hsl(var(--cta))] text-[hsl(var(--cta))]" />)}
+                </div>
+                <p className="text-sm text-muted-foreground mb-5 leading-relaxed">"{t.text}"</p>
+                <div>
+                  <p className="font-semibold text-sm">{t.name}</p>
+                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="hero-gradient pt-16 pb-14 px-6 relative">
-        <div className="absolute top-0 left-[15%] w-[300px] h-[200px] bg-primary/[0.04] rounded-full blur-[80px] pointer-events-none" />
-        <div className="max-w-2xl mx-auto text-center relative">
-          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-3">Run your own warranties with confidence</h2>
-          <p className="text-white/35 mb-3 text-base">No monthly fees. No unnecessary complexity. Just a system that works.</p>
-          <p className="text-sm text-[hsl(var(--cta))] font-semibold mb-8">Start with 5 free warranties — no risk</p>
-          <Button size="lg" className="btn-cta rounded-full px-14 text-base h-14 shadow-[0_0_30px_-4px_hsl(24,100%,50%,0.4)]" asChild>
-            <Link to="/signup">Start Free Today <ArrowRight className="ml-2 w-4 h-4" /></Link>
-          </Button>
-          <p className="text-xs text-white/20 mt-4">First 5 warranties free · £15 per warranty after that</p>
+      <section className="hero-gradient pt-20 pb-16 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
+          <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
+              <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
+            </Button>
+            <Button size="lg" variant="outline" className="rounded-full px-10 text-base h-12 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent">
+              Book Demo
+            </Button>
+          </div>
+          <p className="text-xs text-white/30 mt-5">No monthly fees. £19 per warranty.</p>
         </div>
       </section>
 
-      <PublicFooter />
+      {/* Footer */}
+      <footer className="py-8 px-6 border-t border-white/10 hero-gradient">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
+          <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
+          <div className="flex flex-wrap gap-6 text-xs text-muted-foreground">
+            <Link to="/dealers" className="hover:text-foreground transition-colors">Dealer Portal</Link>
+            <Link to="/customers" className="hover:text-foreground transition-colors">Customer Portal</Link>
+            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
+            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+            <a href="#" className="hover:text-foreground transition-colors">Contact</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

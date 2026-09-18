@@ -4,11 +4,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
-import { supabase } from "@/integrations/supabase/client";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -17,7 +16,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
+  const [showDemo, setShowDemo] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,40 +30,10 @@ export default function LoginPage() {
     setLoading(false);
     if (success) {
       const { demoUsers } = await import("@/data/demo-data");
-      const demoUser = demoUsers.find(u => u.email === email);
-
-      if (demoUser?.role === "admin") {
-        navigate("/admin");
-        return;
-      }
-
-      if (demoUser?.role === "dealer") {
-        navigate("/dealer");
-        return;
-      }
-
-      const { data: { session } } = await supabase.auth.getSession();
-      const authUser = session?.user;
-
-      if (authUser?.id) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("user_id", authUser.id)
-          .maybeSingle();
-
-        if (profile?.role === "admin") {
-          navigate("/admin");
-          return;
-        }
-
-        if (profile?.role === "dealer") {
-          navigate("/dealer");
-          return;
-        }
-      }
-
-      navigate("/customer");
+      const user = demoUsers.find(u => u.email === email);
+      if (user?.role === "admin") navigate("/admin");
+      else if (user?.role === "dealer") navigate("/dealer");
+      else navigate("/customer");
     } else {
       setError("Invalid email or password.");
     }
@@ -72,7 +41,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <SEOHead title="Sign In | WarrantyVault" description="Sign in to your WarrantyVault account to manage your self-funded car warranties." noindex />
+      <SEOHead title="Sign In | WarrantyVault" description="Sign in to your WarrantyVault account to manage your self-funded car warranties." />
     <div className="min-h-screen flex items-center justify-center px-6 relative">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
       <div className="absolute top-20 right-1/4 w-[400px] h-[400px] bg-primary/8 rounded-full blur-[100px] pointer-events-none" />
@@ -103,6 +72,30 @@ export default function LoginPage() {
           </Button>
         </form>
 
+        <div className="glass-card rounded-xl overflow-hidden">
+          <button
+            onClick={() => setShowDemo(!showDemo)}
+            className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-secondary/20 transition-colors"
+          >
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Demo Credentials</span>
+            {showDemo ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+          </button>
+          {showDemo && (
+            <div className="px-6 pb-5 space-y-3 border-t border-border/50 pt-4">
+              {[
+                { label: "Super Admin", email: "admin@warrantyvault.com", pass: "admin123" },
+                { label: "Dealer", email: "dealer@prestige-motors.co.uk", pass: "dealer123" },
+                { label: "Customer", email: "john@example.com", pass: "customer123" },
+              ].map(cred => (
+                <div key={cred.email} className="bg-secondary/30 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-primary mb-1">{cred.label}</p>
+                  <p className="text-xs text-muted-foreground">Email: <code className="text-foreground">{cred.email}</code></p>
+                  <p className="text-xs text-muted-foreground">Password: <code className="text-foreground">{cred.pass}</code></p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
     </>

@@ -1,31 +1,21 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { HelmetProvider } from "react-helmet-async";
-import CookieConsent from "@/components/CookieConsent";
 
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import CustomersLoginPage from "@/pages/CustomersLoginPage";
-import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
-import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import DealersLoginPage from "@/pages/DealersLoginPage";
 import NotFound from "@/pages/NotFound";
 import BlogArticlePage from "@/pages/BlogArticlePage";
 import FeaturesPage from "@/pages/FeaturesPage";
 import WarrantyLinePage from "@/pages/WarrantyLinePage";
 import FAQPage from "@/pages/FAQPage";
-import KnowledgeBasePage from "@/pages/KnowledgeBasePage";
-import KBArticlePage from "@/pages/KBArticlePage";
 import BlogIndexPage from "@/pages/BlogIndexPage";
-import DisputeIQPage from "@/pages/DisputeIQPage";
-import TermsPage from "@/pages/legal/TermsPage";
-import PrivacyPage from "@/pages/legal/PrivacyPage";
-import CookiesPage from "@/pages/legal/CookiesPage";
 
 import DealerLayout from "@/components/layouts/DealerLayout";
 import DealerDashboard from "@/pages/dealer/DealerDashboard";
@@ -41,9 +31,6 @@ import DealerCoverTemplates from "@/pages/dealer/DealerCoverTemplates";
 import DealerClaimAssist from "@/pages/dealer/DealerClaimAssist";
 import DealerClaimSettings from "@/pages/dealer/DealerClaimSettings";
 import DealerSupport from "@/pages/dealer/DealerSupport";
-import DealerDisputeIQ from "@/pages/dealer/DealerDisputeIQ";
-import DisputeIQAssessment from "@/pages/dealer/DisputeIQAssessment";
-import DealerWarrantyFund from "@/pages/dealer/DealerWarrantyFund";
 
 import CustomerLayout from "@/components/layouts/CustomerLayout";
 import CustomerDashboard from "@/pages/customer/CustomerDashboard";
@@ -63,16 +50,11 @@ import AdminLogs from "@/pages/admin/AdminLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminClaims from "@/pages/admin/AdminClaims";
 import AdminSupport from "@/pages/admin/AdminSupport";
-import AdminEnquiries from "@/pages/admin/AdminEnquiries";
-import ContactPage from "@/pages/ContactPage";
 
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role: string }) {
-  const { user, isAuthenticated, isReady } = useAuth();
-  if (!isReady) {
-    return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
-  }
+  const { user, isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     if (role === "customer") return <Navigate to="/customers" replace />;
     if (role === "dealer") return <Navigate to="/dealers" replace />;
@@ -82,36 +64,19 @@ function ProtectedRoute({ children, role }: { children: React.ReactNode; role: s
   return <>{children}</>;
 }
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
-  return null;
-}
-
 function AppRoutes() {
   return (
-    <>
-      <ScrollToTop />
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/features" element={<FeaturesPage />} />
       <Route path="/warranty-line" element={<WarrantyLinePage />} />
       <Route path="/faq" element={<FAQPage />} />
-      <Route path="/knowledge-base" element={<KnowledgeBasePage />} />
-      <Route path="/knowledge-base/:slug" element={<KBArticlePage />} />
       <Route path="/blog" element={<BlogIndexPage />} />
-      <Route path="/disputeiq" element={<DisputeIQPage />} />
       <Route path="/blog/:slug" element={<BlogArticlePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/customers" element={<CustomersLoginPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/dealers" element={<DealersLoginPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/terms" element={<TermsPage />} />
-      <Route path="/privacy" element={<PrivacyPage />} />
-      <Route path="/cookies" element={<CookiesPage />} />
 
       {/* Dealer Routes */}
       <Route path="/dealer" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDashboard /></DealerLayout></ProtectedRoute>} />
@@ -127,9 +92,6 @@ function AppRoutes() {
       <Route path="/dealer/claim-assist" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimAssist /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/claim-settings" element={<ProtectedRoute role="dealer"><DealerLayout><DealerClaimSettings /></DealerLayout></ProtectedRoute>} />
       <Route path="/dealer/support" element={<ProtectedRoute role="dealer"><DealerLayout><DealerSupport /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/disputeiq" element={<ProtectedRoute role="dealer"><DealerLayout><DealerDisputeIQ /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/disputeiq/:id" element={<ProtectedRoute role="dealer"><DealerLayout><DisputeIQAssessment /></DealerLayout></ProtectedRoute>} />
-      <Route path="/dealer/warranty-fund" element={<ProtectedRoute role="dealer"><DealerLayout><DealerWarrantyFund /></DealerLayout></ProtectedRoute>} />
 
       {/* Customer Routes */}
       <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout><CustomerDashboard /></CustomerLayout></ProtectedRoute>} />
@@ -149,11 +111,9 @@ function AppRoutes() {
       <Route path="/admin/logs" element={<ProtectedRoute role="admin"><AdminLayout><AdminLogs /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/settings" element={<ProtectedRoute role="admin"><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
       <Route path="/admin/support" element={<ProtectedRoute role="admin"><AdminLayout><AdminSupport /></AdminLayout></ProtectedRoute>} />
-      <Route path="/admin/enquiries" element={<ProtectedRoute role="admin"><AdminLayout><AdminEnquiries /></AdminLayout></ProtectedRoute>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
-    </>
   );
 }
 
@@ -165,7 +125,6 @@ const App = () => (
         <AuthProvider>
           <BrowserRouter>
             <AppRoutes />
-            <CookieConsent />
           </BrowserRouter>
         </AuthProvider>
       </TooltipProvider>

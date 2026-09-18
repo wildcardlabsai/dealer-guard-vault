@@ -33,10 +33,13 @@ export default function CustomersLoginPage() {
     const success = await login(email, password);
     setLoading(false);
     if (success) {
-      // After login, check the user from context — supports both demo and real users
-      // Small delay to let state settle
-      await new Promise(r => setTimeout(r, 100));
-      navigate("/customer");
+      const { demoUsers } = await import("@/data/demo-data");
+      const found = demoUsers.find(u => u.email === email);
+      if (found?.role === "customer") {
+        navigate("/customer");
+      } else {
+        setError("This portal is for customers only. Please use the correct login.");
+      }
     } else {
       setError("Invalid email or password.");
     }
@@ -47,7 +50,6 @@ export default function CustomersLoginPage() {
       <SEOHead
         title="Customer Login | WarrantyVault"
         description="Sign in to your WarrantyVault customer account to view warranties, track claims, and download certificates."
-        noindex
       />
       <div className="min-h-screen flex items-center justify-center px-6 relative">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
@@ -83,10 +85,7 @@ export default function CustomersLoginPage() {
               <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link to="/forgot-password" className="text-xs text-primary hover:underline">Forgot password?</Link>
-              </div>
+              <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}

@@ -1,32 +1,26 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { lookupVehicle, lookupPostcode, lookupMOTHistory, type DVLAVehicle, type DVSAResult, type Address } from "@/lib/simulated-apis";
-import { supabase } from "@/integrations/supabase/client";
 import { useWarrantyStore } from "@/lib/warranty-store";
 import { useCoverStore } from "@/lib/cover-store";
-import { useDealerSettingsStore } from "@/lib/dealer-settings-store";
 import { useAuth } from "@/contexts/AuthContext";
-import { demoCustomers } from "@/data/demo-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle, UserPlus, Users } from "lucide-react";
+import { Search, Car, CheckCircle2, Loader2, CreditCard, Shield, FileText, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AddWarranty() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useAuth();
   const store = useWarrantyStore();
   const coverStore = useCoverStore();
-  const dealerSettingsStore = useDealerSettingsStore();
   const dealerId = user?.dealerId || "d-1";
   const templates = coverStore.templates.filter(t => t.dealerId === dealerId || t.dealerId === "system");
-  const passedState = location.state as { reg?: string; vehicle?: DVLAVehicle } | null;
-  const [step, setStep] = useState(passedState?.vehicle ? 1 : 1);
-  const [reg, setReg] = useState(passedState?.reg || "");
+  const [step, setStep] = useState(1);
+  const [reg, setReg] = useState("");
   const [postcode, setPostcode] = useState("");
   const [vehicle, setVehicle] = useState<DVLAVehicle | null>(null);
   const [dvsaData, setDvsaData] = useState<DVSAResult | null>(null);
@@ -34,42 +28,12 @@ export default function AddWarranty() {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(false);
   const [paying, setPaying] = useState(false);
-  const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
   const [form, setForm] = useState({ customerName: "", email: "", phone: "", mileage: "", duration: "12", cost: "", notes: "", coverTemplateId: "" });
-
-  // Existing customers for this dealer
-  const existingCustomers = demoCustomers.filter(c => c.dealerId === dealerId);
-  // Also include customers from warranties added by this dealer (not in demo data)
-  const warrantyCustomers = store.warranties
-    .filter(w => w.dealerId === dealerId && w.customerEmail)
-    .reduce((acc, w) => {
-      if (!acc.find(c => c.email === w.customerEmail) && !existingCustomers.find(c => c.email === w.customerEmail)) {
-        acc.push({ id: w.customerId, name: w.customerName, email: w.customerEmail!, phone: "", dealerId });
-      }
-      return acc;
-    }, [] as { id: string; name: string; email: string; phone: string; dealerId: string }[]);
-  const allCustomers = [...existingCustomers, ...warrantyCustomers];
-
-  // Sync free warranty count with actual data
-  const dealerWarrantyCount = store.warranties.filter(w => w.dealerId === dealerId).length;
-  useEffect(() => {
-    dealerSettingsStore.syncFreeWarrantyCount(dealerId, dealerWarrantyCount);
-  }, [dealerWarrantyCount, dealerId]);
-
-  const isFreeWarranty = dealerSettingsStore.hasFreeWarranties(dealerId);
-  const freeRemaining = dealerSettingsStore.freeWarrantiesRemaining(dealerId);
-
-  useEffect(() => {
-    if (passedState?.reg && !vehicle) {
-      handleVehicleLookup();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleVehicleLookup = async () => {
     if (!reg.trim()) return;
     setLoading(true);
+    // Fetch DVLA and DVSA data in parallel
     const [dvlaResult, dvsaResult] = await Promise.all([
       lookupVehicle(reg),
       lookupMOTHistory(reg),
@@ -78,6 +42,7 @@ export default function AddWarranty() {
     setDvsaData(dvsaResult);
     setLoading(false);
     if (dvlaResult) {
+      // Pre-fill mileage from latest MOT if available
       if (dvsaResult?.motTests?.[0]?.odometerValue) {
         setForm(f => ({ ...f, mileage: dvsaResult.motTests[0].odometerValue }));
       }
@@ -96,40 +61,20 @@ export default function AddWarranty() {
     setLoading(false);
   };
 
-  const handleSelectExistingCustomer = (customerId: string) => {
-    setSelectedCustomerId(customerId);
-    const customer = allCustomers.find(c => c.id === customerId);
-    if (customer) {
-      setForm(f => ({
-        ...f,
-        customerName: customer.name,
-        email: customer.email,
-        phone: customer.phone || f.phone,
-      }));
-    }
-  };
-
   const handlePayAndCreate = async () => {
     if (!vehicle || !form.customerName || !form.cost) {
       toast.error("Please fill in all required fields");
       return;
     }
     setPaying(true);
-    
-    if (!isFreeWarranty) {
-      await new Promise(r => setTimeout(r, 2000));
-    } else {
-      await new Promise(r => setTimeout(r, 800));
-    }
+    await new Promise(r => setTimeout(r, 2000));
     
     const startDate = new Date().toISOString().split("T")[0];
     const endDate = new Date(Date.now() + parseInt(form.duration) * 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
 
-    const customerId = selectedCustomerId || `cust-${Date.now()}`;
-
     store.addWarranty({
       id: `w-${Date.now()}`,
-      customerId,
+      customerId: `cust-${Date.now()}`,
       customerName: form.customerName,
       customerEmail: form.email || undefined,
       dealerId,
@@ -148,40 +93,18 @@ export default function AddWarranty() {
       notes: form.notes,
       createdAt: startDate,
       coverTemplateId: form.coverTemplateId || undefined,
-      paymentStatus: isFreeWarranty ? "free" : "paid",
+      paymentStatus: "paid",
     });
 
-    // Track free warranty usage
-    if (isFreeWarranty) {
-      dealerSettingsStore.useFreeWarranty(dealerId);
-    }
-
     setPaying(false);
-    toast.success(isFreeWarranty ? "Free warranty created successfully!" : "Payment successful! Warranty created.");
-    
+    toast.success("Payment successful! Warranty created.");
+    // Send warranty confirmation email
     if (form.email) {
-      const dealerName = dealerId === "d-1" ? "Prestige Motors" : "City Autos";
-      supabase.functions.invoke("invite-customer", {
-        body: {
-          email: form.email,
-          customerName: form.customerName,
-          dealerName,
-          vehicleReg: vehicle.registration,
-          vehicleMake: vehicle.make,
-          vehicleModel: vehicle.model,
-          startDate,
-          endDate,
-        },
-      }).then(({ data, error }) => {
-        if (error || !data?.success) {
-          console.error("Customer invite error:", error || data?.error);
-          toast.error("Warranty created but failed to send customer invite email");
-        } else if (data.isNewAccount) {
-          toast.success(`Customer portal account created for ${form.email}`);
-        } else {
-          toast.info(`Warranty notification sent to ${form.email}`);
-        }
-      });
+      import("@/lib/email-service").then(m => m.sendWarrantyConfirmationEmail(
+        form.email, form.customerName, vehicle.registration,
+        vehicle.make, vehicle.model, startDate, endDate,
+        dealerId === "d-1" ? "Prestige Motors" : "City Autos"
+      ));
     }
     navigate("/dealer/warranties");
   };
@@ -192,24 +115,14 @@ export default function AddWarranty() {
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold font-display">Add New Warranty</h1>
-        <p className="text-sm text-muted-foreground">Step {step} of {isFreeWarranty ? 3 : 4}</p>
+        <p className="text-sm text-muted-foreground">Step {step} of 4</p>
       </div>
 
       <div className="flex gap-2">
-        {(isFreeWarranty ? [1, 2, 3] : [1, 2, 3, 4]).map(s => (
+        {[1, 2, 3, 4].map(s => (
           <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? "bg-primary" : "bg-secondary"}`} />
         ))}
       </div>
-
-      {isFreeWarranty && (
-        <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 flex items-center gap-3">
-          <Shield className="w-5 h-5 text-primary shrink-0" />
-          <div className="text-sm">
-            <span className="font-medium text-primary">Free warranty!</span>{" "}
-            <span className="text-muted-foreground">You have {freeRemaining} of 5 free warranties remaining. No admin fee applies.</span>
-          </div>
-        </div>
-      )}
 
       {/* Step 1: Vehicle Lookup */}
       {step === 1 && (
@@ -297,130 +210,48 @@ export default function AddWarranty() {
       {step === 2 && (
         <div className="glass-card rounded-xl p-6 space-y-4">
           <h2 className="font-semibold font-display">Customer Details</h2>
-
-          {/* New or Existing Customer Toggle */}
-          {!customerType && (
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => setCustomerType("new")}
-                className="flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-primary/5 transition-all"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <UserPlus className="w-6 h-6 text-primary" />
-                </div>
-                <div className="text-center">
-                  <p className="font-medium text-sm">New Customer</p>
-                  <p className="text-xs text-muted-foreground">Enter new customer details</p>
-                </div>
-              </button>
-              <button
-                onClick={() => setCustomerType("existing")}
-                className="flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-primary/5 transition-all"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-primary" />
-                </div>
-                <div className="text-center">
-                  <p className="font-medium text-sm">Existing Customer</p>
-                  <p className="text-xs text-muted-foreground">Select from your customers</p>
-                </div>
-              </button>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Full Name *</Label>
+              <Input placeholder="John Smith" value={form.customerName} onChange={e => setForm({ ...form, customerName: e.target.value })} />
             </div>
-          )}
-
-          {/* Existing Customer Selector */}
-          {customerType === "existing" && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label>Select Customer</Label>
-                <Button variant="ghost" size="sm" onClick={() => { setCustomerType(null); setSelectedCustomerId(""); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}>
-                  Change
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input placeholder="john@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Phone</Label>
+              <Input placeholder="07700 900000" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <div className="flex gap-2">
+                <Input placeholder="B1 1QT" value={postcode} onChange={e => setPostcode(e.target.value)} />
+                <Button variant="outline" onClick={handlePostcodeLookup} disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Find"}
                 </Button>
               </div>
-              <Select value={selectedCustomerId} onValueChange={handleSelectExistingCustomer}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a customer..." />
-                </SelectTrigger>
+            </div>
+          </div>
+          {addresses.length > 0 && (
+            <div className="space-y-2">
+              <Label>Select Address</Label>
+              <Select onValueChange={v => setSelectedAddress(addresses[parseInt(v)])}>
+                <SelectTrigger><SelectValue placeholder="Choose address..." /></SelectTrigger>
                 <SelectContent>
-                  {allCustomers.map(c => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name} — {c.email}
-                    </SelectItem>
+                  {addresses.map((a, i) => (
+                    <SelectItem key={i} value={i.toString()}>{a.line1}, {a.city}, {a.postcode}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {selectedCustomerId && (
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm space-y-1">
-                  <p className="font-medium text-primary">Selected: {form.customerName}</p>
-                  <p className="text-muted-foreground">{form.email}</p>
-                </div>
+              {selectedAddress && (
+                <p className="text-sm text-muted-foreground">{selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ""}, {selectedAddress.city}, {selectedAddress.postcode}</p>
               )}
             </div>
           )}
-
-          {/* New Customer Form */}
-          {customerType === "new" && (
-            <>
-              <div className="flex items-center justify-between">
-                <Label className="text-xs text-muted-foreground">New customer details</Label>
-                <Button variant="ghost" size="sm" onClick={() => { setCustomerType(null); setForm(f => ({ ...f, customerName: "", email: "", phone: "" })); }}>
-                  Change
-                </Button>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Full Name *</Label>
-                  <Input placeholder="John Smith" value={form.customerName} onChange={e => setForm({ ...form, customerName: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Email *</Label>
-                  <Input placeholder="john@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Phone</Label>
-                  <Input placeholder="07700 900000" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Postcode</Label>
-                  <div className="flex gap-2">
-                    <Input placeholder="B1 1QT" value={postcode} onChange={e => setPostcode(e.target.value)} />
-                    <Button variant="outline" onClick={handlePostcodeLookup} disabled={loading}>
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Find"}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              {addresses.length > 0 && (
-                <div className="space-y-2">
-                  <Label>Select Address</Label>
-                  <Select onValueChange={v => setSelectedAddress(addresses[parseInt(v)])}>
-                    <SelectTrigger><SelectValue placeholder="Choose address..." /></SelectTrigger>
-                    <SelectContent>
-                      {addresses.map((a, i) => (
-                        <SelectItem key={i} value={i.toString()}>{a.line1}, {a.city}, {a.postcode}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {selectedAddress && (
-                    <p className="text-sm text-muted-foreground">{selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ""}, {selectedAddress.city}, {selectedAddress.postcode}</p>
-                  )}
-                </div>
-              )}
-            </>
-          )}
-
           <div className="flex justify-between pt-2">
             <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-            <Button
-              disabled={!customerType || !form.customerName}
-              onClick={() => {
-                if (!form.customerName) { toast.error("Customer name is required"); return; }
-                if (customerType === "new" && !form.email) { toast.error("Email is required for new customers"); return; }
-                setStep(3);
-              }}
-            >
-              Continue
-            </Button>
+            <Button onClick={() => { if (!form.customerName) { toast.error("Customer name is required"); return; } setStep(3); }}>Continue</Button>
           </div>
         </div>
       )}
@@ -432,34 +263,15 @@ export default function AddWarranty() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Cover Template</Label>
-              <Select value={form.coverTemplateId} onValueChange={v => {
-                const tmpl = templates.find(t => t.id === v);
-                setForm(f => ({
-                  ...f,
-                  coverTemplateId: v,
-                  cost: tmpl?.suggestedPrice ? String(tmpl.suggestedPrice) : f.cost,
-                }));
-              }}>
+              <Select value={form.coverTemplateId} onValueChange={v => setForm({ ...form, coverTemplateId: v })}>
                 <SelectTrigger><SelectValue placeholder="Select cover level..." /></SelectTrigger>
                 <SelectContent>
                   {templates.map(t => (
-                    <SelectItem key={t.id} value={t.id}>
-                      {t.name} — {t.levelName}
-                      {t.suggestedPrice ? ` (£${t.suggestedPrice})` : ""}
-                    </SelectItem>
+                    <SelectItem key={t.id} value={t.id}>{t.name} — {t.levelName}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            {selectedTemplate && (selectedTemplate.labourRate || selectedTemplate.maxClaimLimit) && (
-              <div className="sm:col-span-2 bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm flex items-center gap-4 flex-wrap">
-                <Shield className="w-4 h-4 text-primary shrink-0" />
-                <span className="font-medium text-primary">{selectedTemplate.levelName} Package:</span>
-                {selectedTemplate.labourRate && <span className="text-muted-foreground">Labour rate: <span className="font-medium text-foreground">£{selectedTemplate.labourRate}/hr</span></span>}
-                {selectedTemplate.maxClaimLimit && <span className="text-muted-foreground">Max claim: <span className="font-medium text-foreground">£{selectedTemplate.maxClaimLimit}</span></span>}
-                {selectedTemplate.coveredItems && <span className="text-muted-foreground">{selectedTemplate.coveredItems.length} components covered</span>}
-              </div>
-            )}
             <div className="space-y-2">
               <Label>Mileage</Label>
               <Input type="number" placeholder="32000" value={form.mileage} onChange={e => setForm({ ...form, mileage: e.target.value })} />
@@ -489,22 +301,13 @@ export default function AddWarranty() {
 
           <div className="flex justify-between pt-2">
             <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
-            <Button onClick={() => {
-              if (!form.cost) { toast.error("Cost is required"); return; }
-              if (isFreeWarranty) {
-                handlePayAndCreate();
-              } else {
-                setStep(4);
-              }
-            }}>
-              {isFreeWarranty ? "Create Warranty (Free)" : "Continue to Payment"}
-            </Button>
+            <Button onClick={() => { if (!form.cost) { toast.error("Cost is required"); return; } setStep(4); }}>Continue to Payment</Button>
           </div>
         </div>
       )}
 
-      {/* Step 4: Payment (only for paid warranties) */}
-      {step === 4 && !isFreeWarranty && (
+      {/* Step 4: Payment */}
+      {step === 4 && (
         <div className="space-y-4">
           <div className="glass-card rounded-xl p-6 space-y-4">
             <h2 className="font-semibold font-display">Review & Pay</h2>
@@ -537,7 +340,7 @@ export default function AddWarranty() {
                 <Shield className="w-4 h-4 text-primary" />
                 <span className="text-sm">WarrantyVault Admin Fee</span>
               </div>
-              <span className="text-xl font-bold font-display">£15</span>
+              <span className="text-xl font-bold font-display">£19</span>
             </div>
 
             <p className="text-xs text-muted-foreground">Payment processed securely via Stripe. This fee covers platform administration, certificate generation, and customer portal access.</p>
@@ -548,7 +351,7 @@ export default function AddWarranty() {
                 {paying ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
                 ) : (
-                  <><CreditCard className="w-4 h-4 mr-2" /> Pay £15 & Create</>
+                  <><CreditCard className="w-4 h-4 mr-2" /> Pay £19 & Create</>
                 )}
               </Button>
             </div>

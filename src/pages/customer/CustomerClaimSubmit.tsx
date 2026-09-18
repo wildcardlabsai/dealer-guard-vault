@@ -20,10 +20,7 @@ export default function CustomerClaimSubmit() {
   const warrantyStore = useWarrantyStore();
   const claimStore = useClaimStore();
   const coverStore = useCoverStore();
-  const userEmail = user?.email?.toLowerCase();
-  const warranties = warrantyStore.warranties.filter(w =>
-    (w.customerId === user?.id || (userEmail && w.customerEmail?.toLowerCase() === userEmail)) && w.status === "active"
-  );
+  const warranties = warrantyStore.warranties.filter(w => w.customerId === user?.id && w.status === "active");
 
   const [step, setStep] = useState(1);
   const [selectedWarrantyId, setSelectedWarrantyId] = useState(warranties[0]?.id || "");
@@ -43,14 +40,14 @@ export default function CustomerClaimSubmit() {
 
   const [files] = useState<ClaimFile[]>([]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!warranty || !form.issueTitle || !form.description) {
       toast.error("Please fill in all required fields");
       return;
     }
 
     const templateId = coverStore.templateMap[warranty.id];
-    const claim = await claimStore.submitClaim({
+    const claim = claimStore.submitClaim({
       warrantyId: warranty.id,
       customerId: user?.id || "",
       customerName: user?.name || "",
@@ -73,6 +70,7 @@ export default function CustomerClaimSubmit() {
     });
 
     toast.success(`Claim submitted — Ref: ${claim.reference}`);
+    // Send claim confirmation email
     if (user?.email) {
       import("@/lib/email-service").then(m => m.sendClaimSubmittedEmail(
         user.email!, user.name || "Customer", claim.reference, warranty.vehicleReg, form.issueTitle
