@@ -5,8 +5,9 @@ import {
   Headphones, Music, MessageSquare, Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
+import SiteHeader from "@/components/vroom/SiteHeader";
+import SiteFooter from "@/components/vroom/SiteFooter";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -35,122 +36,91 @@ const benefits = [
 
 export default function WarrantyLinePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="vroom-site min-h-screen bg-vroom-surface text-vroom-ink">
       <SEOHead
-        title="Dedicated Warranty Phone Line for Car Dealers | WarrantyVault"
+        title="Dedicated Warranty Phone Line for Car Dealers | VROOM"
         description="Give your dealership a professional dedicated warranty phone line with custom greetings, hold music, and IVR routing. Only £25/month. Set up in 24 hours."
-        canonical="https://dealer-guard-vault.lovable.app/warranty-line"
+        canonical="https://govroom.co.uk/warranty-line"
       />
 
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
-          <Link to="/"><img src={logo} alt="WarrantyVault" className="h-10" /></Link>
-          <div className="hidden md:flex items-center gap-10 text-[15px] text-white/70">
-            <Link to="/features" className="hover:text-white transition-colors">Features</Link>
-            <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
-            <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-[15px]" asChild>
-              <Link to="/login">Sign In</Link>
-            </Button>
-            <Button size="sm" className="btn-cta rounded-full px-6 text-[15px] h-10" asChild>
-              <Link to="/signup">Sign Up</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <SiteHeader />
 
-      {/* Hero */}
-      <section className="hero-gradient pt-32 pb-16 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="text-[hsl(var(--cta))] text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Optional Add-On</span>
-          <h1 className="text-4xl sm:text-5xl font-bold font-display text-white mb-4">Look like a proper warranty department</h1>
-          <p className="text-white/50 text-lg max-w-2xl mx-auto">Give your customers a dedicated phone line for warranty enquiries and claims. Professional, branded, and fully under your control.</p>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {lineFeatures.map((item, i) => (
-              <motion.div key={item.title} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="glass-card rounded-xl p-6">
-                <div className="w-11 h-11 rounded-xl bg-[hsl(var(--cta))]/10 flex items-center justify-center mb-4">
-                  <item.icon className="w-5 h-5 text-[hsl(var(--cta))]" />
-                </div>
-                <h3 className="font-semibold font-display mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
+      <main>
+        <section className="bg-vroom-dark px-5 pb-16 pt-40 text-vroom-hero-fg lg:px-10 lg:pt-44">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.22em] text-vroom-green">Optional Add-On</p>
+            <h1 className="text-4xl font-bold leading-[1.04] sm:text-5xl">Look like a proper warranty department</h1>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-7 text-vroom-hero-muted">Give your customers a dedicated phone line for warranty enquiries and claims. Professional, branded, and fully under your control.</p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Benefits + Pricing Card */}
-      <section className="py-16 px-6 bg-secondary/30">
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_380px] gap-10 items-start">
-          <div>
-            <h2 className="text-3xl font-bold font-display mb-6">Why dealers add a warranty line</h2>
-            <p className="text-muted-foreground mb-8">Stop giving out personal mobiles for warranty calls. A dedicated number keeps things professional and separates warranty queries from your sales pipeline.</p>
-            <div className="grid sm:grid-cols-2 gap-3">
-              {benefits.map(b => (
-                <div key={b} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[hsl(var(--cta))] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm">{b}</span>
-                </div>
+        <section className="bg-vroom-surface px-5 py-20 lg:px-10">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {lineFeatures.map((item, i) => (
+                <motion.div key={item.title} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="rounded-xl border border-vroom-line bg-vroom-panel p-6 shadow-sm">
+                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-vroom-green/10">
+                    <item.icon className="h-5 w-5 text-vroom-green-deep" />
+                  </div>
+                  <h3 className="mb-2 font-semibold">{item.title}</h3>
+                  <p className="text-sm leading-relaxed text-vroom-ink-muted">{item.desc}</p>
+                </motion.div>
               ))}
             </div>
           </div>
+        </section>
 
-          <motion.div className="glass-card-strong rounded-2xl p-8 text-center sticky top-24" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--cta))]/10 flex items-center justify-center mx-auto mb-5">
-              <Headphones className="w-7 h-7 text-[hsl(var(--cta))]" />
+        <section className="bg-vroom-soft px-5 py-20 lg:px-10">
+          <div className="mx-auto grid max-w-5xl items-start gap-10 lg:grid-cols-[1fr_380px]">
+            <div>
+              <h2 className="mb-6 text-3xl font-bold">Why dealers add a warranty line</h2>
+              <p className="mb-8 text-vroom-ink-muted">Stop giving out personal mobiles for warranty calls. A dedicated number keeps things professional and separates warranty queries from your sales pipeline.</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {benefits.map(b => (
+                  <div key={b} className="flex items-start gap-2">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-vroom-green-deep" />
+                    <span className="text-sm">{b}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h3 className="text-xl font-bold font-display mb-1">Dedicated Warranty Line</h3>
-            <p className="text-3xl font-bold font-display mb-1">£25<span className="text-base text-muted-foreground font-normal">/month</span></p>
-            <p className="text-xs text-muted-foreground mb-6">Add to any WarrantyVault plan</p>
-            <div className="space-y-3 text-left mb-6">
-              {["Dedicated phone number", "Custom greeting with your name", "Hold music & branding", "Call routing to your team", "No long-term contract"].map(f => (
-                <div key={f} className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[hsl(var(--cta))] flex-shrink-0" />
-                  <span>{f}</span>
-                </div>
-              ))}
-            </div>
-            <Button className="w-full rounded-full h-11 btn-cta" asChild>
-              <Link to="/signup">Add Warranty Line</Link>
-            </Button>
-            <p className="text-[11px] text-muted-foreground mt-3">Cancel anytime. Set up in 24 hours.</p>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* CTA */}
-      <section className="hero-gradient pt-20 pb-16 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Ready to sound professional?</h2>
-          <p className="text-white/50 mb-8 text-lg">Add a dedicated warranty line and separate warranty calls from sales.</p>
-          <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
-            <Link to="/signup">Get Started <ArrowRight className="ml-2 w-4 h-4" /></Link>
-          </Button>
-          <p className="text-xs text-white/30 mt-5">£25/month. Cancel anytime.</p>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-white/10 hero-gradient">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Link to="/"><img src={logo} alt="WarrantyVault" className="h-6 opacity-60" /></Link>
-          <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
-          <div className="flex gap-6 text-xs text-muted-foreground">
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-            <a href="#" className="hover:text-foreground transition-colors">Contact</a>
+            <motion.div className="sticky top-24 rounded-2xl border border-vroom-line bg-vroom-panel p-8 text-center shadow-vroom-device" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-vroom-green/10">
+                <Headphones className="h-7 w-7 text-vroom-green-deep" />
+              </div>
+              <h3 className="mb-1 text-xl font-bold">Dedicated Warranty Line</h3>
+              <p className="mb-1 text-3xl font-bold">£25<span className="text-base font-normal text-vroom-ink-muted">/month</span></p>
+              <p className="mb-6 text-xs text-vroom-ink-muted">Add to any VROOM plan</p>
+              <div className="mb-6 space-y-3 text-left">
+                {["Dedicated phone number", "Custom greeting with your name", "Hold music & branding", "Call routing to your team", "No long-term contract"].map(f => (
+                  <div key={f} className="flex items-center gap-2 text-sm">
+                    <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0 text-vroom-green-deep" />
+                    <span>{f}</span>
+                  </div>
+                ))}
+              </div>
+              <Button className="w-full bg-vroom-green font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild>
+                <Link to="/signup">Add Warranty Line</Link>
+              </Button>
+              <p className="mt-3 text-[11px] text-vroom-ink-muted">Cancel anytime. Set up in 24 hours.</p>
+            </motion.div>
           </div>
-        </div>
-      </footer>
+        </section>
+
+        <section className="bg-vroom-dark px-5 py-20 text-vroom-hero-fg lg:px-10">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Ready to sound professional?</h2>
+            <p className="mb-8 text-lg text-vroom-hero-muted">Add a dedicated warranty line and separate warranty calls from sales.</p>
+            <Button size="lg" className="h-12 bg-vroom-green px-10 font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild>
+              <Link to="/signup">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
+            <p className="mt-5 text-xs text-vroom-hero-muted">£25/month. Cancel anytime.</p>
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }

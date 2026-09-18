@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -6,20 +5,18 @@ import {
   BarChart3,
   CarFront,
   Check,
-  CircleGauge,
   Clock3,
   FileText,
-  Menu,
   Play,
   ShieldCheck,
   TrendingUp,
   Users,
   Wrench,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
-import logoAsset from "@/assets/vroom-logo.png.asset.json";
+import SiteHeader, { Brand } from "@/components/vroom/SiteHeader";
+import SiteFooter from "@/components/vroom/SiteFooter";
 import heroImage from "@/assets/vroom-hero.jpg";
 import roadImage from "@/assets/vroom-road.jpg";
 
@@ -32,32 +29,12 @@ const features = [
   { icon: FileText, title: "Documents", copy: "Generate and find policy documents whenever you need them." },
 ];
 
-const navItems = [
-  { label: "Features", to: "/features" },
-  { label: "Pricing", to: "#pricing" },
-  { label: "Who it's for", to: "#dealers" },
-  { label: "About", to: "#about" },
-  { label: "Resources", to: "/blog" },
-];
-
 const reveal = {
   initial: { opacity: 0, y: 18 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-80px" },
   transition: { duration: 0.55, ease: "easeOut" },
 };
-
-function Brand({ compact = false }: { compact?: boolean }) {
-  return (
-    <img
-      src={logoAsset.url}
-      alt="VROOM"
-      className={compact ? "h-7 w-auto" : "h-8 w-auto md:h-9"}
-      width={1980}
-      height={384}
-    />
-  );
-}
 
 function Eyebrow({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
@@ -144,18 +121,6 @@ function ProductPreview() {
 }
 
 export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const closeMenu = () => setMobileMenuOpen(false);
-
   return (
     <div className="vroom-site min-h-screen bg-vroom-surface text-vroom-ink">
       <SEOHead
@@ -164,42 +129,7 @@ export default function LandingPage() {
         canonical="https://govroom.co.uk/"
       />
 
-      <header className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${scrolled || mobileMenuOpen ? "border-vroom-nav-line bg-vroom-nav shadow-vroom-nav" : "border-transparent bg-transparent"}`}>
-        <div className="mx-auto flex h-[72px] max-w-[1400px] items-center justify-between px-5 lg:px-10">
-          <Link to="/" aria-label="VROOM home" onClick={closeMenu}><Brand /></Link>
-          <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
-            {navItems.map((item) => item.to.startsWith("#") ? (
-              <a key={item.label} href={item.to} className="text-sm font-medium text-vroom-hero-muted transition-colors hover:text-vroom-hero-fg">{item.label}</a>
-            ) : (
-              <Link key={item.label} to={item.to} className="text-sm font-medium text-vroom-hero-muted transition-colors hover:text-vroom-hero-fg">{item.label}</Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="hidden border-vroom-hero-border bg-transparent text-vroom-hero-fg hover:bg-vroom-hero-soft hover:text-vroom-hero-fg sm:inline-flex" asChild>
-              <Link to="/login">Login</Link>
-            </Button>
-            <Button size="sm" className="hidden bg-vroom-green font-bold text-vroom-green-foreground hover:bg-vroom-green-hover sm:inline-flex" asChild>
-              <Link to="/signup">Get Started</Link>
-            </Button>
-            <Button variant="ghost" size="icon" className="text-vroom-hero-fg hover:bg-vroom-hero-soft hover:text-vroom-hero-fg lg:hidden" onClick={() => setMobileMenuOpen((open) => !open)} aria-label={mobileMenuOpen ? "Close menu" : "Open menu"} aria-expanded={mobileMenuOpen}>
-              {mobileMenuOpen ? <X /> : <Menu />}
-            </Button>
-          </div>
-        </div>
-        {mobileMenuOpen && (
-          <nav className="border-t border-vroom-nav-line bg-vroom-nav px-5 pb-6 pt-3 lg:hidden" aria-label="Mobile navigation">
-            {navItems.map((item) => item.to.startsWith("#") ? (
-              <a key={item.label} href={item.to} onClick={closeMenu} className="block border-b border-vroom-nav-line py-3 text-sm text-vroom-hero-fg">{item.label}</a>
-            ) : (
-              <Link key={item.label} to={item.to} onClick={closeMenu} className="block border-b border-vroom-nav-line py-3 text-sm text-vroom-hero-fg">{item.label}</Link>
-            ))}
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <Button variant="outline" className="border-vroom-hero-border bg-transparent text-vroom-hero-fg" asChild><Link to="/login" onClick={closeMenu}>Login</Link></Button>
-              <Button className="bg-vroom-green font-bold text-vroom-green-foreground" asChild><Link to="/signup" onClick={closeMenu}>Get Started</Link></Button>
-            </div>
-          </nav>
-        )}
-      </header>
+      <SiteHeader />
 
       <main>
         <section className="relative flex min-h-[720px] items-end overflow-hidden bg-vroom-dark pt-28 text-vroom-hero-fg lg:min-h-[780px] lg:items-center">
@@ -297,17 +227,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-vroom-nav-line bg-vroom-nav px-5 py-12 text-vroom-hero-muted lg:px-10">
-        <div className="mx-auto max-w-[1400px]">
-          <div className="grid gap-10 border-b border-vroom-nav-line pb-10 md:grid-cols-[1fr_2fr]">
-            <div><Brand /><p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em]">Dealer aftersales. Simplified.</p></div>
-            <nav className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-3 lg:grid-cols-6" aria-label="Footer navigation">
-              <Link to="/features" className="hover:text-vroom-hero-fg">Features</Link><a href="#pricing" className="hover:text-vroom-hero-fg">Pricing</a><a href="#about" className="hover:text-vroom-hero-fg">About</a><Link to="/blog" className="hover:text-vroom-hero-fg">Resources</Link><Link to="/faq" className="hover:text-vroom-hero-fg">FAQ</Link><a href="mailto:dealeropsdms@gmail.com" className="hover:text-vroom-hero-fg">Contact</a>
-            </nav>
-          </div>
-          <div className="flex flex-col gap-4 pt-7 text-xs sm:flex-row sm:items-center sm:justify-between"><p>© {new Date().getFullYear()} VROOM. All rights reserved.</p><div className="flex flex-wrap gap-5"><Link to="/dealers" className="hover:text-vroom-hero-fg">Dealer Portal</Link><Link to="/customers" className="hover:text-vroom-hero-fg">Customer Portal</Link><span>GoVroom.co.uk</span></div></div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

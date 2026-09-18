@@ -2,8 +2,9 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
+import SiteHeader from "@/components/vroom/SiteHeader";
+import SiteFooter from "@/components/vroom/SiteFooter";
 import { blogArticles } from "@/data/blog-articles";
 
 const fadeUp = {
@@ -13,92 +14,62 @@ const fadeUp = {
 
 export default function BlogIndexPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="vroom-site min-h-screen bg-vroom-surface text-vroom-ink">
       <SEOHead
-        title="Car Dealer Warranty Guides & Articles | WarrantyVault Blog"
+        title="Car Dealer Warranty Guides & Articles | VROOM Blog"
         description="Expert guides on self-funded car warranties for UK dealers. Learn about FCA compliance, pricing strategies, claims management, and maximising warranty profits."
-        canonical="https://dealer-guard-vault.lovable.app/blog"
+        canonical="https://govroom.co.uk/blog"
       />
 
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
-          <Link to="/"><img src={logo} alt="WarrantyVault" className="h-10" /></Link>
-          <div className="hidden md:flex items-center gap-10 text-[15px] text-white/70">
-            <Link to="/features" className="hover:text-white transition-colors">Features</Link>
-            <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
-            <Link to="/blog" className="text-white transition-colors">Blog</Link>
+      <SiteHeader />
+
+      <main>
+        <section className="bg-vroom-dark px-5 pb-16 pt-40 text-vroom-hero-fg lg:px-10 lg:pt-44">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.22em] text-vroom-green">Resources</p>
+            <h1 className="text-4xl font-bold leading-[1.04] sm:text-5xl">Self-Funded Warranty Guides for UK Dealers</h1>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-7 text-vroom-hero-muted">Everything you need to know about running your own in-house warranty programme — from setup to claims handling.</p>
           </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-[15px]" asChild>
-              <Link to="/login">Sign In</Link>
+        </section>
+
+        <section className="bg-vroom-surface px-5 py-20 lg:px-10">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {blogArticles.map((article, i) => (
+                <motion.div key={article.slug} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+                  <Link
+                    to={`/blog/${article.slug}`}
+                    className="group flex h-full flex-col rounded-xl border border-vroom-line bg-vroom-panel p-6 shadow-sm transition-colors hover:border-vroom-green/40"
+                  >
+                    <div className="mb-4 flex items-center gap-3">
+                      <span className="rounded-full bg-vroom-green/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-vroom-green-deep">{article.tag}</span>
+                      <span className="flex items-center gap-1 text-[11px] text-vroom-ink-muted"><Clock className="h-3 w-3" />{article.readTime}</span>
+                    </div>
+                    <h2 className="mb-3 text-base font-semibold leading-snug transition-colors group-hover:text-vroom-green-deep">{article.title}</h2>
+                    <p className="flex-1 text-sm leading-relaxed text-vroom-ink-muted">{article.excerpt}</p>
+                    <div className="mt-5 flex items-center gap-1 text-sm font-medium text-vroom-green-deep">
+                      Read more <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-vroom-dark px-5 py-20 text-vroom-hero-fg lg:px-10">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Ready to self-fund your warranties?</h2>
+            <p className="mb-8 text-lg text-vroom-hero-muted">Join dealers who are keeping more profit by managing warranties in-house.</p>
+            <Button size="lg" className="h-12 bg-vroom-green px-10 font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild>
+              <Link to="/signup">Sign Up <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
-            <Button size="sm" className="btn-cta rounded-full px-6 text-[15px] h-10" asChild>
-              <Link to="/signup">Sign Up</Link>
-            </Button>
+            <p className="mt-5 text-xs text-vroom-hero-muted">No monthly fees. £15 per warranty.</p>
           </div>
-        </div>
-      </nav>
+        </section>
+      </main>
 
-      {/* Hero */}
-      <section className="hero-gradient pt-32 pb-16 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Resources</span>
-          <h1 className="text-4xl sm:text-5xl font-bold font-display text-white mb-4">Self-Funded Warranty Guides for UK Dealers</h1>
-          <p className="text-white/50 text-lg max-w-2xl mx-auto">Everything you need to know about running your own in-house warranty programme — from setup to claims handling.</p>
-        </div>
-      </section>
-
-      {/* Articles Grid */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blogArticles.map((article, i) => (
-              <motion.div key={article.slug} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-                <Link
-                  to={`/blog/${article.slug}`}
-                  className="glass-card rounded-xl p-6 flex flex-col group hover:border-primary/30 transition-colors cursor-pointer h-full block"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">{article.tag}</span>
-                    <span className="text-[11px] text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" />{article.readTime}</span>
-                  </div>
-                  <h2 className="font-semibold font-display text-base mb-3 group-hover:text-primary transition-colors leading-snug">{article.title}</h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed flex-1">{article.excerpt}</p>
-                  <div className="mt-5 flex items-center gap-1 text-sm text-primary font-medium">
-                    Read more <ChevronRight className="w-4 h-4" />
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="hero-gradient pt-20 pb-16 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Ready to self-fund your warranties?</h2>
-          <p className="text-white/50 mb-8 text-lg">Join dealers who are keeping more profit by managing warranties in-house.</p>
-          <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
-            <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
-          </Button>
-          <p className="text-xs text-white/30 mt-5">No monthly fees. £19 per warranty.</p>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-white/10 hero-gradient">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Link to="/"><img src={logo} alt="WarrantyVault" className="h-6 opacity-60" /></Link>
-          <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
-          <div className="flex gap-6 text-xs text-muted-foreground">
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-            <a href="#" className="hover:text-foreground transition-colors">Contact</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,167 +1,137 @@
 import { useParams, Link, Navigate } from "react-router-dom";
-import { ArrowLeft, Clock, CalendarDays, ChevronRight } from "lucide-react";
+import { ArrowLeft, Clock, CalendarDays, ChevronRight, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
+import SiteHeader from "@/components/vroom/SiteHeader";
+import SiteFooter from "@/components/vroom/SiteFooter";
 import { blogArticles } from "@/data/blog-articles";
-import logo from "@/assets/warrantylogo.png";
 
 export default function BlogArticlePage() {
   const { slug } = useParams<{ slug: string }>();
   const article = blogArticles.find((a) => a.slug === slug);
 
-  if (!article) return <Navigate to="/" replace />;
+  if (!article) return <Navigate to="/blog" replace />;
 
   const otherArticles = blogArticles.filter((a) => a.slug !== slug).slice(0, 3);
 
   return (
-    <>
+    <div className="vroom-site min-h-screen bg-vroom-surface text-vroom-ink">
       <SEOHead
-        title={`${article.title} | WarrantyVault`}
+        title={`${article.title} | VROOM`}
         description={article.metaDescription}
-        canonical={`https://dealer-guard-vault.lovable.app/blog/${article.slug}`}
+        canonical={`https://govroom.co.uk/blog/${article.slug}`}
       />
-      <div className="min-h-screen bg-background">
-        {/* Nav */}
-        <nav className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-xl border-b border-border/50">
-          <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
-            <Link to="/">
-              <img src={logo} alt="WarrantyVault" className="h-10" />
-            </Link>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" asChild>
-                <Link to="/login">Sign In</Link>
-              </Button>
-              <Button size="sm" className="btn-cta rounded-full px-6" asChild>
-                <Link to="/signup">Sign Up</Link>
-              </Button>
-            </div>
+
+      <SiteHeader alwaysSolid />
+
+      <article className="bg-vroom-surface px-5 pb-20 pt-32 lg:px-10 lg:pt-36">
+        <div className="mx-auto max-w-3xl">
+          <Link to="/blog" className="mb-8 inline-flex items-center gap-2 text-sm text-vroom-ink-muted transition-colors hover:text-vroom-ink">
+            <ArrowLeft className="h-4 w-4" /> Back to resources
+          </Link>
+
+          <div className="mb-6 flex items-center gap-3">
+            <span className="rounded-full bg-vroom-green/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-vroom-green-deep">
+              {article.tag}
+            </span>
+            <span className="flex items-center gap-1 text-xs text-vroom-ink-muted">
+              <Clock className="h-3 w-3" /> {article.readTime}
+            </span>
+            <span className="flex items-center gap-1 text-xs text-vroom-ink-muted">
+              <CalendarDays className="h-3 w-3" /> {new Date(article.publishedDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+            </span>
           </div>
-        </nav>
 
-        {/* Article */}
-        <article className="pt-32 pb-20 px-6">
-          <div className="max-w-3xl mx-auto">
-            <Link to="/#resources" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
-              <ArrowLeft className="w-4 h-4" /> Back to resources
-            </Link>
+          <h1 className="mb-6 text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+            {article.title}
+          </h1>
+          <p className="mb-12 border-l-2 border-vroom-green/40 pl-5 text-lg leading-relaxed text-vroom-ink-muted">
+            {article.excerpt}
+          </p>
 
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-                {article.tag}
-              </span>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock className="w-3 h-3" /> {article.readTime}
-              </span>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <CalendarDays className="w-3 h-3" /> {new Date(article.publishedDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
-              </span>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display leading-tight mb-6">
-              {article.title}
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-12 border-l-2 border-primary/30 pl-5">
-              {article.excerpt}
-            </p>
-
-            <div className="prose prose-invert max-w-none">
-              {article.content.map((block, i) => {
-                if (block.startsWith("### ")) {
-                  return <h3 key={i} className="text-xl font-semibold font-display mt-10 mb-4">{block.replace("### ", "")}</h3>;
-                }
-                if (block.startsWith("## ")) {
-                  return <h2 key={i} className="text-2xl font-bold font-display mt-12 mb-5 text-foreground">{block.replace("## ", "")}</h2>;
-                }
-                if (block.includes("\n-")) {
-                  const parts = block.split("\n");
-                  const intro = parts[0].startsWith("-") ? null : parts[0];
-                  const items = parts.filter((p) => p.startsWith("- "));
-                  return (
-                    <div key={i} className="mb-6">
-                      {intro && <p className="text-muted-foreground leading-relaxed mb-3">{intro}</p>}
-                      <ul className="space-y-2">
-                        {items.map((item, j) => {
-                          const text = item.replace(/^- /, "");
-                          const boldMatch = text.match(/^\*\*(.*?)\*\*(.*)/);
-                          return (
-                            <li key={j} className="flex items-start gap-3 text-muted-foreground">
-                              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                              <span>
-                                {boldMatch ? (
-                                  <><strong className="text-foreground">{boldMatch[1]}</strong>{boldMatch[2]}</>
-                                ) : (
-                                  text.replace(/\*\*/g, "")
-                                )}
-                              </span>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  );
-                }
-                // Handle bold text and inline formatting
-                const renderText = (text: string) => {
-                  const segments = text.split(/(\*\*.*?\*\*)/g);
-                  return segments.map((seg, j) => {
-                    if (seg.startsWith("**") && seg.endsWith("**")) {
-                      return <strong key={j} className="text-foreground">{seg.slice(2, -2)}</strong>;
-                    }
-                    return <span key={j}>{seg}</span>;
-                  });
-                };
-                return <p key={i} className="text-muted-foreground leading-relaxed mb-5">{renderText(block)}</p>;
-              })}
-            </div>
-
-            {/* CTA */}
-            <div className="mt-16 glass-card rounded-xl p-8 text-center">
-              <h3 className="text-xl font-bold font-display mb-3">Ready to self-fund your warranties?</h3>
-              <p className="text-muted-foreground mb-6">WarrantyVault gives you everything you need to run a professional in-house warranty programme.</p>
-              <Button className="btn-cta rounded-full px-8" asChild>
-                <Link to="/signup">Get Started Free</Link>
-              </Button>
-            </div>
-          </div>
-        </article>
-
-        {/* Related Articles */}
-        <section className="pb-20 px-6">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-xl font-bold font-display mb-6">More Resources</h2>
-            <div className="grid gap-4">
-              {otherArticles.map((a) => (
-                <Link
-                  key={a.slug}
-                  to={`/blog/${a.slug}`}
-                  className="glass-card rounded-xl p-5 flex items-center justify-between group hover:border-primary/30 transition-colors"
-                >
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full mr-3">
-                      {a.tag}
-                    </span>
-                    <span className="font-medium text-sm group-hover:text-primary transition-colors">{a.title}</span>
+          <div className="max-w-none">
+            {article.content.map((block, i) => {
+              if (block.startsWith("### ")) {
+                return <h3 key={i} className="mb-4 mt-10 text-xl font-semibold">{block.replace("### ", "")}</h3>;
+              }
+              if (block.startsWith("## ")) {
+                return <h2 key={i} className="mb-5 mt-12 text-2xl font-bold text-vroom-ink">{block.replace("## ", "")}</h2>;
+              }
+              if (block.includes("\n-")) {
+                const parts = block.split("\n");
+                const intro = parts[0].startsWith("-") ? null : parts[0];
+                const items = parts.filter((p) => p.startsWith("- "));
+                return (
+                  <div key={i} className="mb-6">
+                    {intro && <p className="mb-3 leading-relaxed text-vroom-ink-muted">{intro}</p>}
+                    <ul className="space-y-2">
+                      {items.map((item, j) => {
+                        const text = item.replace(/^- /, "");
+                        const boldMatch = text.match(/^\*\*(.*?)\*\*(.*)/);
+                        return (
+                          <li key={j} className="flex items-start gap-3 text-vroom-ink-muted">
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-vroom-green" />
+                            <span>
+                              {boldMatch ? (
+                                <><strong className="text-vroom-ink">{boldMatch[1]}</strong>{boldMatch[2]}</>
+                              ) : (
+                                text.replace(/\*\*/g, "")
+                              )}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                </Link>
-              ))}
-            </div>
+                );
+              }
+              const renderText = (text: string) => {
+                const segments = text.split(/(\*\*.*?\*\*)/g);
+                return segments.map((seg, j) => {
+                  if (seg.startsWith("**") && seg.endsWith("**")) {
+                    return <strong key={j} className="text-vroom-ink">{seg.slice(2, -2)}</strong>;
+                  }
+                  return <span key={j}>{seg}</span>;
+                });
+              };
+              return <p key={i} className="mb-5 leading-relaxed text-vroom-ink-muted">{renderText(block)}</p>;
+            })}
           </div>
-        </section>
 
-        {/* Footer */}
-        <footer className="py-8 px-6 border-t border-border/50">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
-            <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
-            <div className="flex gap-6 text-xs text-muted-foreground">
-              <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-              <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-              <a href="#" className="hover:text-foreground transition-colors">Contact</a>
-            </div>
+          <div className="mt-16 rounded-xl border border-vroom-line bg-vroom-panel p-8 text-center shadow-sm">
+            <h3 className="mb-3 text-xl font-bold">Ready to self-fund your warranties?</h3>
+            <p className="mb-6 text-vroom-ink-muted">VROOM gives you everything you need to run a professional in-house warranty programme.</p>
+            <Button className="bg-vroom-green px-8 font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild>
+              <Link to="/signup">Get Started Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
           </div>
-        </footer>
-      </div>
-    </>
+        </div>
+      </article>
+
+      <section className="bg-vroom-soft px-5 pb-20 lg:px-10">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="mb-6 text-xl font-bold">More Resources</h2>
+          <div className="grid gap-4">
+            {otherArticles.map((a) => (
+              <Link
+                key={a.slug}
+                to={`/blog/${a.slug}`}
+                className="group flex items-center justify-between rounded-xl border border-vroom-line bg-vroom-panel p-5 transition-colors hover:border-vroom-green/40"
+              >
+                <div>
+                  <span className="mr-3 rounded-full bg-vroom-green/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-vroom-green-deep">
+                    {a.tag}
+                  </span>
+                  <span className="text-sm font-medium transition-colors group-hover:text-vroom-green-deep">{a.title}</span>
+                </div>
+                <ChevronRight className="h-4 w-4 shrink-0 text-vroom-ink-muted" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <SiteFooter />
+    </div>
   );
 }

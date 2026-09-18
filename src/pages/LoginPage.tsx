@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/warrantylogo.png";
+import { Brand } from "@/components/vroom/SiteHeader";
 import SEOHead from "@/components/SEOHead";
 
 export default function LoginPage() {
@@ -41,56 +41,56 @@ export default function LoginPage() {
 
   return (
     <>
-      <SEOHead title="Sign In | WarrantyVault" description="Sign in to your WarrantyVault account to manage your self-funded car warranties." />
-    <div className="min-h-screen flex items-center justify-center px-6 relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute top-20 right-1/4 w-[400px] h-[400px] bg-primary/8 rounded-full blur-[100px] pointer-events-none" />
+      <SEOHead title="Sign In | VROOM" description="Sign in to your VROOM account to manage your self-funded car warranties." />
+    <div className="min-h-screen flex items-center justify-center px-6 relative bg-vroom-surface text-vroom-ink">
+      <div className="absolute inset-0 bg-gradient-to-br from-vroom-green/5 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute top-20 right-1/4 w-[400px] h-[400px] bg-vroom-green/8 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="w-full max-w-md relative">
         <div className="mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-vroom-ink-muted hover:text-vroom-ink transition-colors mb-6">
             <ArrowLeft className="w-4 h-4" /> Back to home
           </Link>
-          <img src={logo} alt="WarrantyVault" className="h-8 mb-6" />
-          <h1 className="text-2xl font-bold font-display">Sign in to your account</h1>
-          <p className="text-muted-foreground text-sm mt-1">Enter your credentials to access your dashboard</p>
-          <p className="text-xs text-muted-foreground mt-3">Don't have an account? <Link to="/signup" className="text-primary hover:underline">Apply here</Link></p>
+          <Link to="/" className="inline-block mb-6"><Brand compact /></Link>
+          <h1 className="text-2xl font-bold">Sign in to your account</h1>
+          <p className="text-vroom-ink-muted text-sm mt-1">Enter your credentials to access your dashboard</p>
+          <p className="text-xs text-vroom-ink-muted mt-3">Don't have an account? <Link to="/signup" className="text-vroom-green-deep hover:underline">Apply here</Link></p>
         </div>
 
-        <form onSubmit={handleSubmit} className="glass-card-strong rounded-xl p-6 space-y-4 mb-6">
+        <form onSubmit={handleSubmit} className="rounded-xl border border-vroom-line bg-vroom-panel p-6 space-y-4 mb-6 shadow-sm">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@company.co.uk" value={email} onChange={e => setEmail(e.target.value)} />
+            <Label htmlFor="email" className="text-vroom-ink">Email</Label>
+            <Input id="email" type="email" placeholder="you@company.co.uk" value={email} onChange={e => setEmail(e.target.value)} className="bg-vroom-surface border-vroom-line text-vroom-ink placeholder:text-vroom-ink-muted" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+            <Label htmlFor="password" className="text-vroom-ink">Password</Label>
+            <Input id="password" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className="bg-vroom-surface border-vroom-line text-vroom-ink placeholder:text-vroom-ink-muted" />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" className="w-full glow-primary-sm" disabled={loading}>
+          <Button type="submit" className="w-full bg-vroom-green font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" disabled={loading}>
             {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
 
-        <div className="glass-card rounded-xl overflow-hidden">
+        <div className="rounded-xl border border-vroom-line bg-vroom-panel overflow-hidden shadow-sm">
           <button
             onClick={() => setShowDemo(!showDemo)}
-            className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-secondary/20 transition-colors"
+            className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-vroom-soft transition-colors"
           >
-            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Demo Credentials</span>
-            {showDemo ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+            <span className="text-xs text-vroom-ink-muted font-medium uppercase tracking-wider">Demo Credentials</span>
+            {showDemo ? <ChevronUp className="w-4 h-4 text-vroom-ink-muted" /> : <ChevronDown className="w-4 h-4 text-vroom-ink-muted" />}
           </button>
           {showDemo && (
-            <div className="px-6 pb-5 space-y-3 border-t border-border/50 pt-4">
+            <div className="px-6 pb-5 space-y-3 border-t border-vroom-line pt-4">
               {[
                 { label: "Super Admin", email: "admin@warrantyvault.com", pass: "admin123" },
                 { label: "Dealer", email: "dealer@prestige-motors.co.uk", pass: "dealer123" },
                 { label: "Customer", email: "john@example.com", pass: "customer123" },
               ].map(cred => (
-                <div key={cred.email} className="bg-secondary/30 rounded-lg p-3">
-                  <p className="text-xs font-semibold text-primary mb-1">{cred.label}</p>
-                  <p className="text-xs text-muted-foreground">Email: <code className="text-foreground">{cred.email}</code></p>
-                  <p className="text-xs text-muted-foreground">Password: <code className="text-foreground">{cred.pass}</code></p>
+                <div key={cred.email} className="bg-vroom-soft rounded-lg p-3">
+                  <p className="text-xs font-semibold text-vroom-green-deep mb-1">{cred.label}</p>
+                  <p className="text-xs text-vroom-ink-muted">Email: <code className="text-vroom-ink">{cred.email}</code></p>
+                  <p className="text-xs text-vroom-ink-muted">Password: <code className="text-vroom-ink">{cred.pass}</code></p>
                 </div>
               ))}
             </div>

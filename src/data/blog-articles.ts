@@ -40,7 +40,7 @@ export const blogArticles: BlogArticle[] = [
       "- **A clear claims submission method** — phone, email, or ideally an online portal\n- **Defined approval workflows** — who reviews claims, what's the turnaround time?\n- **Approved repairer network** — your own workshop, or trusted local garages\n- **Documentation requirements** — service history, fault diagnosis, photos",
       "The goal is to make claims easy for genuine faults while having enough process to prevent abuse.",
       "## Step 5: Use Software to Manage Everything",
-      "Spreadsheets and paper files won't scale. A purpose-built warranty management platform like WarrantyVault lets you:",
+      "Spreadsheets and paper files won't scale. A purpose-built warranty management platform like VROOM lets you:",
       "- Issue branded warranty certificates instantly\n- Track all active warranties and their expiry dates\n- Process and approve claims digitally\n- Monitor your reserve fund and claim ratios\n- Give customers a portal to view their cover and submit claims",
       "## The Bottom Line",
       "Self-funding warranties isn't about cutting corners — it's about taking control. You set the prices, you define the cover, you handle the claims, and you keep the profit. For any UK dealer selling more than 10 warranted vehicles a month, the numbers speak for themselves.",
