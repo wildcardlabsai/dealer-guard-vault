@@ -1,327 +1,311 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  Shield, Car, Search, ArrowRight, CheckCircle2, Star,
-  BarChart3, FileCheck, UserCheck, ClipboardCheck, PoundSterling, Menu, X
+  ArrowRight,
+  BarChart3,
+  CarFront,
+  Check,
+  CircleGauge,
+  Clock3,
+  FileText,
+  Menu,
+  Play,
+  ShieldCheck,
+  TrendingUp,
+  Users,
+  Wrench,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/warrantylogo.png";
 import SEOHead from "@/components/SEOHead";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" } }),
-};
+import logoAsset from "@/assets/vroom-logo.png.asset.json";
+import heroImage from "@/assets/vroom-hero.jpg";
+import roadImage from "@/assets/vroom-road.jpg";
 
 const features = [
-  { icon: Shield, title: "Warranty Management", desc: "Create, edit and track all warranties in one place with full visibility." },
-  { icon: FileCheck, title: "Branded Certificates", desc: "Generate professional, branded warranty certificates instantly." },
-  { icon: Search, title: "DVLA Lookup", desc: "Enter a reg and instantly pull vehicle data — no manual input needed." },
-  { icon: UserCheck, title: "Customer Portal", desc: "Give customers their own login to view warranties, download documents and submit claims." },
-  { icon: ClipboardCheck, title: "Claims Management", desc: "Handle claims your way — approve, reject or request more info in seconds." },
-  { icon: BarChart3, title: "Profit Tracking", desc: "See exactly what you're making from warranties vs what you're paying out." },
+  { icon: ShieldCheck, title: "Warranties", copy: "Create, issue and manage every warranty from one clear workspace." },
+  { icon: Wrench, title: "Claims", copy: "Triage claims quickly, track decisions and keep customers informed." },
+  { icon: Users, title: "Customers", copy: "Keep customer details, cover and aftersales history connected." },
+  { icon: CarFront, title: "Vehicles", copy: "Bring vehicle details and registration lookups into one place." },
+  { icon: BarChart3, title: "Insights", copy: "See exposure, claim activity and performance as it changes." },
+  { icon: FileText, title: "Documents", copy: "Generate and find policy documents whenever you need them." },
 ];
 
-const testimonials = [
-  { name: "Arjun K.", role: "Sales Director, Manchester", text: "Our team issues warranties in minutes now. No chasing providers and no spreadsheet mess." },
-  { name: "Ben R.", role: "Independent Dealer, Bristol", text: "The customer portal has cut inbound calls and made us look far more professional." },
-  { name: "Liam P.", role: "Used Car Dealer, Birmingham", text: "Switching to in-house warranties has increased our margins massively. WarrantyVault makes it simple." },
-  { name: "Chris W.", role: "Dealer Group Ops, Newcastle", text: "WarrantyVault gives us speed, consistency, and better margins across the group." },
-  { name: "Chloe M.", role: "Dealer Owner, Nottingham", text: "Profit tracking is brilliant. We can see exactly what each warranty is doing for the business." },
-  { name: "Tom H.", role: "Franchise Dealer, Liverpool", text: "Setup was straightforward and we had it up quickly. It just fits how we work." },
-  { name: "Nadia S.", role: "General Manager, Sheffield", text: "No monthly fee and full control made this an easy yes for us." },
-  { name: "Sarah T.", role: "Dealer Principal, Leeds", text: "Claims are no longer a bottleneck. We decide quickly and customers get clear updates." },
+const navItems = [
+  { label: "Features", to: "/features" },
+  { label: "Pricing", to: "#pricing" },
+  { label: "Who it's for", to: "#dealers" },
+  { label: "About", to: "#about" },
+  { label: "Resources", to: "/blog" },
 ];
 
-export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const reveal = {
+  initial: { opacity: 0, y: 18 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.55, ease: "easeOut" },
+};
 
+function Brand({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="min-h-screen bg-background">
-      <SEOHead
-        title="Self-Funded Car Warranty Software for UK Dealers | WarrantyVault"
-        description="Create, manage and handle self-funded car warranties in-house. No third-party providers. Better margins, faster decisions, full control for UK dealerships."
-        canonical="https://dealer-guard-vault.lovable.app/"
-      />
+    <img
+      src={logoAsset.url}
+      alt="VROOM"
+      className={compact ? "h-7 w-auto" : "h-8 w-auto md:h-9"}
+      width={1980}
+      height={384}
+    />
+  );
+}
 
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-[hsl(var(--hero-bg))]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between">
-          <img src={logo} alt="WarrantyVault" className="h-8 sm:h-10" />
-          <div className="hidden md:flex items-center gap-10 text-[15px] text-white/70">
-            <Link to="/features" className="hover:text-white transition-colors">Features</Link>
-            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-            <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
-            <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
-            <Link to="/dealers" className="hover:text-white transition-colors">Dealers</Link>
-            <Link to="/customers" className="hover:text-white transition-colors">Customers</Link>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 text-sm sm:text-[15px] px-3" asChild>
-              <Link to="/login">Sign In</Link>
-            </Button>
-            <Button size="sm" className="btn-cta rounded-full px-4 sm:px-6 text-sm sm:text-[15px] h-9 sm:h-10 hidden sm:inline-flex" asChild>
-              <Link to="/signup">Sign Up</Link>
-            </Button>
-            <button
-              className="md:hidden text-white/80 hover:text-white p-1"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+function Eyebrow({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
+  return (
+    <div className={`mb-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] ${dark ? "text-vroom-green" : "text-vroom-ink-muted"}`}>
+      <span className="h-px w-7 bg-vroom-green" />
+      {children}
+    </div>
+  );
+}
+
+function ProductPreview() {
+  const bars = [38, 58, 46, 72, 61, 82];
+  return (
+    <div className="relative mx-auto w-full max-w-[760px] pt-8 lg:pt-0">
+      <div className="overflow-hidden rounded-t-[18px] border-[7px] border-vroom-frame bg-vroom-canvas shadow-vroom-device">
+        <div className="flex h-8 items-center gap-1.5 border-b border-vroom-line bg-vroom-panel px-3">
+          <span className="h-2 w-2 rounded-full bg-vroom-dot" />
+          <span className="h-2 w-2 rounded-full bg-vroom-dot" />
+          <span className="h-2 w-2 rounded-full bg-vroom-dot" />
         </div>
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-[hsl(var(--hero-bg))] border-t border-white/5 px-4 pb-4 space-y-1">
-            <Link to="/features" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Features</Link>
-            <a href="#pricing" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
-            <Link to="/faq" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
-            <Link to="/blog" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
-            <Link to="/dealers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Dealer Portal</Link>
-            <Link to="/customers" className="block py-3 text-white/70 hover:text-white text-sm" onClick={() => setMobileMenuOpen(false)}>Customer Portal</Link>
-            <Button size="sm" className="btn-cta rounded-full w-full mt-2 text-sm h-10" asChild>
-              <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
-            </Button>
-          </div>
-        )}
-      </nav>
-
-      {/* Hero */}
-      <section className="hero-gradient relative overflow-hidden">
-        <div className="absolute top-10 right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
-        <div className="absolute bottom-20 left-[5%] w-[400px] h-[400px] bg-[hsl(var(--cta))]/5 rounded-full blur-[120px] pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-6 relative pt-32 pb-20">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="inline-flex items-center gap-3 mb-8">
-                <div className="w-10 h-[2px] bg-[hsl(var(--cta))]" />
-                <span className="text-sm text-white/60 font-semibold tracking-[0.2em] uppercase">Built for UK Dealerships</span>
-              </motion.div>
-
-              <motion.h1
-                className="text-5xl sm:text-6xl lg:text-[4.2rem] font-bold font-display tracking-tight text-white leading-[1.06] mb-8"
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}
-              >
-                Take Control of Your<br />Warranty Process<span className="text-[hsl(var(--cta))]">.</span>
-              </motion.h1>
-
-              <motion.p
-                className="text-lg text-white/50 max-w-lg mb-10 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}
-              >
-                Create, manage and handle self-funded warranties in-house. No third-party providers. Better margins, faster decisions, full control.
-              </motion.p>
-
-              <motion.div className="flex flex-col sm:flex-row gap-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
-                <Button size="lg" className="btn-cta text-base px-10 rounded-full h-14" asChild>
-                  <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
-                </Button>
-                <Button size="lg" variant="outline" className="text-base px-10 rounded-full h-14 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent" asChild>
-                  <Link to="/features">See Features</Link>
-                </Button>
-              </motion.div>
-
-              <motion.div className="mt-8 space-y-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
-                <p className="text-sm text-white/40">No monthly fees. Only pay when you use it.</p>
-                <p className="text-xs text-white/30">£19 per warranty. No monthly fees.</p>
-              </motion.div>
+        <div className="grid min-h-[390px] grid-cols-[70px_1fr] sm:grid-cols-[150px_1fr]">
+          <aside className="bg-vroom-dashboard px-3 py-5 text-vroom-hero-fg">
+            <Brand compact />
+            <div className="mt-8 space-y-2 text-[9px] sm:text-[11px]">
+              {["Dashboard", "Warranties", "Claims", "Customers", "Vehicles", "Insights"].map((item, index) => (
+                <div key={item} className={`rounded px-2 py-2 ${index === 0 ? "bg-vroom-green/15 text-vroom-green" : "text-vroom-hero-muted"}`}>
+                  <span className="hidden sm:inline">{item}</span>
+                  <span className="sm:hidden">{item.slice(0, 1)}</span>
+                </div>
+              ))}
             </div>
-
-            <motion.div className="hidden lg:block" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}>
-              <div className="bg-[hsl(222,25%,10%)]/80 backdrop-blur-md border border-white/8 rounded-2xl p-5 shadow-2xl">
-                <div className="flex items-center gap-2 mb-5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[hsl(0,60%,50%)]/60" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-[hsl(40,80%,55%)]/60" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-[hsl(140,60%,45%)]/60" />
+          </aside>
+          <div className="min-w-0 bg-vroom-canvas p-3 sm:p-5">
+            <div className="mb-5 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] text-vroom-ink-muted">Monday, 18 September</p>
+                <p className="mt-1 text-base font-bold text-vroom-ink sm:text-xl">Good morning, Matt.</p>
+              </div>
+              <div className="hidden rounded border border-vroom-line bg-vroom-panel px-3 py-1.5 text-[10px] text-vroom-ink-muted sm:block">This month</div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 xl:grid-cols-4">
+              {[
+                ["Active Warranties", "132", "+12%"],
+                ["Open Claims", "8", "2 priority"],
+                ["Claims This Month", "14", "+7%"],
+                ["Warranty Exposure", "£48,320", "Stable"],
+              ].map(([label, value, meta]) => (
+                <div key={label} className="rounded-md border border-vroom-line bg-vroom-panel p-3">
+                  <p className="text-[9px] text-vroom-ink-muted">{label}</p>
+                  <p className="mt-2 text-lg font-bold text-vroom-ink">{value}</p>
+                  <p className="mt-1 text-[9px] font-semibold text-vroom-positive">{meta}</p>
                 </div>
-                <div className="space-y-3 mb-5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-white/50">Active Warranties</span>
-                    <span className="text-lg font-bold font-display text-primary">47</span>
-                  </div>
-                  <div className="w-full h-1 bg-white/5 rounded-full"><div className="h-1 bg-primary rounded-full" style={{ width: "70%" }} /></div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-white/50">Per Warranty Fee</span>
-                    <span className="text-lg font-bold font-display text-[hsl(var(--cta))]">£19</span>
-                  </div>
-                  <div className="w-full h-1 bg-white/5 rounded-full"><div className="h-1 bg-[hsl(var(--cta))] rounded-full" style={{ width: "85%" }} /></div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-white/50">Monthly Fee</span>
-                    <span className="text-lg font-bold font-display text-white">£0</span>
-                  </div>
+              ))}
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-[1.25fr_.75fr]">
+              <div className="rounded-md border border-vroom-line bg-vroom-panel p-4">
+                <div className="mb-5 flex items-center justify-between">
+                  <p className="text-xs font-bold text-vroom-ink">Warranty Activity</p>
+                  <span className="text-[9px] text-vroom-ink-muted">Last 6 months</span>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {["BMW 320d", "Audi A4", "Mercedes C200"].map(car => (
-                    <div key={car} className="bg-[hsl(222,20%,12%)] border border-white/5 rounded-lg p-3 text-center">
-                      <Car className="w-4 h-4 text-primary mx-auto mb-1.5" />
-                      <span className="text-xs text-white/60">{car}</span>
-                    </div>
+                <div className="flex h-24 items-end justify-between gap-2 border-b border-vroom-line">
+                  {bars.map((height, index) => (
+                    <div key={index} className="w-full rounded-t-sm bg-vroom-green" style={{ height: `${height}%` }} />
                   ))}
                 </div>
               </div>
+              <div className="rounded-md border border-vroom-line bg-vroom-panel p-4">
+                <p className="text-xs font-bold text-vroom-ink">Claims by Status</p>
+                <div className="mx-auto mt-4 flex h-24 w-24 items-center justify-center rounded-full border-[15px] border-vroom-green">
+                  <div className="text-center"><strong className="block text-lg text-vroom-ink">28</strong><span className="text-[8px] text-vroom-ink-muted">Total</span></div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 rounded-md border border-vroom-line bg-vroom-panel p-3">
+              <p className="mb-2 text-[10px] font-bold text-vroom-ink">Recent Activity</p>
+              <div className="flex items-center justify-between text-[9px] text-vroom-ink-muted"><span>Warranty issued · BF72 KLM</span><span>12 min ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto h-3 w-[92%] rounded-b-xl bg-vroom-laptop shadow-vroom-laptop" />
+    </div>
+  );
+}
+
+export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const closeMenu = () => setMobileMenuOpen(false);
+
+  return (
+    <div className="vroom-site min-h-screen bg-vroom-surface text-vroom-ink">
+      <SEOHead
+        title="VROOM — Dealer Aftersales, Simplified"
+        description="Manage warranties, claims, customers and vehicles in one clear aftersales platform built for UK motor dealers."
+        canonical="https://govroom.co.uk/"
+      />
+
+      <header className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${scrolled || mobileMenuOpen ? "border-vroom-nav-line bg-vroom-nav shadow-vroom-nav" : "border-transparent bg-transparent"}`}>
+        <div className="mx-auto flex h-[72px] max-w-[1400px] items-center justify-between px-5 lg:px-10">
+          <Link to="/" aria-label="VROOM home" onClick={closeMenu}><Brand /></Link>
+          <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
+            {navItems.map((item) => item.to.startsWith("#") ? (
+              <a key={item.label} href={item.to} className="text-sm font-medium text-vroom-hero-muted transition-colors hover:text-vroom-hero-fg">{item.label}</a>
+            ) : (
+              <Link key={item.label} to={item.to} className="text-sm font-medium text-vroom-hero-muted transition-colors hover:text-vroom-hero-fg">{item.label}</Link>
+            ))}
+          </nav>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="hidden border-vroom-hero-border bg-transparent text-vroom-hero-fg hover:bg-vroom-hero-soft hover:text-vroom-hero-fg sm:inline-flex" asChild>
+              <Link to="/login">Login</Link>
+            </Button>
+            <Button size="sm" className="hidden bg-vroom-green font-bold text-vroom-green-foreground hover:bg-vroom-green-hover sm:inline-flex" asChild>
+              <Link to="/signup">Get Started</Link>
+            </Button>
+            <Button variant="ghost" size="icon" className="text-vroom-hero-fg hover:bg-vroom-hero-soft hover:text-vroom-hero-fg lg:hidden" onClick={() => setMobileMenuOpen((open) => !open)} aria-label={mobileMenuOpen ? "Close menu" : "Open menu"} aria-expanded={mobileMenuOpen}>
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </Button>
+          </div>
+        </div>
+        {mobileMenuOpen && (
+          <nav className="border-t border-vroom-nav-line bg-vroom-nav px-5 pb-6 pt-3 lg:hidden" aria-label="Mobile navigation">
+            {navItems.map((item) => item.to.startsWith("#") ? (
+              <a key={item.label} href={item.to} onClick={closeMenu} className="block border-b border-vroom-nav-line py-3 text-sm text-vroom-hero-fg">{item.label}</a>
+            ) : (
+              <Link key={item.label} to={item.to} onClick={closeMenu} className="block border-b border-vroom-nav-line py-3 text-sm text-vroom-hero-fg">{item.label}</Link>
+            ))}
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <Button variant="outline" className="border-vroom-hero-border bg-transparent text-vroom-hero-fg" asChild><Link to="/login" onClick={closeMenu}>Login</Link></Button>
+              <Button className="bg-vroom-green font-bold text-vroom-green-foreground" asChild><Link to="/signup" onClick={closeMenu}>Get Started</Link></Button>
+            </div>
+          </nav>
+        )}
+      </header>
+
+      <main>
+        <section className="relative flex min-h-[720px] items-end overflow-hidden bg-vroom-dark pt-28 text-vroom-hero-fg lg:min-h-[780px] lg:items-center">
+          <img src={heroImage} alt="Premium vehicle outside a modern dealership workshop" className="absolute inset-0 h-full w-full object-cover object-[64%_center]" width={1920} height={1080} />
+          <div className="absolute inset-0 bg-vroom-hero-overlay" />
+          <div className="relative mx-auto w-full max-w-[1400px] px-5 pb-12 lg:px-10 lg:pb-0">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }} className="max-w-2xl">
+              <p className="mb-6 text-xs font-bold uppercase tracking-[0.22em] text-vroom-green">Dealer aftersales. Simplified.</p>
+              <h1 className="max-w-[680px] text-[clamp(3rem,6vw,5.75rem)] font-bold leading-[0.98] tracking-normal">Everything after the sale. In one place.</h1>
+              <p className="mt-7 max-w-xl text-base leading-7 text-vroom-hero-muted md:text-lg">VROOM helps motor dealers manage warranties, claims, customers and vehicles in one clear place—saving time, reducing risk and keeping customers moving.</p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button size="lg" className="h-12 bg-vroom-green px-7 font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild><Link to="/signup">Get Started <ArrowRight /></Link></Button>
+                <Button size="lg" variant="outline" className="h-12 border-vroom-hero-border bg-vroom-dark/20 px-7 text-vroom-hero-fg hover:bg-vroom-hero-soft hover:text-vroom-hero-fg" asChild><a href="#platform"><Play className="fill-current" /> See How It Works</a></Button>
+              </div>
+              <div className="mt-12 grid max-w-2xl grid-cols-1 gap-5 border-t border-vroom-hero-border pt-6 sm:grid-cols-3">
+                {[[ShieldCheck, "Built for dealers"], [Clock3, "Saves time"], [TrendingUp, "More profitable aftersales"]].map(([Icon, label]) => {
+                  const ItemIcon = Icon as typeof ShieldCheck;
+                  return <div key={label as string} className="flex items-center gap-3"><ItemIcon className="h-5 w-5 text-vroom-green" /><span className="text-[10px] font-bold uppercase tracking-[0.17em] text-vroom-hero-muted">{label as string}</span></div>;
+                })}
+              </div>
             </motion.div>
           </div>
-        </div>
+        </section>
 
-        <div className="relative left-1/2 w-screen -translate-x-1/2 -mb-px">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="block h-[120px] w-full" preserveAspectRatio="none">
-            <path d="M0,70 C220,108 470,108 720,82 C980,54 1170,46 1440,78 L1440,120 L0,120 Z" fill="hsl(222 30% 7%)" />
-          </svg>
-        </div>
-      </section>
-
-      {/* Statement */}
-      <section className="bg-[hsl(222_30%_7%)] border-b border-white/5">
-        <motion.div className="max-w-6xl mx-auto text-center px-6 pt-12 pb-12" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <p className="text-[2.25rem] sm:text-[2.65rem] lg:text-[3rem] font-bold font-display text-white leading-[1.15] tracking-[-0.03em] mb-4">
-            Most dealers are already moving away from warranty providers...
-          </p>
-          <p className="text-white/45 text-lg sm:text-[1.45rem] max-w-3xl mx-auto leading-relaxed">
-            The problem is they don't have the right system to manage it properly.
-          </p>
-        </motion.div>
-
-        <div className="border-t border-white/5 px-6 py-8">
-          <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-x-10 gap-y-4 lg:gap-x-16">
-            {["£0/month", "Only pay per warranty", "£19 per warranty", "No contracts or upfront costs"].map(item => (
-              <div key={item} className="flex items-center gap-3 text-sm sm:text-base text-white/55">
-                <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>{item}</span>
-              </div>
-            ))}
+        <section id="features" className="bg-vroom-surface px-5 py-20 lg:px-10 lg:py-28">
+          <div className="mx-auto max-w-[1400px]">
+            <motion.div {...reveal} className="grid gap-8 border-b border-vroom-line pb-14 lg:grid-cols-[1.2fr_.8fr] lg:items-end">
+              <div><Eyebrow>Features</Eyebrow><h2 className="max-w-3xl text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Everything you need for a stronger aftersales operation.</h2></div>
+              <div className="max-w-lg lg:justify-self-end"><p className="leading-7 text-vroom-ink-muted">Bring warranties, claims, customers and documents together in one simple platform, designed around how the motor trade works.</p><Link to="/features" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-vroom-green-deep hover:gap-3">Explore all features <ArrowRight className="h-4 w-4" /></Link></div>
+            </motion.div>
+            <div className="grid gap-x-8 gap-y-12 pt-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+              {features.map((feature, index) => (
+                <motion.article key={feature.title} {...reveal} transition={{ ...reveal.transition, delay: index * 0.05 }} className="group border-l border-vroom-line pl-5">
+                  <feature.icon className="mb-5 h-7 w-7 text-vroom-green-deep transition-transform group-hover:-translate-y-1" />
+                  <h3 className="text-base font-bold">{feature.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-vroom-ink-muted">{feature.copy}</p>
+                </motion.article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features (condensed) */}
-      <section className="py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Platform Features</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-4">Everything you need to stay in control</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">Built for UK dealers who want higher margins, faster claim decisions, and fewer admin headaches.</p>
+        <section id="platform" className="overflow-hidden bg-vroom-soft px-5 py-20 lg:px-10 lg:py-28">
+          <div className="mx-auto grid max-w-[1400px] items-center gap-14 lg:grid-cols-[.72fr_1.28fr]">
+            <motion.div {...reveal}>
+              <Eyebrow>The platform</Eyebrow>
+              <h2 className="text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">A clearer view of your aftersales.</h2>
+              <p className="mt-6 max-w-lg leading-7 text-vroom-ink-muted">See the full picture across every warranty and claim. VROOM keeps the information your team needs visible, current and ready to act on.</p>
+              <Button className="mt-8 bg-vroom-green font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild><Link to="/signup">Get Started <ArrowRight /></Link></Button>
+            </motion.div>
+            <motion.div {...reveal} transition={{ ...reveal.transition, delay: 0.12 }}><ProductPreview /></motion.div>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((f, i) => (
-              <motion.div key={f.title} className="glass-card rounded-xl p-6 hover:border-primary/30 transition-all duration-300 group" custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
-                  <f.icon className="w-5 h-5 text-primary" />
-                </div>
-                <h3 className="font-semibold font-display mb-2">{f.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
-              </motion.div>
-            ))}
+        </section>
+
+        <section id="dealers" className="bg-vroom-surface px-5 py-20 lg:px-10 lg:py-28">
+          <div className="mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-[1.2fr_.8fr] lg:items-center">
+            <motion.div {...reveal}>
+              <Eyebrow>Built for modern dealers</Eyebrow>
+              <h2 className="max-w-3xl text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Less admin.<br />More time for what matters.</h2>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-vroom-ink-muted">VROOM makes aftersales easier to manage, so your team can focus on selling vehicles, looking after customers and building a stronger business.</p>
+            </motion.div>
+            <motion.ul {...reveal} className="space-y-5">
+              {["Easy for your team to use", "Designed around the motor trade", "Less time spent on repetitive admin", "Clear decisions and fewer delays", "Live insight into warranty performance"].map((item) => <li key={item} className="flex items-center gap-4 border-b border-vroom-line pb-4 text-sm font-semibold"><span className="flex h-6 w-6 items-center justify-center rounded-full bg-vroom-green text-vroom-green-foreground"><Check className="h-3.5 w-3.5" /></span>{item}</li>)}
+            </motion.ul>
           </div>
-          <div className="text-center mt-10">
-            <Button variant="outline" className="rounded-full px-8 h-11 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent" asChild>
-              <Link to="/features">See All Features & Comparison <ArrowRight className="ml-2 w-4 h-4" /></Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-16 px-6 bg-secondary/30">
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-3 block">Pricing</span>
-          <h2 className="text-3xl sm:text-4xl font-bold font-display mb-3">Simple, transparent pricing</h2>
-          <p className="text-muted-foreground mb-10">No monthly fees. No contracts. Pay only when you issue a warranty.</p>
-          <motion.div className="glass-card-strong rounded-2xl p-10 sm:p-14 glow-primary relative overflow-hidden" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
-            <div className="absolute top-0 right-0 w-52 h-52 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
-            <div className="relative">
-              <p className="text-5xl sm:text-6xl font-bold font-display mb-1">£0<span className="text-2xl text-muted-foreground font-normal">/month</span></p>
-              <p className="text-xl font-semibold font-display mb-2">Only £19 per warranty</p>
-              <p className="text-sm text-[hsl(var(--cta))] font-semibold mb-1">🎉 First 5 warranties FREE</p>
-              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">Start with 5 free warranties, then £19 each via Stripe. No hidden fees.</p>
+        <section id="pricing" className="bg-vroom-dark px-5 py-20 text-vroom-hero-fg lg:px-10 lg:py-24">
+          <motion.div {...reveal} className="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-[1fr_.7fr] lg:items-center">
+            <div><Eyebrow dark>Simple pricing</Eyebrow><h2 className="text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Pay for warranties.<br />Not software overhead.</h2><p className="mt-6 max-w-xl leading-7 text-vroom-hero-muted">No platform subscription and no long contract. Your first five warranties are free, then pay only when you issue one.</p></div>
+            <div className="border-l border-vroom-hero-border pl-8"><p className="text-sm font-semibold uppercase tracking-[0.18em] text-vroom-hero-muted">Per warranty</p><p className="mt-3 text-7xl font-bold">£15</p><p className="mt-3 text-sm text-vroom-green">£0 monthly platform fee</p><Button className="mt-7 bg-vroom-green font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild><Link to="/signup">Start with 5 free</Link></Button></div>
+          </motion.div>
+        </section>
 
-              <div className="grid grid-cols-2 gap-x-8 gap-y-3 max-w-xs mx-auto mb-8">
-                {["No monthly fees", "No contracts", "Pay only when you use it", "Scale as you grow"].map(f => (
-                  <div key={f} className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-primary flex-shrink-0" />
-                    <span>{f}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="bg-secondary/40 rounded-xl p-4 mb-8 max-w-sm mx-auto border border-border/20">
-                <p className="text-sm">
-                  Optional add-on: <Link to="/warranty-line" className="font-semibold text-[hsl(var(--cta))] hover:underline">Dedicated Warranty Line — £25/month</Link>.
-                </p>
-              </div>
-
-              <div className="bg-secondary/40 rounded-xl p-4 mb-8 max-w-sm mx-auto border border-border/20">
-                <p className="text-sm">
-                  Keep an extra <span className="font-semibold">£300–£800 per deal</span> by managing warranties in-house.
-                </p>
-              </div>
-
-              <Button size="lg" className="btn-cta rounded-full px-12 h-12" asChild>
-                <Link to="/signup">Sign Up</Link>
-              </Button>
-              <p className="text-xs text-muted-foreground mt-3">No monthly fees. No contracts.</p>
+        <section id="about" className="bg-vroom-soft px-5 py-20 lg:px-10 lg:py-24">
+          <motion.div {...reveal} className="mx-auto max-w-[1200px]">
+            <Eyebrow>Trusted by dealers</Eyebrow>
+            <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+              <h2 className="text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Real dealers.<br />Real results.</h2>
+              <div className="border-l-2 border-vroom-green bg-vroom-panel p-7 md:p-9"><p className="text-xl font-semibold leading-8 text-vroom-ink">Dealer stories are being verified.</p><p className="mt-3 max-w-xl leading-7 text-vroom-ink-muted">We only publish feedback from real VROOM customers. Verified case studies will be added here as they become available.</p></div>
             </div>
           </motion.div>
-        </div>
-      </section>
+        </section>
 
-      {/* Testimonials */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="text-primary text-xs font-semibold tracking-[0.2em] uppercase mb-4 block">Trust</span>
-            <h2 className="text-3xl sm:text-4xl font-bold font-display mb-3">Built by someone with real dealership experience</h2>
-            <p className="text-muted-foreground">Don't just take our word for it.</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {testimonials.map((t, i) => (
-              <motion.div key={t.name} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="glass-card rounded-xl p-6">
-                <div className="flex gap-0.5 mb-4">
-                  {[...Array(5)].map((_, j) => <Star key={j} className="w-3.5 h-3.5 fill-[hsl(var(--cta))] text-[hsl(var(--cta))]" />)}
-                </div>
-                <p className="text-sm text-muted-foreground mb-5 leading-relaxed">"{t.text}"</p>
-                <div>
-                  <p className="font-semibold text-sm">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+        <section className="relative overflow-hidden bg-vroom-dark px-5 py-24 text-vroom-hero-fg lg:px-10 lg:py-32">
+          <img src={roadImage} alt="Executive car travelling through the British countryside" loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[64%_center]" width={1920} height={800} />
+          <div className="absolute inset-0 bg-vroom-cta-overlay" />
+          <motion.div {...reveal} className="relative mx-auto max-w-[1400px]">
+            <Eyebrow dark>Ready to get started?</Eyebrow>
+            <h2 className="max-w-3xl text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Take control of your aftersales with VROOM.</h2>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-vroom-hero-muted">Bring warranties, claims and customer care together in one clear place.</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row"><Button size="lg" className="bg-vroom-green font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild><Link to="/signup">Get Started</Link></Button><Button size="lg" variant="outline" className="border-vroom-hero-border bg-vroom-dark/20 text-vroom-hero-fg hover:bg-vroom-hero-soft hover:text-vroom-hero-fg" asChild><a href="mailto:dealeropsdms@gmail.com?subject=VROOM%20demo%20request">Book a Demo</a></Button></div>
+            <p className="mt-10 font-semibold text-vroom-green">GoVroom.co.uk</p>
+          </motion.div>
+        </section>
+      </main>
 
-      {/* Final CTA */}
-      <section className="hero-gradient pt-20 pb-16 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white mb-4">Start managing your warranties properly</h2>
-          <p className="text-white/50 mb-8 text-lg">Join dealers taking control of their warranty process.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="btn-cta rounded-full px-10 text-base h-12" asChild>
-              <Link to="/signup">Sign Up <ArrowRight className="ml-2 w-4 h-4" /></Link>
-            </Button>
-            <Button size="lg" variant="outline" className="rounded-full px-10 text-base h-12 border-white/15 text-white/80 hover:bg-white/5 hover:text-white bg-transparent">
-              Book Demo
-            </Button>
+      <footer className="border-t border-vroom-nav-line bg-vroom-nav px-5 py-12 text-vroom-hero-muted lg:px-10">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="grid gap-10 border-b border-vroom-nav-line pb-10 md:grid-cols-[1fr_2fr]">
+            <div><Brand /><p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em]">Dealer aftersales. Simplified.</p></div>
+            <nav className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-3 lg:grid-cols-6" aria-label="Footer navigation">
+              <Link to="/features" className="hover:text-vroom-hero-fg">Features</Link><a href="#pricing" className="hover:text-vroom-hero-fg">Pricing</a><a href="#about" className="hover:text-vroom-hero-fg">About</a><Link to="/blog" className="hover:text-vroom-hero-fg">Resources</Link><Link to="/faq" className="hover:text-vroom-hero-fg">FAQ</Link><a href="mailto:dealeropsdms@gmail.com" className="hover:text-vroom-hero-fg">Contact</a>
+            </nav>
           </div>
-          <p className="text-xs text-white/30 mt-5">No monthly fees. £19 per warranty.</p>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-white/10 hero-gradient">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <img src={logo} alt="WarrantyVault" className="h-6 opacity-60" />
-          <p className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Wildcard Labs</span></p>
-          <div className="flex flex-wrap gap-6 text-xs text-muted-foreground">
-            <Link to="/dealers" className="hover:text-foreground transition-colors">Dealer Portal</Link>
-            <Link to="/customers" className="hover:text-foreground transition-colors">Customer Portal</Link>
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-            <a href="#" className="hover:text-foreground transition-colors">Contact</a>
-          </div>
+          <div className="flex flex-col gap-4 pt-7 text-xs sm:flex-row sm:items-center sm:justify-between"><p>© {new Date().getFullYear()} VROOM. All rights reserved.</p><div className="flex flex-wrap gap-5"><Link to="/dealers" className="hover:text-vroom-hero-fg">Dealer Portal</Link><Link to="/customers" className="hover:text-vroom-hero-fg">Customer Portal</Link><span>GoVroom.co.uk</span></div></div>
         </div>
       </footer>
     </div>

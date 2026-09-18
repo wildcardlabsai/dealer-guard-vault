@@ -35,6 +35,29 @@
     --sidebar-accent-foreground: 220 20% 10%;
     --sidebar-border: 220 13% 87%;
     --sidebar-ring: 172 66% 40%;
+    --vroom-green: 159 100% 45%;
+    --vroom-green-hover: 159 100% 40%;
+    --vroom-green-deep: 160 100% 31%;
+    --vroom-green-foreground: 192 44% 7%;
+    --vroom-dark: 197 45% 6%;
+    --vroom-nav: 196 48% 5%;
+    --vroom-nav-line: 192 25% 15%;
+    --vroom-surface: 210 20% 98%;
+    --vroom-soft: 204 20% 94%;
+    --vroom-panel: 0 0% 100%;
+    --vroom-canvas: 210 20% 97%;
+    --vroom-ink: 198 44% 8%;
+    --vroom-ink-muted: 204 10% 40%;
+    --vroom-line: 204 15% 84%;
+    --vroom-hero-fg: 0 0% 100%;
+    --vroom-hero-muted: 203 16% 76%;
+    --vroom-hero-border: 198 17% 36%;
+    --vroom-hero-soft: 195 20% 18%;
+    --vroom-dashboard: 198 48% 7%;
+    --vroom-frame: 198 33% 10%;
+    --vroom-laptop: 204 8% 46%;
+    --vroom-dot: 204 10% 69%;
+    --vroom-positive: 160 76% 33%;
   }
 
   .dark {
@@ -85,6 +108,15 @@
 }
 
 @layer utilities {
+  .bg-vroom-hero-overlay {
+    background: linear-gradient(90deg, hsl(var(--vroom-dark) / 0.97) 0%, hsl(var(--vroom-dark) / 0.82) 42%, hsl(var(--vroom-dark) / 0.14) 78%);
+  }
+  .bg-vroom-cta-overlay {
+    background: linear-gradient(90deg, hsl(var(--vroom-dark) / 0.98) 0%, hsl(var(--vroom-dark) / 0.86) 48%, hsl(var(--vroom-dark) / 0.22) 82%);
+  }
+  .shadow-vroom-nav { box-shadow: 0 10px 30px hsl(var(--vroom-dark) / 0.18); }
+  .shadow-vroom-device { box-shadow: 0 28px 60px hsl(var(--vroom-dark) / 0.22); }
+  .shadow-vroom-laptop { box-shadow: 0 14px 20px hsl(var(--vroom-dark) / 0.2); }
   .glass-card {
     @apply bg-card/60 backdrop-blur-xl border border-border/50 shadow-lg;
   }
@@ -108,5 +140,23 @@
   }
   .btn-cta {
     @apply bg-[hsl(24,100%,50%)] text-white font-semibold hover:bg-[hsl(24,100%,45%)] transition-colors;
+  }
+}
+
+@media (max-width: 767px) {
+  .bg-vroom-hero-overlay {
+    background: linear-gradient(0deg, hsl(var(--vroom-dark) / 0.98) 0%, hsl(var(--vroom-dark) / 0.72) 68%, hsl(var(--vroom-dark) / 0.24) 100%);
+  }
+  .bg-vroom-cta-overlay {
+    background: hsl(var(--vroom-dark) / 0.84);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vroom-site *, .vroom-site *::before, .vroom-site *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
