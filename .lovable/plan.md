@@ -1,41 +1,18 @@
+# VROOM Public Landing Page Redesign
 
+## Scope
+Rebuild only the public homepage as a responsive VROOM experience. Preserve every existing route, login flow, signup flow, and backend integration.
 
-# Dedicated `/customers` and `/dealers` Login Pages
+## Build
+- Replace WarrantyVault branding on the homepage with the supplied VROOM logo, tagline, and GoVroom.co.uk identity.
+- Create a sticky transparent-to-solid navigation with desktop links and an accessible mobile menu.
+- Build a cinematic automotive hero using a locally served generated photograph, exact approved headline/copy, working signup/login links, and restrained benefit icons.
+- Build the editorial light sections for features, platform overview, dealer benefits, pricing, and an honest social-proof placeholder without invented testimonials or logos.
+- Build a realistic React dashboard preview using the product’s real information architecture and labels.
+- Create the automotive final call-to-action and minimal dark footer, preserving existing legal, contact, knowledge-base, portal, and resource links.
+- Add homepage-scoped semantic design tokens and restrained entrance/interaction motion with reduced-motion support.
+- Update homepage metadata and derive the favicon from the supplied VROOM logo.
 
-## Overview
-Create two dedicated entry-point pages at `/customers` and `/dealers`. Each shows role-specific branding and a login form. When already authenticated with the correct role, redirect straight to the dashboard. All existing `/dealer/*` and `/customer/*` routes remain unchanged.
-
-## New Files
-
-### 1. `src/pages/CustomersLoginPage.tsx`
-- SEOHead: "Customer Login | WarrantyVault"
-- Customer-focused messaging: "View your warranty, track claims, download certificates"
-- Login form (reuses same `useAuth` login logic)
-- On success: validates role is `customer`, navigates to `/customer`
-- Shows error if dealer/admin credentials used
-- Link to `/dealers` for wrong portal
-
-### 2. `src/pages/DealersLoginPage.tsx`
-- SEOHead: "Dealer Login | WarrantyVault"
-- Dealer-focused messaging: "Manage warranties, handle claims, grow your business"
-- Login form validates role is `dealer`, navigates to `/dealer`
-- Shows error if customer/admin credentials used
-- Links to `/signup` and `/customers`
-
-## Edited Files
-
-### 3. `src/App.tsx`
-- Import both new pages
-- Add routes:
-  - `/customers` — if authenticated as customer, redirect to `/customer`; otherwise show `CustomersLoginPage`
-  - `/dealers` — if authenticated as dealer, redirect to `/dealer`; otherwise show `DealersLoginPage`
-- Update `ProtectedRoute`: redirect unauthenticated customer routes to `/customers`, dealer routes to `/dealers`
-
-### 4. `public/sitemap.xml`
-- Add `/customers` and `/dealers` URLs
-
-## Routing Logic
-- `/customers` = public login page for customers (redirects to `/customer` dashboard if already logged in)
-- `/dealers` = public login page for dealers (redirects to `/dealer` dashboard if already logged in)
-- Existing `/customer/*` and `/dealer/*` protected routes stay as-is but redirect to `/customers` or `/dealers` when not authenticated
-
+## Verification
+- Check the homepage at desktop and mobile sizes for composition, cropping, navigation, text fit, and link destinations.
+- Confirm no backend, authentication, database, API, or integration files were changed.
