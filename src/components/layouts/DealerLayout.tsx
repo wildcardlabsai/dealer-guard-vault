@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
-import logo from "@/assets/warrantylogo.png";
+import logoAsset from "@/assets/vroom-logo.png.asset.json";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dealer" },
@@ -62,7 +62,7 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
       {/* Sidebar */}
       <aside className={`${collapsed ? "w-16" : "w-64"} flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex flex-col transition-all duration-300 hidden md:flex`}>
         <div className="p-4 flex items-center justify-between border-b border-border/50">
-          {!collapsed && <img src={logo} alt="WarrantyVault" className="h-6" />}
+          {!collapsed && <img src={logoAsset.url} alt="VROOM" className="h-6 w-auto" />}
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setCollapsed(!collapsed)}>
             {collapsed ? <Menu className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </Button>
@@ -98,7 +98,7 @@ export default function DealerLayout({ children }: { children: React.ReactNode }
       {/* Mobile header */}
       <div className="flex-1 flex flex-col min-w-0">
         <header className="md:hidden h-14 border-b border-border/50 flex items-center px-4 gap-3 bg-card/40">
-          <img src={logo} alt="WarrantyVault" className="h-5" />
+          <img src={logoAsset.url} alt="VROOM" className="h-5 w-auto" />
           <div className="flex-1" />
           {/* Mobile notification bell */}
           <div className="relative" ref={notifRef}>

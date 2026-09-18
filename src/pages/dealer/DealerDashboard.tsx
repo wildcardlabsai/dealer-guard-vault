@@ -102,7 +102,7 @@ export default function DealerDashboard() {
   ];
 
   const statusData = [
-    { name: "Active", value: active, color: "hsl(172, 66%, 40%)" },
+    { name: "Active", value: active, color: "hsl(159, 100%, 32%)" },
     { name: "Expired", value: expired || 1, color: "hsl(0, 72%, 51%)" },
     { name: "Cancelled", value: warranties.filter(w => w.status === "cancelled").length || 0, color: "hsl(220, 10%, 46%)" },
   ].filter(d => d.value > 0);
@@ -161,7 +161,7 @@ export default function DealerDashboard() {
             </div>
             <div>
               <p className="text-sm font-medium">All {dealerFreeTotal} free warranties used</p>
-              <p className="text-xs text-muted-foreground">New warranties are now charged at £19 each via Stripe</p>
+              <p className="text-xs text-muted-foreground">New warranties are now charged at £15 each via Stripe</p>
             </div>
           </div>
         </div>
@@ -302,8 +302,8 @@ export default function DealerDashboard() {
             <BarChart data={monthlyData}>
               <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={v => `£${v}`} />
-              <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
-              <Bar dataKey="revenue" fill="hsl(172, 66%, 40%)" radius={[6, 6, 0, 0]} />
+              <Tooltip contentStyle={{ background: "hsl(198, 40%, 9%)", border: "1px solid hsl(192, 25%, 15%)", borderRadius: 8, color: "#fff" }} />
+              <Bar dataKey="revenue" fill="hsl(159, 100%, 32%)" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

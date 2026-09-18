@@ -338,9 +338,9 @@ export default function AddWarranty() {
             <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg">
               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4 text-primary" />
-                <span className="text-sm">WarrantyVault Admin Fee</span>
+                <span className="text-sm">VROOM Admin Fee</span>
               </div>
-              <span className="text-xl font-bold font-display">£19</span>
+              <span className="text-xl font-bold font-display">£15</span>
             </div>
 
             <p className="text-xs text-muted-foreground">Payment processed securely via Stripe. This fee covers platform administration, certificate generation, and customer portal access.</p>
@@ -351,7 +351,7 @@ export default function AddWarranty() {
                 {paying ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
                 ) : (
-                  <><CreditCard className="w-4 h-4 mr-2" /> Pay £19 & Create</>
+                  <><CreditCard className="w-4 h-4 mr-2" /> Pay £15 & Create</>
                 )}
               </Button>
             </div>

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 import { User, UserRole, demoUsers } from "@/data/demo-data";
 
 const demoPasswords: Record<string, string> = {
-  "admin@warrantyvault.com": "admin123",
+  "admin@govroom.co.uk": "admin123",
   "dealer@prestige-motors.co.uk": "dealer123",
   "john@example.com": "customer123",
 };

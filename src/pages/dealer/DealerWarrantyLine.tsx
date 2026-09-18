@@ -243,7 +243,7 @@ export default function DealerWarrantyLine() {
             <MessageSquare className="w-4 h-4 text-primary" />
             How your customers experience this
           </h3>
-          <div className="bg-[hsl(222,25%,10%)] rounded-xl p-5 text-white/80 text-sm space-y-3 font-mono">
+          <div className="bg-[hsl(198,40%,9%)] rounded-xl p-5 text-white/80 text-sm space-y-3 font-mono">
             <p className="text-white/50 text-xs">— Automated greeting —</p>
             <p>"{form.greetingMessage || `Thank you for calling ${form.businessName} warranty department.`}"</p>
             {form.ivrEnabled && (

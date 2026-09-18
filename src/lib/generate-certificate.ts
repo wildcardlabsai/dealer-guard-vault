@@ -20,35 +20,35 @@ export function generateCertificateHTML(warranty: Warranty): string {
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Inter', sans-serif; background: #fff; color: #1a1a2e; }
-  .cert { max-width: 800px; margin: 0 auto; padding: 48px; border: 3px solid #00323D; position: relative; }
-  .cert::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; border: 1px solid #14b8a6; pointer-events: none; }
-  .header { text-align: center; margin-bottom: 32px; border-bottom: 2px solid #00323D; padding-bottom: 24px; }
-  .header h1 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; color: #00323D; letter-spacing: 2px; }
+  .cert { max-width: 800px; margin: 0 auto; padding: 48px; border: 3px solid #04141a; position: relative; }
+  .cert::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; border: 1px solid #00cc7a; pointer-events: none; }
+  .header { text-align: center; margin-bottom: 32px; border-bottom: 2px solid #04141a; padding-bottom: 24px; }
+  .header h1 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; color: #04141a; letter-spacing: 2px; }
   .header p { color: #666; font-size: 13px; margin-top: 4px; }
-  .badge { display: inline-block; background: #14b8a6; color: #fff; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 12px; letter-spacing: 1px; }
+  .badge { display: inline-block; background: #00cc7a; color: #fff; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 12px; letter-spacing: 1px; }
   .section { margin-bottom: 24px; }
-  .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: #00323D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+  .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: #04141a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; }
   .field label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
   .field p { font-size: 14px; font-weight: 600; margin-top: 2px; }
-  .footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 2px solid #00323D; }
+  .footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 2px solid #04141a; }
   .footer p { font-size: 11px; color: #888; }
-  .ref { font-family: monospace; font-size: 12px; color: #14b8a6; margin-top: 8px; }
+  .ref { font-family: monospace; font-size: 12px; color: #00cc7a; margin-top: 8px; }
   .cover-list { columns: 2; list-style: none; padding: 0; }
   .cover-list li { font-size: 12px; padding: 3px 0; padding-left: 16px; position: relative; }
-  .cover-list.covered li::before { content: '✓'; position: absolute; left: 0; color: #14b8a6; font-weight: bold; }
+  .cover-list.covered li::before { content: '✓'; position: absolute; left: 0; color: #00cc7a; font-weight: bold; }
   .cover-list.excluded li::before { content: '✗'; position: absolute; left: 0; color: #e53e3e; font-weight: bold; }
   .claim-box { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 16px; }
-  .claim-box h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #00323D; }
+  .claim-box h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #04141a; }
   .claim-box p { font-size: 11px; color: #666; line-height: 1.6; }
-  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .cert { border: 3px solid #00323D; } }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .cert { border: 3px solid #04141a; } }
 </style>
 </head>
 <body>
 <div class="cert">
   <div class="header">
     <h1>WARRANTY CERTIFICATE</h1>
-    <p>WarrantyVault — Self-Funded Warranty Management</p>
+    <p>VROOM — Self-Funded Warranty Management</p>
     ${template ? `<div class="badge">${template.levelName.toUpperCase()} COVER</div>` : '<div class="badge">VERIFIED</div>'}
   </div>
 
@@ -95,7 +95,7 @@ export function generateCertificateHTML(warranty: Warranty): string {
 
   <div class="claim-box">
     <h3>How to Make a Claim</h3>
-    <p>1. Log into your customer portal at warrantyvault.com<br/>
+    <p>1. Log into your customer portal at govroom.co.uk<br/>
     2. Start a new claim and upload supporting evidence<br/>
     3. Wait for your dealership to review before authorising repairs<br/>
     <strong>Please do not authorise repairs before contacting your dealership.</strong></p>

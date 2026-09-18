@@ -4,7 +4,7 @@ import { useNotificationStore } from "@/lib/notification-store";
 import { LayoutDashboard, Shield, FileText, MessageSquare, LogOut, BookOpen, Bell, Check, ClipboardList, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
-import logo from "@/assets/warrantylogo.png";
+import logoAsset from "@/assets/vroom-logo.png.asset.json";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/customer" },
@@ -47,7 +47,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 flex-shrink-0 border-r border-border/50 bg-card/40 backdrop-blur-sm flex-col hidden md:flex">
         <div className="p-4 border-b border-border/50">
-          <img src={logo} alt="WarrantyVault" className="h-6" />
+          <img src={logoAsset.url} alt="VROOM" className="h-6 w-auto" />
         </div>
         <nav className="flex-1 p-2 space-y-1">
           {navItems.map(item => {
@@ -74,7 +74,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
       </aside>
       <div className="flex-1 flex flex-col min-w-0">
         <header className="md:hidden h-14 border-b border-border/50 flex items-center px-4 gap-3 bg-card/40">
-          <img src={logo} alt="WarrantyVault" className="h-5" />
+          <img src={logoAsset.url} alt="VROOM" className="h-5 w-auto" />
           <div className="flex-1" />
           <div className="relative" ref={notifRef}>
             <Button variant="ghost" size="icon" className="relative h-9 w-9" onClick={() => setShowNotifs(!showNotifs)}>

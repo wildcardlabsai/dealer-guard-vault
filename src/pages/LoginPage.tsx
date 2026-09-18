@@ -83,7 +83,7 @@ export default function LoginPage() {
           {showDemo && (
             <div className="px-6 pb-5 space-y-3 border-t border-vroom-line pt-4">
               {[
-                { label: "Super Admin", email: "admin@warrantyvault.com", pass: "admin123" },
+                { label: "Super Admin", email: "admin@govroom.co.uk", pass: "admin123" },
                 { label: "Dealer", email: "dealer@prestige-motors.co.uk", pass: "dealer123" },
                 { label: "Customer", email: "john@example.com", pass: "customer123" },
               ].map(cred => (

@@ -99,7 +99,7 @@ export interface AuditLog {
 
 // --- DEMO USERS ---
 export const demoUsers: User[] = [
-  { id: "admin-1", email: "admin@warrantyvault.com", name: "Platform Admin", role: "admin" },
+  { id: "admin-1", email: "admin@govroom.co.uk", name: "Platform Admin", role: "admin" },
   { id: "dealer-1", email: "dealer@prestige-motors.co.uk", name: "James Harrison", role: "dealer", dealerId: "d-1" },
   { id: "dealer-2", email: "dealer@cityautos.co.uk", name: "Sarah Mitchell", role: "dealer", dealerId: "d-2" },
   { id: "customer-1", email: "john@example.com", name: "John Smith", role: "customer", dealerId: "d-1" },

@@ -16,8 +16,8 @@ async function sendEmail(to: string, subject: string, html: string): Promise<boo
   }
 }
 
-const brandColor = "#2a9d8f";
-const brandName = "WarrantyVault";
+const brandColor = "#009e69";
+const brandName = "VROOM";
 
 function layout(content: string): string {
   return `
@@ -37,7 +37,7 @@ function layout(content: string): string {
         <tr><td style="padding:20px 32px;background-color:#f9fafb;border-top:1px solid #e5e7eb;">
           <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">
             © ${new Date().getFullYear()} ${brandName}. All rights reserved.<br>
-            <a href="https://warrantyvault.co.uk" style="color:${brandColor};text-decoration:none;">warrantyvault.co.uk</a>
+            <a href="https://govroom.co.uk" style="color:${brandColor};text-decoration:none;">govroom.co.uk</a>
           </p>
         </td></tr>
       </table>
@@ -48,7 +48,7 @@ function layout(content: string): string {
 }
 
 function btn(text: string, url?: string): string {
-  return `<a href="${url || 'https://warrantyvault.co.uk'}" style="display:inline-block;background-color:${brandColor};color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;font-size:14px;margin:16px 0;">${text}</a>`;
+  return `<a href="${url || 'https://govroom.co.uk'}" style="display:inline-block;background-color:${brandColor};color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;font-size:14px;margin:16px 0;">${text}</a>`;
 }
 
 // ── Email templates ──
@@ -65,7 +65,7 @@ export async function sendDealerApprovalEmail(email: string, dealerName: string,
       </td></tr>
     </table>
     <p style="color:#4b5563;font-size:13px;">Please change your password after your first login.</p>
-    ${btn("Log in to WarrantyVault", "https://warrantyvault.co.uk/login")}
+    ${btn("Log in to VROOM", "https://govroom.co.uk/login")}
   `));
 }
 
@@ -94,7 +94,7 @@ export async function sendWarrantyConfirmationEmail(
       </td></tr>
     </table>
     <p style="color:#4b5563;font-size:13px;">You can view your warranty details and submit claims by logging in.</p>
-    ${btn("View Your Warranty", "https://warrantyvault.co.uk/login")}
+    ${btn("View Your Warranty", "https://govroom.co.uk/login")}
   `));
 }
 
@@ -112,7 +112,7 @@ export async function sendClaimSubmittedEmail(
       </td></tr>
     </table>
     <p style="color:#4b5563;font-size:13px;">Our team will review your claim and be in touch shortly.</p>
-    ${btn("Track Your Claim", "https://warrantyvault.co.uk/login")}
+    ${btn("Track Your Claim", "https://govroom.co.uk/login")}
   `));
 }
 
@@ -137,7 +137,7 @@ export async function sendClaimStatusEmail(
         <p style="margin:0;font-size:14px;color:#111827;"><strong>Reference:</strong> ${claimRef}</p>
       </td></tr>
     </table>
-    ${btn("View Claim Details", "https://warrantyvault.co.uk/login")}
+    ${btn("View Claim Details", "https://govroom.co.uk/login")}
   `));
 }
 
@@ -172,6 +172,6 @@ export async function sendCertificateEmail(
       </td></tr>
     </table>
     <p style="color:#4b5563;font-size:13px;">You can also view and download your certificate at any time by logging into your customer portal.</p>
-    ${btn("View Your Warranty", "https://warrantyvault.co.uk/login")}
+    ${btn("View Your Warranty", "https://govroom.co.uk/login")}
   `));
 }

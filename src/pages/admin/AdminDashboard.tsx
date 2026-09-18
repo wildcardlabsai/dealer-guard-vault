@@ -55,7 +55,7 @@ export default function AdminDashboard() {
   const claimStatuses = [
     { name: "Pending", value: demoClaims.filter(c => c.status === "pending").length, color: "hsl(45, 93%, 47%)" },
     { name: "Under Review", value: demoClaims.filter(c => c.status === "under_review").length, color: "hsl(210, 80%, 55%)" },
-    { name: "Approved", value: demoClaims.filter(c => c.status === "approved").length, color: "hsl(172, 66%, 40%)" },
+    { name: "Approved", value: demoClaims.filter(c => c.status === "approved").length, color: "hsl(159, 100%, 32%)" },
     { name: "Rejected", value: demoClaims.filter(c => c.status === "rejected").length, color: "hsl(0, 72%, 51%)" },
   ].filter(s => s.value > 0);
 
@@ -127,8 +127,8 @@ export default function AdminDashboard() {
             <LineChart data={monthlyData}>
               <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={v => `£${v}`} />
-              <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
-              <Line type="monotone" dataKey="subscriptions" stroke="hsl(172, 66%, 40%)" strokeWidth={2} dot={false} />
+              <Tooltip contentStyle={{ background: "hsl(198, 40%, 9%)", border: "1px solid hsl(192, 25%, 15%)", borderRadius: 8, color: "#fff" }} />
+              <Line type="monotone" dataKey="subscriptions" stroke="hsl(159, 100%, 32%)" strokeWidth={2} dot={false} />
               <Line type="monotone" dataKey="warranties" stroke="hsl(190, 80%, 50%)" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
@@ -144,7 +144,7 @@ export default function AdminDashboard() {
                   <Cell key={i} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ background: "hsl(222, 25%, 10%)", border: "1px solid hsl(222, 20%, 16%)", borderRadius: 8, color: "#fff" }} />
+              <Tooltip contentStyle={{ background: "hsl(198, 40%, 9%)", border: "1px solid hsl(192, 25%, 15%)", borderRadius: 8, color: "#fff" }} />
             </PieChart>
           </ResponsiveContainer>
           <div className="space-y-2 mt-2">
