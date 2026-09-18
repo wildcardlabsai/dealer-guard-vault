@@ -7,8 +7,8 @@ import logoAsset from "@/assets/vroom-logo.png.asset.json";
 export const navItems = [
   { label: "Features", to: "/features" },
   { label: "Warranty Line", to: "/warranty-line" },
-  { label: "Pricing", to: "/#pricing" },
-  { label: "About", to: "/#about" },
+  { label: "Pricing", to: "/pricing" },
+  { label: "About", to: "/about" },
   { label: "Resources", to: "/blog" },
   { label: "FAQ", to: "/faq" },
 ];
@@ -45,9 +45,7 @@ export default function SiteHeader({ alwaysSolid = false }: { alwaysSolid?: bool
       <div className="mx-auto flex h-[72px] max-w-[1400px] items-center justify-between px-5 lg:px-10">
         <Link to="/" aria-label="VROOM home" onClick={closeMenu}><Brand /></Link>
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
-          {navItems.map((item) => item.to.startsWith("/#") ? (
-            <a key={item.label} href={item.to} className="text-sm font-medium text-vroom-hero-muted transition-colors hover:text-vroom-hero-fg">{item.label}</a>
-          ) : (
+          {navItems.map((item) => (
             <Link key={item.label} to={item.to} className="text-sm font-medium text-vroom-hero-muted transition-colors hover:text-vroom-hero-fg">{item.label}</Link>
           ))}
         </nav>
@@ -65,9 +63,7 @@ export default function SiteHeader({ alwaysSolid = false }: { alwaysSolid?: bool
       </div>
       {mobileMenuOpen && (
         <nav className="border-t border-vroom-nav-line bg-vroom-nav px-5 pb-6 pt-3 lg:hidden" aria-label="Mobile navigation">
-          {navItems.map((item) => item.to.startsWith("/#") ? (
-            <a key={item.label} href={item.to} onClick={closeMenu} className="block border-b border-vroom-nav-line py-3 text-sm text-vroom-hero-fg">{item.label}</a>
-          ) : (
+          {navItems.map((item) => (
             <Link key={item.label} to={item.to} onClick={closeMenu} className="block border-b border-vroom-nav-line py-3 text-sm text-vroom-hero-fg">{item.label}</Link>
           ))}
           <div className="mt-5 grid grid-cols-2 gap-3">

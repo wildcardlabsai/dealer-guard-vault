@@ -13,8 +13,8 @@ export default function SiteFooter() {
           <nav className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-3 lg:grid-cols-6" aria-label="Footer navigation">
             <Link to="/features" className="hover:text-vroom-hero-fg">Features</Link>
             <Link to="/warranty-line" className="hover:text-vroom-hero-fg">Warranty Line</Link>
-            <a href="/#pricing" className="hover:text-vroom-hero-fg">Pricing</a>
-            <a href="/#about" className="hover:text-vroom-hero-fg">About</a>
+            <Link to="/pricing" className="hover:text-vroom-hero-fg">Pricing</Link>
+            <Link to="/about" className="hover:text-vroom-hero-fg">About</Link>
             <Link to="/blog" className="hover:text-vroom-hero-fg">Resources</Link>
             <Link to="/faq" className="hover:text-vroom-hero-fg">FAQ</Link>
             <a href="mailto:dealeropsdms@gmail.com" className="hover:text-vroom-hero-fg">Contact</a>

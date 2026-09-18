@@ -199,7 +199,7 @@ export default function LandingPage() {
 
         <section id="pricing" className="bg-vroom-dark px-5 py-20 text-vroom-hero-fg lg:px-10 lg:py-24">
           <motion.div {...reveal} className="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-[1fr_.7fr] lg:items-center">
-            <div><Eyebrow dark>Simple pricing</Eyebrow><h2 className="text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Pay for warranties.<br />Not software overhead.</h2><p className="mt-6 max-w-xl leading-7 text-vroom-hero-muted">No platform subscription and no long contract. Your first five warranties are free, then pay only when you issue one.</p></div>
+            <div><Eyebrow dark>Simple pricing</Eyebrow><h2 className="text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Pay for warranties.<br />Not software overhead.</h2><p className="mt-6 max-w-xl leading-7 text-vroom-hero-muted">No platform subscription and no long contract. Your first five warranties are free, then pay only when you issue one.</p><Link to="/pricing" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-vroom-green hover:gap-3">See full pricing <ArrowRight className="h-4 w-4" /></Link></div>
             <div className="border-l border-vroom-hero-border pl-8"><p className="text-sm font-semibold uppercase tracking-[0.18em] text-vroom-hero-muted">Per warranty</p><p className="mt-3 text-7xl font-bold">£15</p><p className="mt-3 text-sm text-vroom-green">£0 monthly platform fee</p><Button className="mt-7 bg-vroom-green font-bold text-vroom-green-foreground hover:bg-vroom-green-hover" asChild><Link to="/signup">Start with 5 free</Link></Button></div>
           </motion.div>
         </section>
@@ -208,7 +208,7 @@ export default function LandingPage() {
           <motion.div {...reveal} className="mx-auto max-w-[1200px]">
             <Eyebrow>Trusted by dealers</Eyebrow>
             <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-              <h2 className="text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Real dealers.<br />Real results.</h2>
+              <div><h2 className="text-4xl font-bold leading-[1.04] tracking-normal md:text-6xl">Real dealers.<br />Real results.</h2><Link to="/about" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-vroom-green-deep hover:gap-3">More about VROOM <ArrowRight className="h-4 w-4" /></Link></div>
               <div className="border-l-2 border-vroom-green bg-vroom-panel p-7 md:p-9"><p className="text-xl font-semibold leading-8 text-vroom-ink">Dealer stories are being verified.</p><p className="mt-3 max-w-xl leading-7 text-vroom-ink-muted">We only publish feedback from real VROOM customers. Verified case studies will be added here as they become available.</p></div>
             </div>
           </motion.div>

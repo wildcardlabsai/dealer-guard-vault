@@ -14,6 +14,8 @@ import NotFound from "@/pages/NotFound";
 import BlogArticlePage from "@/pages/BlogArticlePage";
 import FeaturesPage from "@/pages/FeaturesPage";
 import WarrantyLinePage from "@/pages/WarrantyLinePage";
+import PricingPage from "@/pages/PricingPage";
+import AboutPage from "@/pages/AboutPage";
 import FAQPage from "@/pages/FAQPage";
 import BlogIndexPage from "@/pages/BlogIndexPage";
 
@@ -70,6 +72,8 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/features" element={<FeaturesPage />} />
       <Route path="/warranty-line" element={<WarrantyLinePage />} />
+      <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/about" element={<AboutPage />} />
       <Route path="/faq" element={<FAQPage />} />
       <Route path="/blog" element={<BlogIndexPage />} />
       <Route path="/blog/:slug" element={<BlogArticlePage />} />

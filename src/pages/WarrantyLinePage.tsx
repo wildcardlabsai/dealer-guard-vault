@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import SiteHeader from "@/components/vroom/SiteHeader";
 import SiteFooter from "@/components/vroom/SiteFooter";
+import PageHero from "@/components/vroom/PageHero";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -46,13 +47,11 @@ export default function WarrantyLinePage() {
       <SiteHeader />
 
       <main>
-        <section className="bg-vroom-dark px-5 pb-16 pt-40 text-vroom-hero-fg lg:px-10 lg:pt-44">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.22em] text-vroom-green">Optional Add-On</p>
-            <h1 className="text-4xl font-bold leading-[1.04] sm:text-5xl">Look like a proper warranty department</h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-7 text-vroom-hero-muted">Give your customers a dedicated phone line for warranty enquiries and claims. Professional, branded, and fully under your control.</p>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Optional Add-On"
+          title="Look like a proper warranty department"
+          subtitle="Give your customers a dedicated phone line for warranty enquiries and claims. Professional, branded, and fully under your control."
+        />
 
         <section className="bg-vroom-surface px-5 py-20 lg:px-10">
           <div className="mx-auto max-w-6xl">

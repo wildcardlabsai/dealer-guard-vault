@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import SiteHeader from "@/components/vroom/SiteHeader";
 import SiteFooter from "@/components/vroom/SiteFooter";
+import PageHero from "@/components/vroom/PageHero";
 import { Helmet } from "react-helmet-async";
 
 const fadeUp = {
@@ -51,13 +52,11 @@ export default function FAQPage() {
       <SiteHeader />
 
       <main>
-        <section className="bg-vroom-dark px-5 pb-16 pt-40 text-vroom-hero-fg lg:px-10 lg:pt-44">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="rounded-full bg-vroom-green/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-vroom-green">FAQ</span>
-            <h1 className="mb-4 mt-6 text-4xl font-bold sm:text-5xl">Common questions from UK dealers</h1>
-            <p className="mx-auto max-w-2xl text-lg text-vroom-hero-muted">Everything you need to know about self-funding your warranties with VROOM.</p>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="FAQ"
+          title="Common questions from UK dealers"
+          subtitle="Everything you need to know about self-funding your warranties with VROOM."
+        />
 
         <section className="bg-vroom-surface px-5 py-20 lg:px-10">
           <div className="mx-auto max-w-3xl space-y-4">
